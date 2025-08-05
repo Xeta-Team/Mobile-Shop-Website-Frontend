@@ -1,11 +1,13 @@
+import { Routes,Route } from 'react-router'
 import './App.css'
+import Home from './Pages/Home'
 
 const App = () => {
   return (
     <>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
+      <Routes>
+        <Route path='/' element={<Home/>}/>
+      </Routes>
     </>
   )
 } 
