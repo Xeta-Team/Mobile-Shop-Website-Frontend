@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import HoverTranslateCard from "./HoverTranslateCard";
+import HoverTranslateCard from "../Cards/HoverTranslateCard";
 
 const HomeCarousel = ({ slides }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
