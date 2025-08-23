@@ -1,13 +1,15 @@
 import './App.css'
+import SliderCards from './Components/SliderCards.jsx'
 
 const App = () => {
   return (
     <>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
+     <div>
+      <SliderCards/>
+     </div>
     </>
   )
 } 
 
 export default App
+
