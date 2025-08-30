@@ -1,8 +1,6 @@
 import React from "react";
 import Slider from "react-slick";
-import ReusableCard from "./ReusableCard"; // Import your card component
-
-// Import slick-carousel CSS
+import ReusableCard from "../Cards/HoverCard";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -34,29 +32,12 @@ const PrevArrow = ({ onClick }) => {
 function SliderCard() {
   const settings = {
     className: "center",
-    centerMode: true,
-    infinite: true,
-    centerPadding: "60px",
+    variableWidth:true,
+    infinite: false,
     slidesToShow: 3,
     speed: 500,
     nextArrow: <NextArrow />,  // ✅ Custom Next Arrow
     prevArrow: <PrevArrow />,  // ✅ Custom Prev Arrow
-    responsive: [
-      {
-        breakpoint: 768, // Mobile
-        settings: {
-          slidesToShow: 3,
-          centerPadding: "20px"
-        }
-      },
-      {
-        breakpoint: 1024, // Tablet
-        settings: {
-          slidesToShow: 3,
-          centerPadding: "40px"
-        }
-      }
-    ]
   };
 
   const cardsData = [
@@ -98,10 +79,10 @@ function SliderCard() {
   ];
 
   return (
-    <div className="slider-container relative w-[90%] mx-auto">
+    <div className="slider-container relative w-auto mx-auto my-5 ">
       <Slider {...settings}>
         {cardsData.map((card) => (
-          <div key={card.id} className="flex justify-center">
+          <div key={card.id} className="flex justify-center h-[380px]">
             <ReusableCard
               imageUrl={card.imageUrl}
               title={card.title}

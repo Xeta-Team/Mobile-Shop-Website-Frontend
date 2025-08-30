@@ -25,3 +25,8 @@
         hover:before:scale-x-0
         hover:before:origin-right
 }
+
+.slick-slide {
+  display: flex !important;
+  margin: 0 10px 0 10px;
+}
