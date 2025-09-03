@@ -235,9 +235,12 @@ function ProductRow({ product, onMouseEnter, onMouseLeave, isMenuOpen, onMenuTog
             </td>
             <td className="p-4 text-gray-600 hidden md:table-cell">{product.category}</td>
             <td className="p-4 text-gray-600 hidden lg:table-cell">
-                <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full border" style={{ backgroundColor: product.colors[0].hex }}></span>
-                    <span>{product.colors[0].name}</span>
+                <div className="space-y-2">
+                    {product.colors.map((color,index) => (<div key={index} className='flex items-center gap-2'>
+                        <span className="w-5 h-5 rounded-full border" style={{ backgroundColor: color.hex }}></span>
+                        <span>{color.name}</span>
+                    </div>))
+                    }
                 </div>
             </td>
             <td className="p-4">
