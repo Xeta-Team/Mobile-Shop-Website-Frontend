@@ -1,15 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { UserPlus, Lock, Mail, User, Loader, Info, Check, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 
-// --- Supabase Client Setup ---
-// NOTE: This component assumes the Supabase client library is loaded globally
-// via a script tag in your index.html file, like this:
-// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-const supabaseUrl = 'https://ikmyhzhlesebjdgijzef.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrbXloemhsZXNlYmpkZ2lqemVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY4MzkxOTYsImV4cCI6MjA3MjQxNTE5Nn0.iPLVOeWJ_qGou2rPrvncpfdiBFEJIBPKmgLmX3gC2rw';
-// The 'supabase' object is now expected to be on the global 'window' object.
-const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
-
+// --- Supabase Client Setup (for social logins) ---
+const supabase = window.supabase ? window.supabase.createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY) : null;
 
 // SVG Icon for Google
 const GoogleIcon = () => (
@@ -21,15 +15,7 @@ const GoogleIcon = () => (
     </svg>
 );
 
-// SVG Icon for Apple
-const AppleIcon = () => (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M14.713 0C12.735 0 10.413.93 8.938 2.373c-1.429 1.35-2.625 3.636-2.625 5.953 0 2.518 1.413 3.682 2.988 3.682 1.54 0 2.228-.857 3.938-.857 1.63 0 2.45.886 3.963.886 1.644 0 3.128-1.257 3.128-3.963C20.338 9.53 17.738 8.08 17.738 5.61c0-2.828 2.25-4.07 3.938-4.07.257 0 .513-.029.743-.057-.17-.014-3.8-1.486-6.706-1.486zm-2.072 13.463c-.8.3-1.6.857-2.286 1.486-.714.628-1.243 1.4-1.628 2.314-.4.886-.628 1.886-.628 2.886 0 .8.143 1.6.457 2.314.3.715.742 1.343 1.285 1.886.543.543 1.2.943 1.943 1.143.742.228 1.485.257 2.2.257.743 0 1.514-.114 2.286-.343.77-.228 1.514-.6 2.17-.b14.657-.515 1.172-1.143 1.514-1.829.343-.685.515-1.485.515-2.343 0-1.686-1.028-2.957-2.2-3.486-1.543-.657-3.4-.6-4.628.2z"></path>
-    </svg>
-);
-
-
-export default function Register() {
+export default function RegistrationPage() {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -97,7 +83,7 @@ export default function Register() {
         }
         try {
             const { error } = await supabase.auth.signInWithOAuth({
-                provider: provider.toLowerCase(), // 'google' or 'apple'
+                provider: provider.toLowerCase(),
             });
 
             if (error) {
@@ -115,34 +101,23 @@ export default function Register() {
             showToast('Please correct the errors in the form.', 'error');
             return;
         }
-        if (!supabase) {
-            showToast("Authentication service is not available.", "error");
-            return;
-        }
 
         setIsSubmitting(true);
         try {
-            const { email, password, fullName } = formData;
+            // Prepare the data payload, excluding the confirmPassword field
+            const { confirmPassword, ...payload } = formData;
             
-            const { data, error } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-                options: {
-                    data: {
-                        full_name: fullName,
-                    }
-                }
-            });
+            // Your backend API endpoint for registration
+            const apiUrl = 'http://localhost:3001/api/auth/register'; 
 
-            if (error) {
-                throw error;
-            }
-            
-            showToast('Registration successful! Please check your email to verify your account.', 'success');
+            // Send the registration data to your backend
+            const response = await axios.post(apiUrl, payload);
+
+            showToast(response.data.message || 'Registration successful!', 'success');
             setFormData({ fullName: '', email: '', password: '', confirmPassword: '' });
             setPasswordStrength(0);
         } catch (error) {
-            const errorMessage = error.message || "Registration failed. Please try again.";
+            const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
             showToast(errorMessage, 'error');
         } finally {
             setIsSubmitting(false);
@@ -151,11 +126,31 @@ export default function Register() {
 
     return (
         <div className="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+            <style>
+                {`
+                    @keyframes slide-up-fade-in {
+                        from { opacity: 0; transform: translateY(20px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    .animate-slide-up-fade-in {
+                        animation: slide-up-fade-in 0.6s ease-out forwards;
+                    }
+
+                    @keyframes input-fade-in {
+                        from { opacity: 0; transform: translateX(-10px); }
+                        to { opacity: 1; transform: translateX(0); }
+                    }
+                    .animate-input-fade-in {
+                        opacity: 0; /* Start hidden */
+                        animation: input-fade-in 0.5s ease-out forwards;
+                    }
+                `}
+            </style>
             <Toast notification={toast} />
             <div className="w-full max-w-md">
-                <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+                <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200 animate-slide-up-fade-in">
                     <div className="text-center mb-8">
-                        <UserPlus className="mx-auto w-12 h-12 text-indigo-600" />
+                        <UserPlus className="mx-auto w-12 h-12 text-black" />
                         <h1 className="text-3xl font-bold text-gray-900 mt-4">Create Your Account</h1>
                         <p className="text-gray-500 mt-2">Join us to start shopping for the best mobile devices.</p>
                     </div>
@@ -170,6 +165,7 @@ export default function Register() {
                             onChange={handleInputChange}
                             error={errors.fullName}
                             icon={<User />}
+                            style={{ animationDelay: '0.1s' }}
                         />
                         <InputField
                             id="email"
@@ -180,8 +176,9 @@ export default function Register() {
                             onChange={handleInputChange}
                             error={errors.email}
                             icon={<Mail />}
+                            style={{ animationDelay: '0.2s' }}
                         />
-                        <div>
+                        <div className="animate-input-fade-in" style={{ animationDelay: '0.3s' }}>
                             <InputField
                                 id="password"
                                 label="Password"
@@ -203,19 +200,21 @@ export default function Register() {
                             onChange={handleInputChange}
                             error={errors.confirmPassword}
                             icon={<Lock />}
+                            style={{ animationDelay: '0.4s' }}
                         />
 
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full px-6 py-3.5 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 flex items-center justify-center gap-2 disabled:bg-indigo-400 disabled:cursor-not-allowed transition-colors"
+                            className="w-full px-6 py-3.5 rounded-lg text-sm font-semibold bg-black text-white hover:bg-gray-800 flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black animate-input-fade-in"
+                            style={{ animationDelay: '0.5s' }}
                         >
                             {isSubmitting ? <Loader className="w-5 h-5 animate-spin" /> : <UserPlus className="w-5 h-5" />}
                             <span>{isSubmitting ? 'Creating Account...' : 'Create Account'}</span>
                         </button>
                     </form>
 
-                    <div className="relative my-6">
+                    <div className="relative my-6 animate-input-fade-in" style={{ animationDelay: '0.6s' }}>
                         <div className="absolute inset-0 flex items-center" aria-hidden="true">
                             <div className="w-full border-t border-gray-300" />
                         </div>
@@ -224,42 +223,30 @@ export default function Register() {
                         </div>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-3 animate-input-fade-in" style={{ animationDelay: '0.7s' }}>
                         <SocialButton provider="Google" onClick={() => handleSocialLogin('Google')} icon={<GoogleIcon />}/>
-                        <SocialButton provider="Apple" onClick={() => handleSocialLogin('Apple')} icon={<AppleIcon />} isDark/>
                     </div>
-                    
-                    <p className="text-center text-sm text-gray-500 mt-8">
-                        Already have an account?{' '}
-                        <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                            Log in
-                        </a>
-                    </p>
                 </div>
             </div>
         </div>
     );
 }
 
-function SocialButton({ provider, icon, onClick, isDark = false }) {
-    const baseClasses = 'w-full flex items-center justify-center gap-3 py-3 px-4 rounded-lg font-semibold border transition-colors';
-    const lightClasses = 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50';
-    const darkClasses = 'bg-black text-white border-black hover:bg-gray-800';
-  
+function SocialButton({ provider, icon, onClick }) {
     return (
-      <button onClick={onClick} className={`${baseClasses} ${isDark ? darkClasses : lightClasses}`}>
+      <button onClick={onClick} className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-lg font-semibold border transition-all duration-300 bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:scale-105">
         {icon}
         Continue with {provider}
       </button>
     );
 }
 
-function InputField({ id, label, error, icon, type, ...props }) {
+function InputField({ id, label, error, icon, type, style, ...props }) {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const isPassword = type === 'password';
 
     return (
-        <div>
+        <div className="animate-input-fade-in" style={style}>
             <label htmlFor={id} className="text-sm font-semibold text-gray-700">{label}</label>
             <div className="relative mt-2">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -270,7 +257,7 @@ function InputField({ id, label, error, icon, type, ...props }) {
                     name={id}
                     type={isPassword ? (isPasswordVisible ? 'text' : 'password') : type}
                     {...props}
-                    className={`w-full p-3 pl-10 pr-10 bg-white border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'}`}
+                    className={`w-full p-3 pl-10 pr-10 bg-white border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-black'}`}
                 />
                 {isPassword && (
                     <button
