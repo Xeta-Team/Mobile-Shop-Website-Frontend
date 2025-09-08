@@ -5,7 +5,7 @@ import { Search, MoreVertical, Smartphone, Edit, Trash2, AlertTriangle, X, Spark
 // --- Gemini API Key ---
 // IMPORTANT: For the AI feature to work, you must get a free API key from Google AI Studio
 // and paste it here.
-const GEMINI_API_KEY = "AIzaSyDuY3O5NMzXudLtlP0_k68QC2jMVhIhlIs"; // <--- PASTE YOUR GEMINI API KEY HERE
+const GEMINI_API_KEY = "PASTE_YOUR_GEMINI_API_KEY_HERE"; // <--- PASTE YOUR GEMINI API KEY HERE
 
 // --- Main Page Component ---
 export default function ProductListPage() {
@@ -33,7 +33,7 @@ export default function ProductListPage() {
         const fetchProducts = async () => {
             try {
                 // In a real app, replace this with your actual API endpoint
-                const apiUrl = 'http://localhost:3001/api/products';
+                const apiUrl = 'http://localhost:3001/api/products/all';
                 const response = await axios.get(apiUrl);
                 setProducts(response.data);
                 setFilteredProducts(response.data);
@@ -72,39 +72,107 @@ export default function ProductListPage() {
         setOpenMenuName(prevName => (prevName === productName ? null : productName));
     };
 
+
     const handleEditRequest = (product) => {
         setProductToEdit(product);
         setOpenMenuName(null);
+    }
+
+    // --- CORRECTED SAVE FUNCTION ---
+    const handleSaveEdit = async (updatedProductPayload) => {
+        if (!productToEdit) return;
+
+        setIsLoading(true);
+        setError(null); 
+        try {
+            // 1. Use the product ID in the URL, not the name.
+            const response = await fetch(`http://localhost:3001/api/products/update/${productToEdit.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                // 2. Send a body that matches the Mongoose schema fields.
+                body: JSON.stringify({
+                    productName: updatedProductPayload.data.name,
+                    productPrice: updatedProductPayload.data.price,
+                    // Assuming we only edit the first color variant for simplicity
+                    variants: [{ 
+                        colorName: updatedProductPayload.data.colorName, 
+                        hex: updatedProductPayload.data.colorHex 
+                    }]
+                })
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to update the product. Please try again.');
+            }   
+            const updatedResult = await response.json();
+            
+            // 3. Update state correctly using the product ID.
+            // We also re-format the backend response to match the frontend state structure.
+            setProducts(prevProducts => prevProducts.map(p => {
+                if (p.id === updatedResult.product._id) {
+                    const updated = updatedResult.product;
+                    return {
+                        id: updated._id,
+                        name: updated.productName,
+                        category: updated.productCategory,
+                        colors: updated.variants.map(v => ({ name: v.colorName, hex: v.colorHex })),
+                        status: updated.variants.some(v => v.stock > 0) ? "Available" : "Out of Stock",
+                        price: updated.productPrice,
+                        imageUrl: updated.mainImage || (updated.images && updated.images[0]),
+                        description: updated.productDescription
+                    };
+                }
+                return p;
+            }));
+            setProductToEdit(null);
+        } catch (err) {
+            console.error("Update product error:", err);
+            setError(err.message || 'An error occurred while updating the product.');
+        }
+        finally {
+            setIsLoading(false);
+            setTimeout(() => setError(null), 5000); // Clear error after 5 seconds
+        }
     };
     
-    const handleSaveEdit = (editedProduct) => {
-        // In a real app, this would be an API call, e.g., axios.put(`/api/products/${...}`)
-        setProducts(prevProducts => prevProducts.map(p => {
-            if (p.name === editedProduct.originalName) {
-                const { name, price, colorName, colorHex } = editedProduct.data;
-                const newColors = [{ name: colorName, hex: colorHex }];
-                return { ...p, name, price, colors: newColors };
-            }
-            return p;
-        }));
-        setProductToEdit(null);
-    };
-
     const handleDeleteRequest = (product) => {
         setProductToDelete(product);
         setOpenMenuName(null);
     };
 
-    const confirmDelete = () => {
-        if (productToDelete) {
-             // In a real app, this would be an API call, e.g., axios.delete(`/api/products/${...}`)
-            setProducts(prevProducts => prevProducts.filter(p => p.name !== productToDelete.name));
-            setProductToDelete(null);
+    // --- CORRECTED DELETE FUNCTION ---
+    const confirmDelete = async() => {
+        if(!productToDelete) return;
+
+        setIsLoading(true);
+        setError(null);
+        try {
+            // 1. Removed extra space from URL.
+            const response = await fetch(`http://localhost:3001/api/products/delete/${productToDelete.id}`, {
+                method: 'DELETE',
+            });
+            
+            if(!response.ok){
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to delete the product. Please try again.');
+            }
+            // 2. Filter state using the correct product ID.
+            setProducts(prevProducts => prevProducts.filter(p => p.id !== productToDelete.id));
+
+            }
+            catch(err){
+                console.error("Delete product error:", err);
+                setError(err.message || 'An error occurred while deleting the product.');
+            }
+            finally{
+                setIsLoading(false);
+                setProductToDelete(null);
+                setTimeout(() => setError(null), 5000); // Clear error after 5 seconds
         }
-    };
+    }
 
     const handleGenerateAdCopy = async (product) => {
-        if (!GEMINI_API_KEY) {
+        if (!GEMINI_API_KEY || GEMINI_API_KEY === "PASTE_YOUR_GEMINI_API_KEY_HERE") {
             alert("Please add your Gemini API key to the ProductListPage.jsx file.");
             return;
         }
@@ -113,7 +181,7 @@ export default function ProductListPage() {
         setGeneratedAdCopy('');
         setOpenMenuName(null);
 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2-5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
         const prompt = `Generate a short, exciting social media ad post for the following product for a shop in Sri Lanka. Be persuasive, use emojis, and end with a strong call to action. Keep it under 280 characters.
 
         Product Details:
@@ -179,7 +247,7 @@ export default function ProductListPage() {
                             </tr>
                         ) : filteredProducts.length > 0 ? (
                             filteredProducts.map((product) => (
-                                <React.Fragment key={product.name}>
+                                <React.Fragment key={product.id}>
                                     <ProductRow 
                                         product={product} 
                                         onMouseEnter={() => handleMouseEnter(product.name)}
@@ -236,8 +304,8 @@ function ProductRow({ product, onMouseEnter, onMouseLeave, isMenuOpen, onMenuTog
             <td className="p-4 text-gray-600 hidden md:table-cell">{product.category}</td>
             <td className="p-4 text-gray-600 hidden lg:table-cell">
                 <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full border" style={{ backgroundColor: product.colors[0].hex }}></span>
-                    <span>{product.colors[0].name}</span>
+                    <span className="w-5 h-5 rounded-full border" style={{ backgroundColor: product.colors[0]?.hex }}></span>
+                    <span>{product.colors[0]?.name}</span>
                 </div>
             </td>
             <td className="p-4">
@@ -299,7 +367,7 @@ function EditProductModal({ product, onSave, onClose }) {
     };
 
     const handleSave = () => {
-        onSave({ originalName: product.name, data: editData });
+        onSave({ data: editData });
     };
 
     return (
@@ -365,9 +433,20 @@ function ConfirmationModal({ productName, onConfirm, onCancel }) {
 function AdCopyModal({ product, adCopy, isLoading, onClose }) {
     const [isCopied, setIsCopied] = useState(false);
     const handleCopy = () => {
-        navigator.clipboard.writeText(adCopy);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
+        // This method is more robust for different environments than navigator.clipboard
+        const textArea = document.createElement("textarea");
+        textArea.value = adCopy;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+        }
+        document.body.removeChild(textArea);
     };
 
     if (!product) return null;
