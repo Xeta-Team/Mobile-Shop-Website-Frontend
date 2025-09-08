@@ -1,5 +1,4 @@
 import { Routes, Route } from 'react-router';
-import useAuthListener from '../src/Components/EventListners/useAuthListener'; // 1. Import the listener hook
 import './App.css';
 import Home from './Pages/Home';
 import TopNavigationBar from "../src/Components/TopNavigationBar";
@@ -8,12 +7,8 @@ import UserRegistration from './Pages/UserReistration';
 import UserDashboard from './Pages/User/UserDashboard';
 
 
-
-const supabase = window.supabase ? window.supabase.createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY) : null;
-
 const App = () => {
-  // 3. Call the hook here to activate the listener
-  useAuthListener(supabase);
+
 
   return (
     <>

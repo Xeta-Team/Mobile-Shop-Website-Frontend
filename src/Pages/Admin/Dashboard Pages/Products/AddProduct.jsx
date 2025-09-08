@@ -1,21 +1,14 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
-// import { createClient } from '@supabase/supabase-js'; // This line is removed to resolve the build error.
+import { createClient } from '@supabase/supabase-js'; 
 import { Smartphone, UploadCloud, CheckCircle, Sparkles, Loader, X, Info, Check, AlertTriangle, Plus } from 'lucide-react';
 
-// --- Supabase Client Setup ---
-// NOTE: This component assumes the Supabase client library is loaded globally
-// via a script tag in your index.html file, like this:
-// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-const supabaseUrl = 'https://ikmyhzhlesebjdgijzef.supabase.co';
-// IMPORTANT: The key you provided was invalid. Please replace the placeholder below
-// with the correct 'anon' 'public' key from your Supabase project dashboard.
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrbXloemhsZXNlYmpkZ2lqemVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY4MzkxOTYsImV4cCI6MjA3MjQxNTE5Nn0.iPLVOeWJ_qGou2rPrvncpfdiBFEJIBPKmgLmX3gC2rw';
-// The 'supabase' object is now expected to be on the global 'window' object.
-const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // --- Helper Components ---
-
 function FormSection({ title, children }) {
     return (
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
@@ -58,7 +51,7 @@ function Toast({ notification }) {
 
 // --- Main App Component ---
 export default function AddProduct() {
-    // Part 1: State Management
+
     const [productData, setProductData] = useState({
         productName: '',
         productDescription: '',
@@ -77,7 +70,7 @@ export default function AddProduct() {
     });
     
     const [categories, setCategories] = useState([
-        'Mobile Phone', 'Tablet', 'Watch', 'Charger & Cables', 'Phone Case', 'Headphones', 'Wearable'
+        'Mobile Phone', 'Tablet/Laptop', 'Watch', 'Charger & Cables', 'Phone Case', 'Headphones'
     ]);
     
     const [imageUrls, setImageUrls] = useState([]);
@@ -258,7 +251,7 @@ export default function AddProduct() {
         setIsGenerating(true);
         setProductData(prev => ({...prev, productDescription: "✨ Generating your product description..."}));
 
-        const apiKey = "AIzaSyDuY3O5NMzXudLtlP0_k68QC2jMVhIhlIs";
+        const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
         
         const colorNames = [...new Set(productData.variants.map(v => v.colorName))].join(', ');

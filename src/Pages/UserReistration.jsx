@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { UserPlus, Lock, Mail, User, Loader, Info, Check, AlertTriangle, Eye, EyeOff } from 'lucide-react';
-
-// --- Supabase Client Setup (for social logins) ---
-const supabase = window.supabase ? window.supabase.createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY) : null;
+import SocialButton from '../Components/Buttons/SocialButton';
+import InputField from '../Components/Input/InputField.jsx';
 
 // SVG Icon for Google
 const GoogleIcon = () => (
@@ -15,9 +14,13 @@ const GoogleIcon = () => (
     </svg>
 );
 
+
 export default function RegistrationPage() {
+    // FIX: Updated state to match the database model
     const [formData, setFormData] = useState({
-        fullName: '',
+        username: '',
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -48,17 +51,20 @@ export default function RegistrationPage() {
 
     const checkPasswordStrength = (password) => {
         let score = 0;
-        if (password.length > 8) score++;
-        if (password.match(/[a-z]/)) score++;
-        if (password.match(/[A-Z]/)) score++;
-        if (password.match(/[0-9]/)) score++;
-        if (password.match(/[^A-Za-z0-9]/)) score++;
+        if (password.length >= 8) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++;
         setPasswordStrength(score);
     };
 
+    // FIX: Updated validation for the new fields
     const validateForm = () => {
         const newErrors = {};
-        if (!formData.fullName.trim()) newErrors.fullName = "Full name is required.";
+        if (!formData.username.trim()) newErrors.username = "Username is required.";
+        if (!formData.firstName.trim()) newErrors.firstName = "First name is required.";
+        if (!formData.lastName.trim()) newErrors.lastName = "Last name is required.";
         if (!formData.email.trim()) {
             newErrors.email = "Email is required.";
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -75,24 +81,22 @@ export default function RegistrationPage() {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
+    
+    const handleGoogleLogin = () => {
+    // It must match the one in my Auth-Router.js file.
+    const redirectUri = 'http://localhost:3001/api/auth/google/callback'; //
 
-    const handleSocialLogin = async (provider) => {
-        if (!supabase) {
-            showToast("Authentication service is not available.", "error");
-            return;
-        }
-        try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: provider.toLowerCase(),
-            });
+    // This is your Google Client ID. We will set this up in the next step.
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-            if (error) {
-                throw new Error(error.message);
-            }
-        } catch (error) {
-            showToast(`Failed to log in with ${provider}. Please try again.`, 'error');
-            console.error(`Error with ${provider} login:`, error);
-        }
+    // These are the permissions you request from the user.
+    const scope = 'profile email';
+
+    // This constructs the URL that sends the user to Google for authentication.
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+
+    // This command actually sends the user to the Google login page.
+    window.location.href = authUrl;
     };
 
     const handleSubmit = async (event) => {
@@ -104,17 +108,13 @@ export default function RegistrationPage() {
 
         setIsSubmitting(true);
         try {
-            // Prepare the data payload, excluding the confirmPassword field
+            // The payload now includes all the necessary fields that match the backend model
             const { confirmPassword, ...payload } = formData;
-            
-            // Your backend API endpoint for registration
-            const apiUrl = 'http://localhost:3001/api/auth/register'; 
-
-            // Send the registration data to your backend
+            const apiUrl = 'http://localhost:3001/api/users/register'; 
             const response = await axios.post(apiUrl, payload);
-
+            
             showToast(response.data.message || 'Registration successful!', 'success');
-            setFormData({ fullName: '', email: '', password: '', confirmPassword: '' });
+            setFormData({ username: '', firstName: '', lastName: '', email: '', password: '', confirmPassword: '' });
             setPasswordStrength(0);
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
@@ -125,48 +125,49 @@ export default function RegistrationPage() {
     };
 
     return (
-        <div className="bg-slate-100 min-h-screen flex items-center justify-center p-4">
-            <style>
-                {`
-                    @keyframes slide-up-fade-in {
-                        from { opacity: 0; transform: translateY(20px); }
-                        to { opacity: 1; transform: translateY(0); }
-                    }
-                    .animate-slide-up-fade-in {
-                        animation: slide-up-fade-in 0.6s ease-out forwards;
-                    }
-
-                    @keyframes input-fade-in {
-                        from { opacity: 0; transform: translateX(-10px); }
-                        to { opacity: 1; transform: translateX(0); }
-                    }
-                    .animate-input-fade-in {
-                        opacity: 0; /* Start hidden */
-                        animation: input-fade-in 0.5s ease-out forwards;
-                    }
-                `}
-            </style>
+        <div className="bg-slate-100 min-h-screen flex items-center justify-center p-4 font-sans">
             <Toast notification={toast} />
             <div className="w-full max-w-md">
                 <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200 animate-slide-up-fade-in">
                     <div className="text-center mb-8">
                         <UserPlus className="mx-auto w-12 h-12 text-black" />
                         <h1 className="text-3xl font-bold text-gray-900 mt-4">Create Your Account</h1>
-                        <p className="text-gray-500 mt-2">Join us to start shopping for the best mobile devices.</p>
+                        <p className="text-gray-500 mt-2">Join us to start your journey.</p>
                     </div>
                     
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <InputField
-                            id="fullName"
-                            label="Full Name"
+                            id="username"
+                            label="Username"
                             type="text"
-                            placeholder="John Doe"
-                            value={formData.fullName}
+                            value={formData.username}
                             onChange={handleInputChange}
-                            error={errors.fullName}
+                            error={errors.username}
                             icon={<User />}
                             style={{ animationDelay: '0.1s' }}
                         />
+                        <div className="grid grid-cols-2 gap-4">
+                            <InputField
+                                id="firstName"
+                                label="First Name"
+                                type="text"
+                                value={formData.firstName}
+                                onChange={handleInputChange}
+                                error={errors.firstName}
+                                icon={<User />}
+                                style={{ animationDelay: '0.15s' }}
+                            />
+                            <InputField
+                                id="lastName"
+                                label="Last Name"
+                                type="text"
+                                value={formData.lastName}
+                                onChange={handleInputChange}
+                                error={errors.lastName}
+                                icon={<User />}
+                                style={{ animationDelay: '0.2s' }}
+                            />
+                        </div>
                         <InputField
                             id="email"
                             label="Email Address"
@@ -176,9 +177,9 @@ export default function RegistrationPage() {
                             onChange={handleInputChange}
                             error={errors.email}
                             icon={<Mail />}
-                            style={{ animationDelay: '0.2s' }}
+                            style={{ animationDelay: '0.3s' }}
                         />
-                        <div className="animate-input-fade-in" style={{ animationDelay: '0.3s' }}>
+                        <div className="animate-input-fade-in" style={{ animationDelay: '0.4s' }}>
                             <InputField
                                 id="password"
                                 label="Password"
@@ -200,31 +201,27 @@ export default function RegistrationPage() {
                             onChange={handleInputChange}
                             error={errors.confirmPassword}
                             icon={<Lock />}
-                            style={{ animationDelay: '0.4s' }}
+                            style={{ animationDelay: '0.5s' }}
                         />
 
                         <button
                             type="submit"
                             disabled={isSubmitting}
                             className="w-full px-6 py-3.5 rounded-lg text-sm font-semibold bg-black text-white hover:bg-gray-800 flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black animate-input-fade-in"
-                            style={{ animationDelay: '0.5s' }}
+                            style={{ animationDelay: '0.6s' }}
                         >
                             {isSubmitting ? <Loader className="w-5 h-5 animate-spin" /> : <UserPlus className="w-5 h-5" />}
                             <span>{isSubmitting ? 'Creating Account...' : 'Create Account'}</span>
                         </button>
                     </form>
-
-                    <div className="relative my-6 animate-input-fade-in" style={{ animationDelay: '0.6s' }}>
-                        <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                            <div className="w-full border-t border-gray-300" />
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="bg-white px-2 text-gray-500">Or continue with</span>
-                        </div>
+                    
+                    <div className="relative my-6 animate-input-fade-in" style={{ animationDelay: '0.7s' }}>
+                        <div className="absolute inset-0 flex items-center" aria-hidden="true"><div className="w-full border-t border-gray-300" /></div>
+                        <div className="relative flex justify-center text-sm"><span className="bg-white px-2 text-gray-500">Or continue with</span></div>
                     </div>
 
-                    <div className="space-y-3 animate-input-fade-in" style={{ animationDelay: '0.7s' }}>
-                        <SocialButton provider="Google" onClick={() => handleSocialLogin('Google')} icon={<GoogleIcon />}/>
+                    <div className="animate-input-fade-in" style={{ animationDelay: '0.8s' }}>
+                        <SocialButton provider="Google" onClick={handleGoogleLogin} icon={<GoogleIcon />}/>
                     </div>
                 </div>
             </div>
@@ -232,61 +229,15 @@ export default function RegistrationPage() {
     );
 }
 
-function SocialButton({ provider, icon, onClick }) {
-    return (
-      <button onClick={onClick} className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-lg font-semibold border transition-all duration-300 bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:scale-105">
-        {icon}
-        Continue with {provider}
-      </button>
-    );
-}
-
-function InputField({ id, label, error, icon, type, style, ...props }) {
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const isPassword = type === 'password';
-
-    return (
-        <div className="animate-input-fade-in" style={style}>
-            <label htmlFor={id} className="text-sm font-semibold text-gray-700">{label}</label>
-            <div className="relative mt-2">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    {React.cloneElement(icon, { className: 'w-5 h-5' })}
-                </span>
-                <input
-                    id={id}
-                    name={id}
-                    type={isPassword ? (isPasswordVisible ? 'text' : 'password') : type}
-                    {...props}
-                    className={`w-full p-3 pl-10 pr-10 bg-white border rounded-lg focus:outline-none focus:ring-2 transition-all duration-200 ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-black'}`}
-                />
-                {isPassword && (
-                    <button
-                        type="button"
-                        onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
-                    >
-                        {isPasswordVisible ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                )}
-            </div>
-            {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
-        </div>
-    );
-}
-
 function PasswordStrengthMeter({ strength }) {
     const strengthLevels = [
-        { label: 'Weak', color: 'bg-red-500' },
-        { label: 'Weak', color: 'bg-red-500' },
-        { label: 'Fair', color: 'bg-orange-500' },
-        { label: 'Good', color: 'bg-yellow-500' },
-        { label: 'Strong', color: 'bg-green-500' },
-        { label: 'Very Strong', color: 'bg-green-500' },
+        { label: 'Weak', color: 'bg-red-500' }, { label: 'Weak', color: 'bg-red-500' },
+        { label: 'Fair', color: 'bg-orange-500' }, { label: 'Good', color: 'bg-yellow-500' },
+        { label: 'Strong', color: 'bg-green-500' }, { label: 'Very Strong', color: 'bg-green-500' },
     ];
-
     return (
         <div className="mt-2 flex items-center gap-2">
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                 <div
                     className={`h-2 rounded-full transition-all duration-300 ${strength > 0 ? strengthLevels[strength].color : ''}`}
                     style={{ width: `${(strength / 5) * 100}%` }}
@@ -302,20 +253,16 @@ function PasswordStrengthMeter({ strength }) {
 function Toast({ notification }) {
     const { show, message, type } = notification;
     if (!show) return null;
-
     const toastStyles = {
-        info: { bg: 'bg-blue-500', icon: <Info /> },
-        success: { bg: 'bg-green-500', icon: <Check /> },
-        error: { bg: 'bg-red-500', icon: <AlertTriangle /> },
+        info: { bg: 'bg-blue-500', icon: <Info className="w-5 h-5" /> },
+        success: { bg: 'bg-green-500', icon: <Check className="w-5 h-5" /> },
+        error: { bg: 'bg-red-500', icon: <AlertTriangle className="w-5 h-5" /> },
     };
-    
     const style = toastStyles[type] || toastStyles.info;
-
     return (
         <div className={`fixed top-5 right-5 ${style.bg} text-white py-3 px-5 rounded-lg shadow-lg flex items-center gap-3 animate-fade-in-down z-50`}>
             {style.icon}
-            <p>{message}</p>
+            <p className="text-sm font-medium">{message}</p>
         </div>
     );
 }
-
