@@ -1,5 +1,6 @@
 import HomeCarousel from "../Components/Carousels/HomeCarousel"
 import SliderCard from "../Components/Carousels/SliderCards"
+import ProductOverView from "../ProductOverView"
 import image1 from "../assest/image1.png"
 import image2 from "../assest/image2.png"
 import image3 from "../assest/image3.png"
@@ -46,6 +47,7 @@ const Home = () => {
         <div className="p-8 min-h-screen overflow-visible">
             <SliderCard/>
             <HomeCarousel slides={cardInfo} />
+            <ProductOverView/>
         </div>
         
     </>)
