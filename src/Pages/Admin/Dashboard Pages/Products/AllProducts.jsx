@@ -180,7 +180,7 @@ export default function ProductListPage() {
                         ) : filteredProducts.length > 0 ? (
                             filteredProducts.map((product) => (
                                 <React.Fragment key={product.name}>
-                                    <ProductRow 
+                                    <ProductRow j
                                         product={product} 
                                         onMouseEnter={() => handleMouseEnter(product.name)}
                                         onMouseLeave={handleMouseLeave}

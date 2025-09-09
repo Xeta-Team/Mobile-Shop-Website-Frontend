@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import HoverTranslateCard from "../Cards/HoverTranslateCard";
 
-const HomeCarousel = ({ slides }) => {
+const HomeCarousel = ({ slides, title }) => {
+  
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     dragFree: false,
@@ -34,9 +35,11 @@ const HomeCarousel = ({ slides }) => {
   return (
     <div className="relative mx-1">
       <div className="flex gap-2 justify-between mx-1 md:mx-8">
-        <div className="bg-black rounded-full">
-          <h1 className="mx-2 my-2 text-[12px] md:mx-4 md:my-4 md:text-[15px] font-semibold font-sans text-white">Per-Owned Iphones</h1>
-        </div>
+          {title ? <h1 className="text-5xl font-sans font-bold">{title}</h1> : 
+          (<div className="bg-black rounded-full">
+            <h1 className="mx-2 my-2 text-[12px] md:mx-4 md:my-4 md:text-[15px] font-semibold font-sans text-white">Per-Owned Iphones</h1>
+          </div>
+          )}
         <div className="hidden md:flex gap-3">
           <button
             onClick={scrollPrev}
