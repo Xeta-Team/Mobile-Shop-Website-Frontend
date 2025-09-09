@@ -1,7 +1,6 @@
 import { Search, MoreVertical, Edit, Trash2, AlertTriangle, X, Sparkles, Loader, Inbox } from 'lucide-react';
 
 export default function ProductRow({ product, onMouseEnter, onMouseLeave, isMenuOpen, onMenuToggle, onEdit, onDelete, onGenerateAdCopy }) {
-    const status = getProductStatus(product);
     const statusStyles = { Available: 'bg-green-100 text-green-800', 'Out of Stock': 'bg-red-100 text-red-800' };
     
     
@@ -18,16 +17,31 @@ export default function ProductRow({ product, onMouseEnter, onMouseLeave, isMenu
                 </div>
             </td>
             <td className="p-4 text-gray-600 hidden md:table-cell">{product.productCategory || 'N/A'}</td>
-            <td className="p-4 text-gray-600 hidden lg:table-cell">
-                <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full border" style={{ backgroundColor: colorHex }}></span>
-                    <span>{colorName}</span>
-                </div>
+            <td className="p-4 text-gray-600 hidden lg:table-cell space-y-2">
+                {product.variants.map((variant, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full border" style={{ backgroundColor: variant.colorHex }}></span>
+                        <span>{variant.colorName}</span>
+                    </div>
+                ))
+                }
             </td>
-            <td className="p-4">
-                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusStyles[status]}`}>{status}</span>
+            <td className="p-4 space-y-2">
+                {product.variants.map((variant, index) => {
+                    const status = variant.stock > 0 ? 'Available' : 'Out of Stock';
+                    return(
+                        <span key={index} className={`px-2 py-1 text-xs font-semibold block rounded-full text-center ${statusStyles[status]}`}>{status}</span>
+                    )    
+                })}
+                
             </td>
-            <td className="p-4 font-semibold text-gray-800">LKR {(product.productPrice || 0).toLocaleString()}</td>
+            <td className="p-4 font-semibold text-gray-800 space-y-2">
+                {product.variants.map((variant, index) => {
+                    return(
+                        <span className='block'>LKR {(variant.price || 0).toLocaleString()}</span>
+                    )
+                })}
+            </td>
             <td className="p-4 text-gray-400 relative text-center">
                 <button onClick={onMenuToggle} className="p-1 rounded-full hover:bg-gray-200"><MoreVertical className="w-5 h-5" /></button>
                 {isMenuOpen && (

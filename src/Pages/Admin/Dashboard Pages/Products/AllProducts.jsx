@@ -8,7 +8,7 @@ import ProductRow from '../../../../Components/Table/ProductRow';
 export default function ProductListPage() {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [hoveredProductId, setHoveredProductId] = useState(null);
@@ -39,6 +39,8 @@ export default function ProductListPage() {
 
     useEffect(() => {
         const lowercasedFilter = searchTerm.toLowerCase();
+        console.log(products);
+        
         const filtered = products.filter(product =>
             product.productName?.toLowerCase().includes(lowercasedFilter)
         );
@@ -83,8 +85,7 @@ export default function ProductListPage() {
             setProductToDelete(null);
         }
     };
-
-
+    
     return (
         <div className="bg-white min-h-screen font-sans">
             <div className="flex flex-col sm:flex-row justify-between items-center p-6 mb-4 gap-4">
