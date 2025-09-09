@@ -1,15 +1,37 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router';
 
 export default function UserDashboard() {
-    // You can fetch user data from local storage if needed
-    const user = JSON.parse(localStorage.getItem('user'));
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
+    useEffect(() => {
+        // 1. Get the token from the URL
+        const token = searchParams.get('token');
+
+        if (token) {
+            // 2. Save the token to local storage for future use
+            console.log("Token received, saving to localStorage.");
+            localStorage.setItem('authToken', token);
+           // 3. (Optional but recommended) Remove the token from the URL
+            // This navigates to the same page but without the query parameters.
+            navigate('/user', { replace: true });
+        }
+    }, [searchParams, navigate]);
+
+    // Check if the user is authenticated (e.g., by checking for the token)
+    const storedToken = localStorage.getItem('authToken');
+    if (!storedToken) {
+        // You can redirect to login if no token is found after the check
+        navigate('/login');
+        return null; // Return null while redirecting
+    }
+
+    // --- Your Regular Dashboard Content Goes Here ---
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-            <div className="bg-white p-10 rounded-lg shadow-lg text-center">
-                <h1 className="text-4xl font-bold text-gray-800">👋 Welcome, {user?.firstName || 'User'}!</h1>
-                <p className="text-gray-600 mt-4 text-lg">This is your User Dashboard.</p>
-            </div>
+        <div>
+            <h1>Welcome to Your Dashboard!</h1>
+            <p>You have successfully logged in. Your token is now stored securely.</p>
         </div>
     );
 }
