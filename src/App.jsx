@@ -5,6 +5,7 @@ import TopNavigationBar from "../src/Components/TopNavigationBar";
 import AdminDashboard from './Pages/Admin/AdminDashboard';
 import UserRegistration from './Pages/UserReistration';
 import UserDashboard from './Pages/User/UserDashboard';
+import LoginPage from './Pages/Login';
 
 
 const App = () => {
@@ -13,11 +14,12 @@ const App = () => {
   return (
     <>
     <div className="flex flex-col h-screen">
-      {/* <TopNavigationBar /> */}
+
       <main className="flex-1 overflow-y-auto">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/admin/*" element={<AdminDashboard/>}/>
+          <Route path="/login" element={<LoginPage/>}/>
           <Route path="/register" element={<UserRegistration />}/>
           <Route path="/user" element={<UserDashboard />}/>
 
