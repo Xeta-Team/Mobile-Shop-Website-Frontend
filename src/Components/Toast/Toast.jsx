@@ -1,3 +1,4 @@
+import {Info, Check, AlertTriangle } from 'lucide-react';
 export default function Toast({ notification }) {
     const { show, message, type } = notification;
     if (!show) return null;

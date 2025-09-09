@@ -39,6 +39,7 @@ export default function ProductListPage() {
 
     useEffect(() => {
         const lowercasedFilter = searchTerm.toLowerCase();
+        
         const filtered = products.filter(product =>
             product.productName?.toLowerCase().includes(lowercasedFilter)
         );
@@ -83,7 +84,6 @@ export default function ProductListPage() {
             setProductToDelete(null);
         }
     };
-
 
     return (
         <div className="bg-white min-h-screen font-sans">

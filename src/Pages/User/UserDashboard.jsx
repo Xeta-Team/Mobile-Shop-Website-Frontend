@@ -1,37 +1,51 @@
-import React, { useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router';
+import { useEffect } from 'react';
+import { Route, Routes, useSearchParams, useNavigate } from "react-router-dom";
+import UserSideNavBar from '../../Components/Side Navigation Bars/UserSideNavBar';
+
+// Placeholder components for the user's sections
+const UserProfile = () => <div className='p-8'><h1 className='text-2xl font-bold'>My Profile</h1></div>;
+const UserOrders = () => <div className='p-8'><h1 className='text-2xl font-bold'>My Orders</h1></div>;
+const UserWishlist = () => <div className='p-8'><h1 className='text-2xl font-bold'>My Wishlist</h1></div>;
 
 export default function UserDashboard() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
     useEffect(() => {
-        // 1. Get the token from the URL
-        const token = searchParams.get('token');
-
-        if (token) {
-            // 2. Save the token to local storage for future use
+        const token = localStorage.getItem('token');
+        const storedToken = localStorage.getItem('authToken');
+        if (token || storedToken) {
             console.log("Token received, saving to localStorage.");
             localStorage.setItem('authToken', token);
-           // 3. (Optional but recommended) Remove the token from the URL
-            // This navigates to the same page but without the query parameters.
             navigate('/user', { replace: true });
-        }
+
+        }else  {
+            console.log("No token found, redirecting to login.");
+             navigate('/login');
+         }
+        
     }, [searchParams, navigate]);
 
-    // Check if the user is authenticated (e.g., by checking for the token)
-    const storedToken = localStorage.getItem('authToken');
-    if (!storedToken) {
-        // You can redirect to login if no token is found after the check
-        navigate('/login');
-        return null; // Return null while redirecting
-    }
+    // useEffect(() => {
+    //     const storedToken = localStorage.getItem('authToken');
+    //     if (!storedToken) {
+    //         console.log("No token found, redirecting to login.");
+    //         navigate('/login');
+    //     }
+    // }, [navigate]);
 
-    // --- Your Regular Dashboard Content Goes Here ---
     return (
-        <div>
-            <h1>Welcome to Your Dashboard!</h1>
-            <p>You have successfully logged in. Your token is now stored securely.</p>
+        <div className="w-full h-screen flex">
+            <div className="w-[280px] font-sans">
+                <UserSideNavBar />
+            </div>
+            <div className="w-[calc(100vw-280px)] bg-gray-50 h-full overflow-y-auto">
+                <Routes>
+                    <Route path="/" element={<UserProfile />} /> 
+                    <Route path="/orders" element={<UserOrders />} />
+                    <Route path="/wishlist" element={<UserWishlist />} />
+                </Routes>
+            </div>
         </div>
     );
 }
