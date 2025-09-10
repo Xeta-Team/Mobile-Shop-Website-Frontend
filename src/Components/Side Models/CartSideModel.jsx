@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import Cart from "./Model Parts/Cart Model/Cart";
 import { handleTouchEnd, handleTouchMove, handleTouchStart } from "./Side Model Fuctions/TouchHanddle";
 import RecentViews from "./Model Parts/Cart Model/RecentViews";
+import { getCartItems } from "../../Actions/CartActions";
 
 const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
   const [isCartClicked, setIsCartClicked] = useState(true);
@@ -28,7 +29,7 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
 
 
   useEffect(() => {
-    const cart = JSON.parse(localStorage.getItem("cartItems"))
+    const cart = getCartItems()
     const recentViews = JSON.parse(localStorage.getItem("recentViews"))
 
     if(cart) {

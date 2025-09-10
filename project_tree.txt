@@ -1,0 +1,86 @@
+.
+├── combined_tree.txt
+├── eslint.config.js
+├── index.html
+├── npm
+├── package-lock.json
+├── package.json
+├── project_tree.txt
+├── public
+│   ├── cursor.svg
+│   └── vite.svg
+├── README.md
+├── src
+│   ├── App.css
+│   ├── App.jsx
+│   ├── assest
+│   │   ├── cursor.svg
+│   │   ├── image1.png
+│   │   ├── image2.png
+│   │   ├── image3.png
+│   │   ├── logoTxt.png
+│   │   └── shopLogo.png
+│   ├── Components
+│   │   ├── Buttons
+│   │   │   ├── CollapseBtn.jsx
+│   │   │   ├── NavigrationBarActionBtns.jsx
+│   │   │   ├── NavigrationBarBtn.jsx
+│   │   │   └── SocialButton.jsx
+│   │   ├── Cards
+│   │   │   ├── HoverCard.jsx
+│   │   │   └── HoverTranslateCard.jsx
+│   │   ├── Carousels
+│   │   │   ├── HomeCarousel.jsx
+│   │   │   └── SliderCards.jsx
+│   │   ├── Collapse Model
+│   │   │   └── CollapseMenu.jsx
+│   │   ├── EventListners
+│   │   ├── Image Models
+│   │   │   └── FullscreenImage.jsx
+│   │   ├── Input
+│   │   │   └── InputField.jsx
+│   │   ├── Overlay.jsx
+│   │   ├── Pages
+│   │   │   └── Product Overview
+│   │   │       ├── ImageGallery.jsx
+│   │   │       └── ProductDetails.jsx
+│   │   ├── Side Models
+│   │   │   ├── CartSideModel.jsx
+│   │   │   ├── Model Parts
+│   │   │   │   └── Cart Model
+│   │   │   │       ├── Cart.jsx
+│   │   │   │       └── RecentViews.jsx
+│   │   │   ├── SearchSideModel.jsx
+│   │   │   └── Side Model Fuctions
+│   │   │       └── TouchHanddle.js
+│   │   ├── Side Navigation Bars
+│   │   │   ├── AdminSideNavBar.jsx
+│   │   │   ├── SideBarComponents
+│   │   │   │   ├── Btn.jsx
+│   │   │   │   ├── DropDownBtn.jsx
+│   │   │   │   └── DropDownMenu.jsx
+│   │   │   └── UserSideNavBar.jsx
+│   │   ├── Table
+│   │   │   └── ProductRow.jsx
+│   │   ├── Toast
+│   │   │   └── Toast.jsx
+│   │   └── TopNavigationBar.jsx
+│   ├── main.jsx
+│   ├── Pages
+│   │   ├── Admin
+│   │   │   ├── AdminDashboard.jsx
+│   │   │   └── Dashboard Pages
+│   │   │       ├── MainDashboard.jsx
+│   │   │       ├── Products
+│   │   │       │   ├── AddProduct.jsx
+│   │   │       │   └── AllProducts.jsx
+│   │   │       └── Users.jsx
+│   │   ├── Home.jsx
+│   │   ├── Login.jsx
+│   │   ├── User
+│   │   │   └── UserDashboard.jsx
+│   │   └── UserReistration.jsx
+│   └── ProductOverView.jsx
+└── vite.config.js
+
+27 directories, 57 files

@@ -1,7 +1,10 @@
 import { useState, useRef } from "react";
+import { Link, useNavigate } from "react-router";
+
 const HoverTranslateCard = ({card,index}) => {
   const containerRef = useRef()
   const [activeIndex, setActiveIndex] = useState(0)
+  const navigate = useNavigate()
 
   const handleMouseMove = (e) => {
     if (!containerRef.current) return
@@ -25,17 +28,17 @@ const HoverTranslateCard = ({card,index}) => {
           alt="visible--v1"/>
         </button>
         <div
+          onClick={() => {navigate(`/product/${card._id}`)}}
           className="relative overflow-hidden h-[70%] rounded-2xl"
           ref={containerRef}
           onMouseMove={handleMouseMove}
-          onMouseLeave={() => {}}
         >
 
           <div
             className="flex w-full h-full transition-transform duration-400 rounded-t-2xl"
             style={{ transform: `translateX(-${activeIndex * 100}%)`}}
           >
-            {card.imageUrls.map((src, i) => (
+              {card.images.map((src, i) => (
               <div key={i} className="flex-shrink-0 w-full h-full object-contain">
                 <img
                   src={src}
@@ -60,7 +63,7 @@ const HoverTranslateCard = ({card,index}) => {
           </div>
 
           <div className="absolute bottom-0 justify-center w-[70px] left-1/2 transform bg-white p-2 rounded-xl -translate-x-1/2 flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            {card.imageUrls.map((_, i) => (
+            {card.images.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setActiveIndex(i)}
@@ -75,11 +78,13 @@ const HoverTranslateCard = ({card,index}) => {
 
         <div className="p-4 text-center font-snas">
           <h1 className="text-sm text-gray-400">APPLE</h1>
-          <h2 className="text-[15px] font-semibold md:text-lg mb-1 mt-1">{card.title}</h2>
-          <p className="text-[12px] md:text-sm text-gray-600 mb-2">From: <span className="text-black text-[15px] md:text-[17px]">{card.price.toFixed(2)}</span></p>
+          <Link to={`/product/${card._id}`} className="text-[15px] font-semibold md:text-lg mb-1 mt-1">{card.productName}</Link>
+          <p className="text-[12px] md:text-sm text-gray-600 mb-2">From: <span className="text-black text-[15px] md:text-[17px]">{card.productPrice.toFixed(2)}</span></p>
           <div className="flex gap-2 justify-center">
-            {card.colors.map((color, index) => (
-            <div key={index} className={`rounded-full bg-${color} w-4 h-4 border`}></div>
+            {card.variants.map((color, index) => (
+            <div key={index} className={`rounded-full w-4 h-4 border`}
+              style={{backgroundColor: color.colorHex}}
+            ></div>
           ))}
           </div>
         </div>
