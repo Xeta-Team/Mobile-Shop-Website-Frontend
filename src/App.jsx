@@ -6,6 +6,8 @@ import AdminDashboard from './Pages/Admin/AdminDashboard';
 import UserRegistration from './Pages/UserReistration';
 import UserDashboard from './Pages/User/UserDashboard';
 import LoginPage from './Pages/Login';
+import ProductOverView from './ProductOverView';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 const App = () => {
@@ -22,9 +24,21 @@ const App = () => {
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/register" element={<UserRegistration />}/>
           <Route path="/user" element={<UserDashboard />}/>
-
+          <Route path='/product/:productId' element={<ProductOverView/>}/>
         </Routes>
       </main>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        />
     </div>
     </>
   )
