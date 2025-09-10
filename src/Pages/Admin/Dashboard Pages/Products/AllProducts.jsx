@@ -5,7 +5,7 @@ import { Search, MoreVertical, Smartphone, Edit, Trash2, AlertTriangle, X, Spark
 // --- Gemini API Key ---
 // IMPORTANT: For the AI feature to work, you must get a free API key from Google AI Studio
 // and paste it here.
-const GEMINI_API_KEY = "AIzaSyDuY3O5NMzXudLtlP0_k68QC2jMVhIhlIs"; // <--- PASTE YOUR GEMINI API KEY HERE
+const GEMINI_API_KEY = "PASTE_YOUR_GEMINI_API_KEY_HERE"; // <--- PASTE YOUR GEMINI API KEY HERE
 
 // --- Main Page Component ---
 export default function ProductListPage() {
@@ -33,7 +33,7 @@ export default function ProductListPage() {
         const fetchProducts = async () => {
             try {
                 // In a real app, replace this with your actual API endpoint
-                const apiUrl = 'http://localhost:3001/api/products';
+                const apiUrl = 'http://localhost:3001/api/products/all';
                 const response = await axios.get(apiUrl);
                 setProducts(response.data);
                 setFilteredProducts(response.data);
@@ -72,39 +72,107 @@ export default function ProductListPage() {
         setOpenMenuName(prevName => (prevName === productName ? null : productName));
     };
 
+
     const handleEditRequest = (product) => {
         setProductToEdit(product);
         setOpenMenuName(null);
+    }
+
+    // --- CORRECTED SAVE FUNCTION ---
+    const handleSaveEdit = async (updatedProductPayload) => {
+        if (!productToEdit) return;
+
+        setIsLoading(true);
+        setError(null); 
+        try {
+            // 1. Use the product ID in the URL, not the name.
+            const response = await fetch(`http://localhost:3001/api/products/update/${productToEdit.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                // 2. Send a body that matches the Mongoose schema fields.
+                body: JSON.stringify({
+                    productName: updatedProductPayload.data.name,
+                    productPrice: updatedProductPayload.data.price,
+                    // Assuming we only edit the first color variant for simplicity
+                    variants: [{ 
+                        colorName: updatedProductPayload.data.colorName, 
+                        hex: updatedProductPayload.data.colorHex 
+                    }]
+                })
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to update the product. Please try again.');
+            }   
+            const updatedResult = await response.json();
+            
+            // 3. Update state correctly using the product ID.
+            // We also re-format the backend response to match the frontend state structure.
+            setProducts(prevProducts => prevProducts.map(p => {
+                if (p.id === updatedResult.product._id) {
+                    const updated = updatedResult.product;
+                    return {
+                        id: updated._id,
+                        name: updated.productName,
+                        category: updated.productCategory,
+                        colors: updated.variants.map(v => ({ name: v.colorName, hex: v.colorHex })),
+                        status: updated.variants.some(v => v.stock > 0) ? "Available" : "Out of Stock",
+                        price: updated.productPrice,
+                        imageUrl: updated.mainImage || (updated.images && updated.images[0]),
+                        description: updated.productDescription
+                    };
+                }
+                return p;
+            }));
+            setProductToEdit(null);
+        } catch (err) {
+            console.error("Update product error:", err);
+            setError(err.message || 'An error occurred while updating the product.');
+        }
+        finally {
+            setIsLoading(false);
+            setTimeout(() => setError(null), 5000); // Clear error after 5 seconds
+        }
     };
     
-    const handleSaveEdit = (editedProduct) => {
-        // In a real app, this would be an API call, e.g., axios.put(`/api/products/${...}`)
-        setProducts(prevProducts => prevProducts.map(p => {
-            if (p.name === editedProduct.originalName) {
-                const { name, price, colorName, colorHex } = editedProduct.data;
-                const newColors = [{ name: colorName, hex: colorHex }];
-                return { ...p, name, price, colors: newColors };
-            }
-            return p;
-        }));
-        setProductToEdit(null);
-    };
-
     const handleDeleteRequest = (product) => {
         setProductToDelete(product);
         setOpenMenuName(null);
     };
 
-    const confirmDelete = () => {
-        if (productToDelete) {
-             // In a real app, this would be an API call, e.g., axios.delete(`/api/products/${...}`)
-            setProducts(prevProducts => prevProducts.filter(p => p.name !== productToDelete.name));
-            setProductToDelete(null);
+    // --- CORRECTED DELETE FUNCTION ---
+    const confirmDelete = async() => {
+        if(!productToDelete) return;
+
+        setIsLoading(true);
+        setError(null);
+        try {
+            // 1. Removed extra space from URL.
+            const response = await fetch(`http://localhost:3001/api/products/delete/${productToDelete.id}`, {
+                method: 'DELETE',
+            });
+            
+            if(!response.ok){
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to delete the product. Please try again.');
+            }
+            // 2. Filter state using the correct product ID.
+            setProducts(prevProducts => prevProducts.filter(p => p.id !== productToDelete.id));
+
+            }
+            catch(err){
+                console.error("Delete product error:", err);
+                setError(err.message || 'An error occurred while deleting the product.');
+            }
+            finally{
+                setIsLoading(false);
+                setProductToDelete(null);
+                setTimeout(() => setError(null), 5000); // Clear error after 5 seconds
         }
-    };
+    }
 
     const handleGenerateAdCopy = async (product) => {
-        if (!GEMINI_API_KEY) {
+        if (!GEMINI_API_KEY || GEMINI_API_KEY === "PASTE_YOUR_GEMINI_API_KEY_HERE") {
             alert("Please add your Gemini API key to the ProductListPage.jsx file.");
             return;
         }
@@ -113,7 +181,7 @@ export default function ProductListPage() {
         setGeneratedAdCopy('');
         setOpenMenuName(null);
 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2-5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
         const prompt = `Generate a short, exciting social media ad post for the following product for a shop in Sri Lanka. Be persuasive, use emojis, and end with a strong call to action. Keep it under 280 characters.
 
         Product Details:
@@ -179,7 +247,7 @@ export default function ProductListPage() {
                             </tr>
                         ) : filteredProducts.length > 0 ? (
                             filteredProducts.map((product) => (
-                                <React.Fragment key={product.name}>
+                                <React.Fragment key={product.id}>
                                     <ProductRow 
                                         product={product} 
                                         onMouseEnter={() => handleMouseEnter(product.name)}
@@ -289,34 +357,129 @@ function ProductHoverRow({ product, onMouseEnter, onMouseLeave }) {
 }
 
 function EditProductModal({ product, onSave, onClose }) {
+    // A predefined list of categories for the dropdown menu
+    const categories = [
+        'Mobile Phone', 
+        'Tablet', 
+        'Charger', 
+        'Phone Case', 
+        'Headphones', 
+        'Wearable'
+    ];
+
+    // Initialize state with empty/default values first to prevent errors.
     const [editData, setEditData] = useState({
-        name: product.name,
-        price: product.price,
-        colorName: product.colors[0]?.name || '',
-        colorHex: product.colors[0]?.hex || '#000000',
+        name: '',
+        description: '',
+        category: categories[0],
+        storage: '',
+        stock: 0,
+        price: 0,
+        colorName: '',
+        colorHex: '#000000',
     });
 
+    // State for handling the new image file and its preview URL
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState('');
+
+    // Use useEffect to safely populate the form state when the 'product' prop is available.
+    useEffect(() => {
+        if (product) {
+            setEditData({
+                name: product.name || '',
+                description: product.description || '',
+                category: product.category || categories[0],
+                storage: product.storage || '',
+                stock: product.stock || 0,
+                price: product.price || 0,
+                colorName: product.colors?.[0]?.name || '',
+                colorHex: product.colors?.[0]?.hex || '#000000',
+            });
+            // Set initial image preview from product data
+            setImagePreview(product.imageUrl || '');
+            setImageFile(null); // Clear any previously selected file
+        }
+    }, [product]);
+
+    // This generic handler updates state for any input change, including files.
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setEditData(prev => ({ ...prev, [name]: value }));
+        const { name, value, files } = e.target;
+        if (name === 'image' && files[0]) {
+            const file = files[0];
+            setImageFile(file); // Store the file object
+            setImagePreview(URL.createObjectURL(file)); // Create a temporary URL for preview
+        } else {
+            setEditData(prev => ({ ...prev, [name]: value }));
+        }
     };
 
+    // The handleSave function now sends the entire updated editData object
     const handleSave = () => {
-        onSave({ originalName: product.name, data: editData });
+        // Pass the original ID, updated text data, and the new image file if one exists.
+        onSave({ id: product.id, data: editData, newImage: imageFile });
+        onClose(); // Close modal after saving
     };
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl p-6 shadow-2xl w-full max-w-md m-4 border">
-                <div className="flex justify-between items-center mb-6">
+            <div className="bg-white rounded-xl p-6 shadow-2xl w-full max-w-lg m-4 border max-h-[90vh] flex flex-col">
+                <div className="flex justify-between items-center mb-6 flex-shrink-0">
                     <h3 className="text-lg font-semibold text-gray-900">Edit Product</h3>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors"><X className="w-6 h-6" /></button>
                 </div>
-                <div className="space-y-4">
+                
+                {/* The form now contains all the new fields and is scrollable */}
+                <div className="space-y-4 overflow-y-auto pr-2">
+                    {/* New Image Upload Field */}
+                    <div>
+                        <label className="text-sm font-semibold text-gray-700">Product Image</label>
+                        <div className="mt-2 flex items-center gap-4">
+                            <img
+                                src={imagePreview || 'https://placehold.co/100x100/f3f4f6/9ca3af?text=No+Image'}
+                                alt="Product Preview"
+                                className="w-24 h-24 rounded-lg object-cover border"
+                            />
+                            <label htmlFor="image-upload" className="cursor-pointer rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
+                                <span>Change Image</span>
+                                <input id="image-upload" name="image" type="file" className="sr-only" onChange={handleChange} accept="image/*" />
+                            </label>
+                        </div>
+                    </div>
+
                     <div>
                         <label className="text-sm font-semibold text-gray-700">Product Name</label>
                         <input type="text" name="name" value={editData.name} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500" />
                     </div>
+
+                    {/* Description Field */}
+                    <div>
+                        <label className="text-sm font-semibold text-gray-700">Description</label>
+                        <textarea name="description" value={editData.description} onChange={handleChange} rows="3" placeholder="Enter a brief product description..." className="mt-1 w-full p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                    </div>
+
+                    {/* Category Selection */}
+                    <div>
+                        <label className="text-sm font-semibold text-gray-700">Category</label>
+                        <select name="category" value={editData.category} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md bg-white focus:ring-indigo-500 focus:border-indigo-500 appearance-none">
+                            {categories.map(cat => (
+                                <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Storage and Stock Fields */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="text-sm font-semibold text-gray-700">Storage Size</label>
+                            <input type="text" name="storage" placeholder="e.g., 256GB" value={editData.storage} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500" />
+                        </div>
+                        <div>
+                            <label className="text-sm font-semibold text-gray-700">Stock Amount</label>
+                            <input type="number" name="stock" value={editData.stock} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500" />
+                        </div>
+                    </div>
+
                     <div className="grid grid-cols-3 gap-4">
                         <div className="col-span-2">
                            <label className="text-sm font-semibold text-gray-700">Color Name</label>
@@ -327,14 +490,16 @@ function EditProductModal({ product, onSave, onClose }) {
                            <input type="color" name="colorHex" value={editData.colorHex} onChange={handleChange} className="mt-1 w-full h-10 p-1 border rounded-md" />
                         </div>
                     </div>
-                     <div>
+
+                    <div>
                         <label className="text-sm font-semibold text-gray-700">Price (LKR)</label>
                         <input type="number" name="price" value={editData.price} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500" />
                     </div>
                 </div>
-                <div className="flex justify-end gap-4 mt-8">
-                    <button type="button" onClick={onClose} className="px-5 py-2 rounded-lg text-sm font-semibold border hover:bg-gray-100">Cancel</button>
-                    <button type="button" onClick={handleSave} className="px-5 py-2 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-500">Save Changes</button>
+
+                <div className="flex justify-end gap-4 mt-8 pt-4 border-t flex-shrink-0">
+                    <button type="button" onClick={onClose} className="px-5 py-2 rounded-lg text-sm font-semibold border hover:bg-gray-100 transition-colors">Cancel</button>
+                    <button type="button" onClick={handleSave} className="px-5 py-2 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -368,9 +533,20 @@ function ConfirmationModal({ productName, onConfirm, onCancel }) {
 function AdCopyModal({ product, adCopy, isLoading, onClose }) {
     const [isCopied, setIsCopied] = useState(false);
     const handleCopy = () => {
-        navigator.clipboard.writeText(adCopy);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
+        // This method is more robust for different environments than navigator.clipboard
+        const textArea = document.createElement("textarea");
+        textArea.value = adCopy;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+        }
+        document.body.removeChild(textArea);
     };
 
     if (!product) return null;

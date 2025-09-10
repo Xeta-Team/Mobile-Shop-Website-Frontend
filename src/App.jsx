@@ -11,8 +11,9 @@ const App = () => {
       {/* <TopNavigationBar /> */}
       <main className="flex-1 overflow-y-auto">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/admin/*" element={<AdminDashboard/>}/>
+          <Route path="/" element={<Home/>} />
+          <Route path="/admin/*" element={<AdminDashboard/>} />
+
         </Routes>
       </main>
     </div>
