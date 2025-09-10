@@ -39,7 +39,6 @@ export default function ProductListPage() {
 
     useEffect(() => {
         const lowercasedFilter = searchTerm.toLowerCase();
-        console.log(products);
         
         const filtered = products.filter(product =>
             product.productName?.toLowerCase().includes(lowercasedFilter)
@@ -85,7 +84,6 @@ export default function ProductListPage() {
             setProductToDelete(null);
         }
     };
-    
     return (
         <div className="bg-white min-h-screen font-sans">
             <div className="flex flex-col sm:flex-row justify-between items-center p-6 mb-4 gap-4">
