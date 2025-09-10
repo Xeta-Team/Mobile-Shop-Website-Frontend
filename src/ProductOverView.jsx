@@ -65,7 +65,9 @@ export default function ProductOverView() {
           </div>
         </main>
       </div>
-      <HomeCarousel slides={cardInfo} title={"You may also like"}/>
+      <div className='px-4'>
+        <HomeCarousel slides={cardInfo} title={"You may also like"}/>
+      </div>
     </div>
   )}
   </>

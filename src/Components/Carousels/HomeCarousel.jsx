@@ -37,7 +37,7 @@ const HomeCarousel = ({ slides, title }) => {
       <div className="flex gap-2 justify-between mx-1 md:mx-8">
           {title ? <h1 className="text-5xl font-sans font-bold">{title}</h1> : 
           (<div className="bg-black rounded-full">
-            <h1 className="mx-2 my-2 text-[12px] md:mx-4 md:my-4 md:text-[15px] font-semibold font-sans text-white">Per-Owned Iphones</h1>
+            <h1 className="mx-2 my-2 text-[12px] md:mx-4 md:my-4 md:text-[15px] font-semibold font-inter-sans text-white">Per-Owned Iphones</h1>
           </div>
           )}
         <div className="hidden md:flex gap-3">
