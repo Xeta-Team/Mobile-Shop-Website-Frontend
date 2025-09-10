@@ -7,7 +7,8 @@ const DropDownMenu = ({dropdownVisible, dropDownItems}) => {
         >
             {dropDownItems.map((item,index) => (
                 <>
-                <li className={`
+                <li 
+                className={`
                     ${dropdownVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"} transition-transform  duration-500  ease-in-out
                 `}
                 style={{ transitionDelay: `${index * 100}ms` }}

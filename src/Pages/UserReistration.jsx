@@ -4,6 +4,7 @@ import { UserPlus, Lock, Mail, User, Loader, Info, Check, AlertTriangle, Eye, Ey
 import SocialButton from '../Components/Buttons/SocialButton';
 import InputField from '../Components/Input/InputField.jsx';
 import Toast from '../Components/Toast/Toast.jsx';
+import { useNavigate } from 'react-router';
 
 // SVG Icon for Google
 const GoogleIcon = () => (
@@ -31,6 +32,7 @@ export default function RegistrationPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
     const [passwordStrength, setPasswordStrength] = useState(0);
+    const navigate = useNavigate();
 
     const showToast = (message, type = 'info') => {
         setToast({ show: true, message, type });
@@ -117,6 +119,7 @@ export default function RegistrationPage() {
             showToast(response.data.message || 'Registration successful!', 'success');
             setFormData({ username: '', firstName: '', lastName: '', email: '', password: '', confirmPassword: '' });
             setPasswordStrength(0);
+            navigate('/login');
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
             showToast(errorMessage, 'error');
