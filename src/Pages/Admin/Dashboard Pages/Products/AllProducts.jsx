@@ -82,11 +82,9 @@ export default function ProductListPage() {
     };
 
     const confirmDelete = async() => {
-        console.log(productToDelete._id);
 
         try{
             const deleteResponse = await apiClient.delete(`/products/${productToDelete._id}`);
-            console.log(deleteResponse);
 
             toast.success(deleteResponse.data.message)
             setIsLoading(true)

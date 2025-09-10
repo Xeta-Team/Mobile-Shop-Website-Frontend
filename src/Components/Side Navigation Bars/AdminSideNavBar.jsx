@@ -1,9 +1,20 @@
 import Btn from "./SideBarComponents/Btn";
 import DropDownBtn from "./SideBarComponents/DropDownBtn";
 import Logo from "../../assest/logoTxt.png"
+import { useNavigate } from "react-router-dom";
+
+
 
 const AdminSideNavBar = () => {
-    return(<>s
+
+        const navigate = useNavigate();
+
+
+        const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('token');
+        navigate('/login');}
+    return(<>
         <aside id="sidebar-multi-level-sidebar" className="w-full h-full">
             <div className="h-[70px] w-[60%] m-auto">
                 <img src={Logo} className=""/>
@@ -31,6 +42,14 @@ const AdminSideNavBar = () => {
                     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M19 15C21.2091 15 23 16.7909 23 19V21H21M16 10.874C17.7252 10.4299 19 8.86383 19 6.99999C19 5.13615 17.7252 3.57005 16 3.12601M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7ZM5 15H13C15.2091 15 17 16.7909 17 19V21H1V19C1 16.7909 2.79086 15 5 15Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                 </Btn>
                 </ul>
+                <li className="relative group text-[13px] font-medium pt-4">
+                         <div className="px-3">
+                            <button onClick={handleLogout} className="flex items-center p-2 w-full text-gray-900 rounded-lg hover:bg-gray-100 group">
+                                <span className="w-[20px] h-[20px] text-gray-500"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 17l-4-4m0 0l-4 4m4-4V3m4 6v6a2 2 0 01-2 2H7a2 2 0 01-2-2V9a2 2 0 012-2h1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg></span>
+                                <span className="ms-3">Logout</span>
+                            </button>
+                        </div>
+                    </li>
             </div>
             </aside>
 
