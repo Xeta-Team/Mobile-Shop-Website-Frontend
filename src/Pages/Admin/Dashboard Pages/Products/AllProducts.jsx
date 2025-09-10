@@ -7,7 +7,6 @@ import Toast from '../../../../Components/Toast/Toast';
 import { toast } from 'react-toastify';
 
 
-// --- Main Page Component ---
 export default function ProductListPage() {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -64,8 +63,10 @@ export default function ProductListPage() {
         setOpenMenuId(prevId => (prevId === productId ? null : productId));
     };
 
+
     const handleEditRequest = (product) => {
         setProductToEdit(product);
+
         setOpenMenuId(null);
     };
     
@@ -76,23 +77,21 @@ export default function ProductListPage() {
         setProductToEdit(null);
     };
 
+
     const handleDeleteRequest = (product) => {
         setProductToDelete(product);
         setOpenMenuId(null);
     };
 
+
     const confirmDelete = async() => {
 
         try{
             const deleteResponse = await apiClient.delete(`/products/${productToDelete._id}`);
-
             toast.success(deleteResponse.data.message)
             setIsLoading(true)
             fetchProducts()
             setProductToDelete(null)
-
-            
-            
         }catch(error){
             toast.error(error?.response?.data)
             
@@ -184,6 +183,17 @@ function ProductHoverRow({ product, onMouseEnter, onMouseLeave }) {
 }
 
 function EditProductModal({ product, onSave, onClose }) {
+    // A predefined list of categories for the dropdown menu
+    const categories = [
+        'Mobile Phone', 
+        'Tablet', 
+        'Charger', 
+        'Phone Case', 
+        'Headphones', 
+        'Wearable'
+    ];
+
+    // Initialize state with empty/default values first to prevent errors.
     const [editData, setEditData] = useState({
         productName: product.productName,
         productPrice: product.productPrice,
@@ -191,40 +201,93 @@ function EditProductModal({ product, onSave, onClose }) {
         colorHex: product.variants?.[0]?.colorHex || '#000000',
     });
 
+    // State for handling the new image file and its preview URL
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState('');
+
+    // Use useEffect to safely populate the form state when the 'product' prop is available.
+    useEffect(() => {
+        if (product) {
+            setEditData({
+                name: product.name || '',
+                description: product.description || '',
+                category: product.category || categories[0],
+                storage: product.storage || '',
+                stock: product.stock || 0,
+                price: product.price || 0,
+                colorName: product.colors?.[0]?.name || '',
+                colorHex: product.colors?.[0]?.hex || '#000000',
+            });
+            // Set initial image preview from product data
+            setImagePreview(product.imageUrl || '');
+            setImageFile(null); // Clear any previously selected file
+        }
+    }, [product]);
+
+    // This generic handler updates state for any input change, including files.
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setEditData(prev => ({ ...prev, [name]: value }));
+        const { name, value, files } = e.target;
+        if (name === 'image' && files[0]) {
+            const file = files[0];
+            setImageFile(file); // Store the file object
+            setImagePreview(URL.createObjectURL(file)); // Create a temporary URL for preview
+        } else {
+            setEditData(prev => ({ ...prev, [name]: value }));
+        }
     };
 
+    // The handleSave function now sends the entire updated editData object
     const handleSave = () => {
         onSave({ _id: product._id, data: editData });
     };
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl p-6 shadow-2xl w-full max-w-md m-4 border">
-                <div className="flex justify-between items-center mb-6">
+            <div className="bg-white rounded-xl p-6 shadow-2xl w-full max-w-lg m-4 border max-h-[90vh] flex flex-col">
+                <div className="flex justify-between items-center mb-6 flex-shrink-0">
                     <h3 className="text-lg font-semibold text-gray-900">Edit Product</h3>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors"><X className="w-6 h-6" /></button>
                 </div>
-                <div className="space-y-4">
+                
+                {/* The form now contains all the new fields and is scrollable */}
+                <div className="space-y-4 overflow-y-auto pr-2">
+                    {/* New Image Upload Field */}
+                    <div>
+                        <label className="text-sm font-semibold text-gray-700">Product Image</label>
+                        <div className="mt-2 flex items-center gap-4">
+                            <img
+                                src={imagePreview || 'https://placehold.co/100x100/f3f4f6/9ca3af?text=No+Image'}
+                                alt="Product Preview"
+                                className="w-24 h-24 rounded-lg object-cover border"
+                            />
+                            <label htmlFor="image-upload" className="cursor-pointer rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">
+                                <span>Change Image</span>
+                                <input id="image-upload" name="image" type="file" className="sr-only" onChange={handleChange} accept="image/*" />
+                            </label>
+                        </div>
+                    </div>
+
                     <div>
                         <label className="text-sm font-semibold text-gray-700">Product Name</label>
                         <input type="text" name="productName" value={editData.productName} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md" />
+
                     </div>
-                     <div>
+
+                    <div>
                         <label className="text-sm font-semibold text-gray-700">Price (LKR)</label>
                         <input type="number" name="productPrice" value={editData.productPrice} onChange={handleChange} className="mt-1 w-full p-2 border rounded-md" />
                     </div>
                 </div>
-                <div className="flex justify-end gap-4 mt-8">
-                    <button type="button" onClick={onClose} className="px-5 py-2 rounded-lg text-sm font-semibold border hover:bg-gray-100">Cancel</button>
-                    <button type="button" onClick={handleSave} className="px-5 py-2 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-500">Save Changes</button>
+
+                <div className="flex justify-end gap-4 mt-8 pt-4 border-t flex-shrink-0">
+                    <button type="button" onClick={onClose} className="px-5 py-2 rounded-lg text-sm font-semibold border hover:bg-gray-100 transition-colors">Cancel</button>
+                    <button type="button" onClick={handleSave} className="px-5 py-2 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">Save Changes</button>
                 </div>
             </div>
         </div>
     );
 }
+
 
 
 function ConfirmationModal({ productName, onConfirm, onCancel }) {
@@ -246,6 +309,7 @@ function ConfirmationModal({ productName, onConfirm, onCancel }) {
           <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
             <AlertTriangle size={28} />
           </div>
+
 
           {/* Modal Header */}
           <h2 id="modal-title" className="text-xl font-bold text-gray-900">
@@ -289,3 +353,4 @@ function ConfirmationModal({ productName, onConfirm, onCancel }) {
     </div>
   );
 }
+

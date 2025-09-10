@@ -15,6 +15,7 @@
     "axios": "^1.11.0",
     "dotenv": "^17.2.2",
     "embla-carousel-react": "^8.6.0",
+    "gsap": "^3.13.0",
     "iconoir-react": "^7.11.0",
     "lucide": "^0.542.0",
     "lucide-react": "^0.542.0",
