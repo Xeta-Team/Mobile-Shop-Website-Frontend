@@ -5,6 +5,7 @@ import TopNavigationBar from "../src/Components/TopNavigationBar";
 import AdminDashboard from './Pages/Admin/AdminDashboard';
 import UserRegistration from './Pages/UserReistration';
 import UserDashboard from './Pages/User/UserDashboard';
+import ProductOverView from './ProductOverView';
 import LoginPage from './Pages/Login';
 import { ToastContainer } from 'react-toastify';
 
@@ -22,8 +23,8 @@ const App = () => {
           <Route path="/admin/*" element={<AdminDashboard/>}/>
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/register" element={<UserRegistration />}/>
+          <Route path='/product/:productId' element={<ProductOverView/>}/>
           <Route path="/user/*" element={<UserDashboard />}/>
-
         </Routes>
       </main>
     </div>
