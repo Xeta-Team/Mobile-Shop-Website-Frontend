@@ -6,6 +6,7 @@ import AdminDashboard from './Pages/Admin/AdminDashboard';
 import UserRegistration from './Pages/UserReistration';
 import UserDashboard from './Pages/User/UserDashboard';
 import LoginPage from './Pages/Login';
+import { ToastContainer } from 'react-toastify';
 
 
 const App = () => {
@@ -26,6 +27,18 @@ const App = () => {
         </Routes>
       </main>
     </div>
+          <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick={false}
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+/>
     </>
   )
 } 

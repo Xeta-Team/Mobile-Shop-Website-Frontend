@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Search, MoreVertical, Edit, Trash2, AlertTriangle, X, Sparkles, Loader, Inbox } from 'lucide-react';
 import ProductRow from '../../../../Components/Table/ProductRow';
+import apiClient from '../../../../../../Mobile-Shop-Website-Backend-main/controllers/axiosConfig';
+import Toast from '../../../../Components/Toast/Toast';
+import { toast } from 'react-toastify';
 
 
 // --- Main Page Component ---
@@ -20,7 +23,19 @@ export default function ProductListPage() {
     const [isGeneratingAd, setIsGeneratingAd] = useState(false);
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        fetchProducts();
+    }, []);
+
+    useEffect(() => {
+        const lowercasedFilter = searchTerm.toLowerCase();
+        
+        const filtered = products.filter(product =>
+            product.productName?.toLowerCase().includes(lowercasedFilter)
+        );
+        setFilteredProducts(filtered);
+    }, [searchTerm, products]);
+
+    const fetchProducts = async () => {
             try {
                 const apiUrl = 'http://localhost:3001/api/products';
                 const response = await axios.get(apiUrl);
@@ -33,18 +48,6 @@ export default function ProductListPage() {
                 setIsLoading(false);
             }
         };
-
-        fetchProducts();
-    }, []);
-
-    useEffect(() => {
-        const lowercasedFilter = searchTerm.toLowerCase();
-        
-        const filtered = products.filter(product =>
-            product.productName?.toLowerCase().includes(lowercasedFilter)
-        );
-        setFilteredProducts(filtered);
-    }, [searchTerm, products]);
     
     let leaveTimeout;
     const handleMouseEnter = (productId) => {
@@ -78,11 +81,29 @@ export default function ProductListPage() {
         setOpenMenuId(null);
     };
 
-    const confirmDelete = () => {
-        if (productToDelete) {
-            setProducts(prevProducts => prevProducts.filter(p => p._id !== productToDelete._id));
-            setProductToDelete(null);
+    const confirmDelete = async() => {
+        console.log(productToDelete._id);
+
+        try{
+            const deleteResponse = await apiClient.delete(`/products/${productToDelete._id}`);
+            console.log(deleteResponse);
+
+            toast.success(deleteResponse.data.message)
+            setIsLoading(true)
+            fetchProducts()
+            setProductToDelete(null)
+
+            
+            
+        }catch(error){
+            toast.error(error?.response?.data)
+            
         }
+        
+        // if (productToDelete) {
+        //     setProducts(prevProducts => prevProducts.filter(p => p._id !== productToDelete._id));
+        //     setProductToDelete(null);
+        // }
     };
     return (
         <div className="bg-white min-h-screen font-sans">
