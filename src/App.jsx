@@ -1,14 +1,12 @@
 import { Routes, Route } from 'react-router';
 import './App.css';
 import Home from './Pages/Home';
-import TopNavigationBar from "../src/Components/TopNavigationBar";
 import AdminDashboard from './Pages/Admin/AdminDashboard';
 import UserRegistration from './Pages/UserReistration';
 import UserDashboard from './Pages/User/UserDashboard';
 import ProductOverView from './ProductOverView';
 import LoginPage from './Pages/Login';
 import { ToastContainer } from 'react-toastify';
-import TopNavigationBar from "../src/Components/TopNavigationBar"
 
 const App = () => {
   return (

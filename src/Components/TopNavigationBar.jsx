@@ -6,6 +6,7 @@ import SearchSideModel from "./Side Models/SearchSideModel"
 import CartSideModel from "./Side Models/CartSideModel"
 import CollapseMenu from "./Collapse Model/CollapseMenu"
 import CollapseBtn from "./Buttons/CollapseBtn"
+import shopLogoWhite from '../assest/wlogo.png'
 
 const TopNavigationBar = () => {
     const [isSideModelShow, setIsSideModelShow] = useState(false) //For Search Model
@@ -35,17 +36,14 @@ const TopNavigationBar = () => {
                 <CollapseBtn setIscollapseShow={setIscollapseShow}/>
                 
                 <a
-                href="https://flowbite.com/"
-                className="flex items-center space-x-3 rtl:space-x-reverse"
+                href="/"
+                className="flex"
                 >
                     <img
-                        src="https://flowbite.com/docs/images/logo.svg"
-                        className="h-8"
+                        src={shopLogoWhite}
+                        className="h-[80px] w-[270px] m-auto"
                         alt="Flowbite Logo"
                     />
-                    <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                        Flowbite
-                    </span>
                 </a>
                 
                 <NavigrationBarActionBtns setIsSideModelShow={setIsSideModelShow} setIsCartSideModelShow={setIsCartSideModelShow}/>
