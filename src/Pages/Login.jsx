@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { LogIn, Mail, Lock, Loader, Info, Check, AlertTriangle } from 'lucide-react';
 import InputField from '../Components/Input/InputField.jsx'; // Assuming this path is correct
-import SocialButton from '../Components/Buttons/SocialButton'; // Assuming this path is correct
+import { GoogleLogin } from "@react-oauth/google";
 import Toast from '../Components/Toast/Toast.jsx'; // Assuming you have a Toast component
 
 // Reusing the Google Icon from your registration page
@@ -83,6 +83,30 @@ export default function LoginPage() {
         }
     };
 
+    const handleGoogleLoginSuccess = async (credentialResponse) => {
+        try {
+            const credential = credentialResponse.credential;
+
+            const apiUrl = 'http://localhost:3001/api/users/google-login';
+            const response = await axios.post(apiUrl, { googleToken: credential });
+
+            // Store token and user
+            localStorage.setItem('token', response.data.token);
+
+            showToast('Google login successful!', 'success');
+
+            setTimeout(() => {
+                if (response.data.user.role === 'admin') {
+                    navigate('/admin/dashboard');
+                } else {
+                    navigate('/');
+                }
+            }, 1000);
+        } catch (error) {
+            showToast("Google login failed. Please try again.", "error");
+        }
+    };
+
     return (
         <div className="bg-slate-100 min-h-screen flex items-center justify-center p-4 font-sans">
             <Toast notification={toast} />
@@ -135,7 +159,13 @@ export default function LoginPage() {
                     </div>
 
                     <div className="animate-input-fade-in" style={{ animationDelay: '0.5s' }}>
-                        <SocialButton provider="Google" onClick={() => { /* Add your Google login logic */ }} icon={<GoogleIcon />}/>
+                        <GoogleLogin
+                            logo_alignment="center" 
+                            onSuccess={handleGoogleLoginSuccess}
+                            onError={() => {
+                                showToast("Google login failed", "error");
+                            }}
+                        />
                     </div>
 
                      <p className="text-center text-sm text-gray-600 mt-8 animate-input-fade-in" style={{ animationDelay: '0.6s' }}>
