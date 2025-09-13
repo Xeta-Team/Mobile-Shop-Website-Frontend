@@ -70,7 +70,7 @@ export default function AddProduct() {
     });
     
     const [categories, setCategories] = useState([
-        'Mobile Phone', 'Tablet/Laptop', 'Watch', 'Charger & Cables', 'Phone Case', 'Headphones'
+        'Mobile Phone', 'Iphone','Mac', 'Tablet','Headphones', 'Accessories', 'Watch'
     ]);
     
     const [imageUrls, setImageUrls] = useState([]);
@@ -83,7 +83,7 @@ export default function AddProduct() {
     const [newCategoryName, setNewCategoryName] = useState('');
     const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
     
-    const variantCategories = ['Mobile Phone', 'Watch', 'Tablet'];
+    const variantCategories = ['Mobile Phone', 'Watch', 'Tablet', 'Iphone', 'Mac'];
     const isVariantProduct = variantCategories.includes(productData.productCategory);
 
     const showToast = (message, type = 'info') => {
