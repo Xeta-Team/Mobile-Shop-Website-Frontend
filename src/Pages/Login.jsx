@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { LogIn, Mail, Lock, Loader, Info, Check, AlertTriangle } from 'lucide-react';
-import InputField from '../Components/Input/InputField.jsx'; // Assuming this path is correct
-import SocialButton from '../Components/Buttons/SocialButton'; // Assuming this path is correct
-import Toast from '../Components/Toast/Toast.jsx'; // Assuming you have a Toast component
+import InputField from '../Components/Input/InputField.jsx'; 
+import SocialButton from '../Components/Buttons/SocialButton';
+import Toast from '../Components/Toast/Toast.jsx';
 
 // Reusing the Google Icon from your registration page
 const GoogleIcon = () => (
