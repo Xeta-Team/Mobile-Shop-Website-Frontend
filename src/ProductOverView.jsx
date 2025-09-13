@@ -4,6 +4,8 @@ import ImageGallery from './Components/Pages/Product Overview/ImageGallery';
 import { useParams } from 'react-router';
 import axios from 'axios';
 import HomeCarousel from './Components/Carousels/HomeCarousel';
+import TopNavigationBar from './Components/TopNavigationBar';
+import Footer from './Components/Footer';
 
 export default function ProductOverView() {
   const { productId } = useParams()
@@ -45,6 +47,8 @@ export default function ProductOverView() {
 
   return (<>
   {!isLoading && (
+    <>
+    <TopNavigationBar/>
     <div className="bg-white text-black min-h-screen font-sans">
       <div className="container mx-auto px-4 mb-4">
         <main className="py-12">
@@ -69,6 +73,8 @@ export default function ProductOverView() {
         <HomeCarousel slides={cardInfo} title={"You may also like"}/>
       </div>
     </div>
+    <Footer/>
+    </>
   )}
   </>
   );

@@ -32,7 +32,7 @@ const TopNavigationBar = () => {
     },[isSideModelShow, isCartSideModelShow, iscollapseShow])
     return(<>
         <nav className="bg-black text-white border-gray-200 dark:bg-gray-900 relative h-[120px] bg-fixed">
-            <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <div className="w-full flex flex-wrap items-center justify-between p-4 ">
                 <CollapseBtn setIscollapseShow={setIscollapseShow}/>
                 
                 <a
@@ -53,17 +53,15 @@ const TopNavigationBar = () => {
                 id="navbar-user"
                 >
                     <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 text-white rounded-lg md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0">
-                        <NavigrationBarBtn name={"Home"} rowNum={"1"} setIsDropDownShow={setIsDropDownShow}/>
-                        <NavigrationBarBtn name={"iPhone"} rowNum={"1"} setIsDropDownShow={setIsDropDownShow} dropdownItems={["iPhone 16 Pro Max", "iPhone 16 Pro", "iPhone 16 Plus", "iPhone 16", "iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15 Plus", "iPhone 15", "iPhone 14", "iPhone 13", "iPhone 11"]}/>
-                        <NavigrationBarBtn name={"iPad"} rowNum={"1"} setIsDropDownShow={setIsDropDownShow} dropdownItems={["iPad", "iPad Pro", "iPad Air", "iPad Mini"]}/>
-                        <NavigrationBarBtn name={"MacBook"} rowNum={"1"} setIsDropDownShow={setIsDropDownShow} dropdownItems={["MacBook Pro", "MacBook Air", "Mac Mini", "Mac Studio", "iMac"]}/>
-                        <NavigrationBarBtn name={"Watch"} rowNum={"1"} setIsDropDownShow={setIsDropDownShow} dropdownItems={["Apple Watch Ultra 2", "Apple Watch Series 10", "Apple Watch Series 9", "Apple Watch SE"]}/>
-                        <NavigrationBarBtn name={"AirPods"} rowNum={"1"} setIsDropDownShow={setIsDropDownShow} dropdownItems={["AirPods", "AirPods Pro", "AirPods Max"]}/>
-                        <NavigrationBarBtn name={"Vision"} rowNum={"1"} setIsDropDownShow={setIsDropDownShow}/>
-                        <NavigrationBarBtn name={"Tv & Home"} rowNum={"1"} setIsDropDownShow={setIsDropDownShow} dropdownItems={["Apple Tv 4K", "HomePod", "HomePod Mini"]}/>
+                        <NavigrationBarBtn name={"Home"} rowNum={"1"} to={"/"} />
+                        <NavigrationBarBtn name={"iPhone"} rowNum={"1"} to={"/iphone"}/>
+                        <NavigrationBarBtn name={"iPad"} rowNum={"1"} to={"/ipad"} />
+                        <NavigrationBarBtn name={"MacBook"} rowNum={"1"} to={"/mac"} />
+                        <NavigrationBarBtn name={"Watch"} rowNum={"1"} to={"/watch"} />
+                        <NavigrationBarBtn name={"AirPods"} rowNum={"1"} to={"/airpod"} />
+                         <NavigrationBarBtn name={"Accessories"}/>
                     </ul>
-                    <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 text-white rounded-lg md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0">
-                        <NavigrationBarBtn name={"Accessories"} setIsDropDownShow={setIsDropDownShow} rowNum={2} dropdownItems={["AirTag", "Apple Pencil", "iPhone Accessories", "iPad Accessories", "Apple Watch Accessories", "Mac Accessories"]}/>
+                    <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 text-white rounded-lg md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0">                       
                         <NavigrationBarBtn name={"Per-Owned Devices"} setIsDropDownShow={setIsDropDownShow} rowNum={2} dropdownItems={["iPhones"]}/>
                     </ul>
                 </div>
