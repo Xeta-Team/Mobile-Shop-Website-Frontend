@@ -25,14 +25,14 @@ const UserRow = ({ user, onEditRole, onDelete }) => {
 
     const rolePillStyles = {
         admin: "bg-indigo-100 text-indigo-700",
-        member: "bg-green-100 text-green-700"
+        user: "bg-green-100 text-green-700"
     };
     const roleIcon = {
         admin: <ShieldCheck size={14} className="mr-1.5" />,
-        member: <User size={14} className="mr-1.5" />
+        user: <User size={14} className="mr-1.5" />
     };
 
-    const role = user.role || 'member'; // Default to 'member' if role is not specifieds
+    const role = user.role || 'user'; // Default to 'user' if role is not specifieds
 
     return (
         <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-150">
@@ -91,7 +91,6 @@ export default function Users() {
     const [userToUpdate, setUserToUpdate] = useState(null);
     const [userToDelete, setUserToDelete] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    console.log(userToUpdate ? userToUpdate.role : userToUpdate);
     
 
     // Fetch users from the API
@@ -237,13 +236,13 @@ function RoleChangeModal({ user, onConfirm, onCancel, isSubmitting }) {
           </div>
   
           <div className="mt-6 space-y-3">
-            <label className={`flex items-center p-4 rounded-lg border cursor-pointer transition-colors ${selectedRole === 'member' ? 'bg-indigo-50 border-indigo-400 ring-2 ring-indigo-200' : 'border-gray-300 hover:bg-gray-50'}`}>
+            <label className={`flex items-center p-4 rounded-lg border cursor-pointer transition-colors ${selectedRole === 'user' ? 'bg-indigo-50 border-indigo-400 ring-2 ring-indigo-200' : 'border-gray-300 hover:bg-gray-50'}`}>
               <User className="w-6 h-6 mr-4 text-green-600" />
               <div>
-                <h3 className="font-semibold text-gray-800">Member</h3>
+                <h3 className="font-semibold text-gray-800">User</h3>
                 <p className="text-sm text-gray-500">Standard user permissions.</p>
               </div>
-              <input type="radio" name="role" value="member" checked={selectedRole === 'member'} onChange={(e) => setSelectedRole(e.target.value)} className="ml-auto" />
+              <input type="radio" name="role" value="user" checked={selectedRole === 'user'} onChange={(e) => setSelectedRole(e.target.value)} className="ml-auto" />
             </label>
             <label className={`flex items-center p-4 rounded-lg border cursor-pointer transition-colors ${selectedRole === 'admin' ? 'bg-indigo-50 border-indigo-400 ring-2 ring-indigo-200' : 'border-gray-300 hover:bg-gray-50'}`}>
               <ShieldCheck className="w-6 h-6 mr-4 text-indigo-600" />

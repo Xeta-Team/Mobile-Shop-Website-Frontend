@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User, Mail, Phone, MapPin, Edit3, Save, Camera, Loader, AlertCircle } from 'lucide-react';
 import Toast from '../../../Components/Toast/Toast.jsx';
 import InputField from '../../../Components/Input/InputField.jsx';
-import apiClient from '../../../../../Mobile Shop Website Backend/controllers/axiosConfig.js';
+import apiClient from '../../../../../Mobile-Shop-Website-Backend-main/controllers/axiosConfig.js';
 
 export default function UserProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
@@ -44,6 +44,7 @@ export default function UserProfilePage() {
         fetchUserProfile();
     }, []);
     
+    
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -76,6 +77,7 @@ export default function UserProfilePage() {
             setIsSubmitting(false);
         }
     };
+    
 
     const handleCancelEdit = () => {
         setEditableUser(user);
