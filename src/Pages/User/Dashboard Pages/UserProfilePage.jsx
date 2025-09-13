@@ -44,6 +44,7 @@ export default function UserProfilePage() {
         fetchUserProfile();
     }, []);
     
+    
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -76,6 +77,7 @@ export default function UserProfilePage() {
             setIsSubmitting(false);
         }
     };
+    
 
     const handleCancelEdit = () => {
         setEditableUser(user);
