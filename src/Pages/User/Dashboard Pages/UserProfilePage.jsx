@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User, Mail, Phone, MapPin, Edit3, Save, Camera, Loader, AlertCircle } from 'lucide-react';
 import Toast from '../../../Components/Toast/Toast.jsx';
 import InputField from '../../../Components/Input/InputField.jsx';
-import apiClient from '../../../../../Mobile-Shop-Website-Backend-main/controllers/axiosConfig.js';
+import apiClient from '../../../api/axiosConfig.js';
 import { useSearchParams } from 'react-router';
 
 export default function UserProfilePage() {
