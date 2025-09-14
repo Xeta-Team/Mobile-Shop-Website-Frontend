@@ -99,7 +99,8 @@ export default function RegistrationPage() {
 
     // This constructs the URL that sends the user to Google for authentication.
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
-
+    
+    
     // This command actually sends the user to the Google login page.
     window.location.href = authUrl;
     };
@@ -117,7 +118,6 @@ export default function RegistrationPage() {
             const { confirmPassword, ...payload } = formData;
             const apiUrl = 'http://localhost:3001/api/users/register'; 
             const response = await axios.post(apiUrl, payload);
-            
             showToast(response.data.message || 'Registration successful!', 'success');
             setFormData({ username: '', firstName: '', lastName: '', email: '', password: '', confirmPassword: '' });
             setPasswordStrength(0);

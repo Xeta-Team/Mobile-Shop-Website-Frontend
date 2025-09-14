@@ -3,6 +3,7 @@ import { User, Mail, Phone, MapPin, Edit3, Save, Camera, Loader, AlertCircle } f
 import Toast from '../../../Components/Toast/Toast.jsx';
 import InputField from '../../../Components/Input/InputField.jsx';
 import apiClient from '../../../../../Mobile-Shop-Website-Backend-main/controllers/axiosConfig.js';
+import { useSearchParams } from 'react-router';
 
 export default function UserProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
@@ -11,6 +12,7 @@ export default function UserProfilePage() {
     const [user, setUser] = useState(null);
     const [editableUser, setEditableUser] = useState(null);
     const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
+    const [searchParams] = useSearchParams();
 
     const showToast = (message, type = 'info') => {
         setToast({ show: true, message, type });
@@ -18,6 +20,12 @@ export default function UserProfilePage() {
     };
 
     useEffect(() => {
+        const token = searchParams.get('token')
+        
+        if(token){
+            localStorage.setItem('token', token)
+        }
+
         const fetchUserProfile = async () => {
             try {
                 const { data } = await apiClient.get('/users/profile');
