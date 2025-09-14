@@ -53,7 +53,7 @@ const CartPopup = ({ onClose }) => {
             position: "fixed",
             left: mousePos.x ,
             top: mousePos.y ,
-            zIndex: 0,
+            // zIndex: 0,
             pointerEvents: "auto",
           }}
           className="bg-black text-white rounded-full p-2 shadow-5xl transition hover:bg-gray-700"

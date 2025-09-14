@@ -179,7 +179,7 @@ const Footer = () => {
 const Home = () => {
     const [cardInfo, setCardInfo] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-     const [popupVisible, setPopupVisible] = useState(null);
+  const [ShowCartPopup, setShowCartPopup] = useState(false)
     const sectionsRef = useRef([]);
 
     useEffect(() => {
@@ -252,7 +252,7 @@ const Home = () => {
                 </section>
                 
                 <section ref={(el) => (sectionsRef.current[1] = el)}>
-                    {!isLoading && <HomeCarousel onEyeClick={() => setPopupVisible(null)} slides={cardInfo} title="Pre-Owned iPhones"/>}
+                    {!isLoading && <HomeCarousel setShowCartPopup={setShowCartPopup}  slides={cardInfo} title="Pre-Owned iPhones"/>}
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[2] = el)} className="category-container">
@@ -271,6 +271,7 @@ const Home = () => {
                     {!isLoading && <HomeCarousel slides={cardInfo} title="Best Sellers"/>}
                 </section>
             </main>
+            {ShowCartPopup && <CartPopup onClose={() => setShowCartPopup(false)} />}
             
             <Footer />
         </div>
