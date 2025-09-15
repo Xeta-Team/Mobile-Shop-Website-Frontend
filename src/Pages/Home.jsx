@@ -244,11 +244,11 @@ const Home = () => {
 
             <main className="py-16 px-4 md:px-8 space-y-20 md:space-y-24 overflow-hidden">
                 <section ref={(el) => (sectionsRef.current[0] = el)}>
-                    <SliderCard />
+                    <SliderCard isloading={isLoading}/>
                 </section>
                 
                 <section ref={(el) => (sectionsRef.current[1] = el)}>
-                    {!isLoading && <HomeCarousel slides={cardInfo} title="Pre-Owned iPhones"/>}
+                    <HomeCarousel slides={cardInfo} title="Pre-Owned iPhones" isLoading={isLoading}/>
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[2] = el)} className="category-container">
@@ -256,7 +256,7 @@ const Home = () => {
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[3] = el)}>
-                    {!isLoading && <HomeCarousel slides={cardInfo} title="New Arrivals"/>}
+                    <HomeCarousel slides={cardInfo} title="New Arrivals" isLoading={isLoading}/>
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[4] = el)}>
@@ -264,7 +264,7 @@ const Home = () => {
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[5] = el)}>
-                    {!isLoading && <HomeCarousel slides={cardInfo} title="Best Sellers"/>}
+                    <HomeCarousel slides={cardInfo} title="Best Sellers" isLoading={isLoading}/>
                 </section>
             </main>
             
