@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import HoverTranslateCard from "../Cards/HoverTranslateCard";
+import { PuffLoader } from "react-spinners";
 
-const HomeCarousel = ({ slides, title, setShowCartPopup }) => {
-  
+const HomeCarousel = ({ slides, title, setShowCartPopup, isLoading }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     dragFree: false,
@@ -32,9 +32,11 @@ const HomeCarousel = ({ slides, title, setShowCartPopup }) => {
     emblaApi.on("select", onSelect)
     onSelect()
   }, [emblaApi])
+  
 
   return (
-    <div className="relative mx-1">
+    <>
+    {!isLoading ? (<div className="relative mx-1">
       <div className="flex gap-2 justify-between mx-1 md:mx-8">
           {title ? <h1 className="text-5xl font-sans font-bold">{title}</h1> : 
           (<div className="bg-black rounded-full">
@@ -77,7 +79,8 @@ const HomeCarousel = ({ slides, title, setShowCartPopup }) => {
           ))}
         </div>
       </div>
-    </div>
+    </div>) : (<PuffLoader size={80} className="m-auto"/>)}
+    </>
   )
 }
 
