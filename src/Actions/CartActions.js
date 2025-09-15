@@ -20,3 +20,11 @@ export const addToCart = (product) => {
     }
     saveCart(cart)
 }
+
+export const deleteCartItem = (deleteItemId, setUpdateCartItems) => {
+    const cartItems = getCartItems()
+
+    const updateCartItems = cartItems.filter((item) => item.id !== deleteItemId)
+    setUpdateCartItems(updateCartItems)
+    saveCart(updateCartItems)
+}

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router";
-const Cart = ({cartItems, handdleQuantityChange, subTotal, isCartSideModelShow}) => {
+import { Link, useNavigate } from "react-router";
+import { deleteCartItem } from "../../../../Actions/CartActions";
+const Cart = ({cartItems, setIsCartSideModelshow,setCartItems,handdleQuantityChange, subTotal, isCartSideModelShow}) => {
     const [progress, setProgress] = useState(0);
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (isCartSideModelShow) {
@@ -25,7 +27,10 @@ const Cart = ({cartItems, handdleQuantityChange, subTotal, isCartSideModelShow})
                 Not sure where to start?
                 <span className="block">Try these collections:</span>
             </p>
-            <button className="flex justify-between w-full bg-gray-50 hover:bg-gray-100 hover:cursor-pointer p-3 rounded-full group">
+            <button onClick={() => {
+                setIsCartSideModelshow(false)
+                navigate('/')
+            }} className="flex justify-between w-full bg-gray-50 hover:bg-gray-100 hover:cursor-pointer p-3 rounded-full group">
                 <p style={{ color: "#171717" }}>Continue shopping</p>
                 <div className="transition-transform -translate-x-1 duration-300 group-hover:translate-x-0">
                 <svg
@@ -119,6 +124,7 @@ const Cart = ({cartItems, handdleQuantityChange, subTotal, isCartSideModelShow})
                         <button
                             className="text-[12px] hover:cursor-pointer"
                             style={{ color: "#171717" }}
+                            onClick={() => {deleteCartItem(item.id, setCartItems)}}
                         >
                             <span className="remove-hover-underline">Remove</span>
                         </button>

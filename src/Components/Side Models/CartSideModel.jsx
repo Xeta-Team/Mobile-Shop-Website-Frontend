@@ -61,7 +61,7 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
   return (
     <>
       <div
-        className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:rounded-t-[0px] md:h-[100vh] md:top-0 md:right-0 bg-white md:w-3/7 md:rounded-l-[50px] fixed z-20
+        className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:rounded-t-[0px] md:h-[100vh] md:top-0 md:right-0 bg-white md:w-2/6 md:rounded-l-[50px] fixed z-20
             ${
               disableTransition ? "transition-none" : "transition-transform duration-1000 ease-out"
             }
@@ -89,7 +89,7 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
                   {cartItems.length}
                 </div>
                 <button
-                  className={`text-[24px] md:text-[30px] ${
+                  className={`text-[20px] md:text-[25px] ${
                     isCartClicked
                       ? "text-black"
                       : "text-gray-300 hover:text-black"
@@ -102,7 +102,7 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
                 </button>
               </div>
               <button
-                className={`text-[24px] md:text-[30px] ${
+                className={`text-[20px] md:text-[25px] ${
                   isCartClicked
                     ? "text-gray-300 hover:text-black"
                     : "text-black"
@@ -143,7 +143,7 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
             </button>
           </div>
           <div className="pt-[20px] md:pt-[32px] overflow-y-auto">
-            {isCartClicked ? <Cart cartItems={cartItems} handdleQuantityChange={handdleQuantityChange} subTotal={subTotal} isCartSideModelShow={isCartSideModelShow}/> 
+            {isCartClicked ? <Cart cartItems={cartItems} setIsCartSideModelshow={setIsCartSideModelshow} setCartItems={setCartItems} handdleQuantityChange={handdleQuantityChange} subTotal={subTotal} isCartSideModelShow={isCartSideModelShow}/> 
             : <RecentViews recentItems={recentItems}/>}
           </div>
         </div>
