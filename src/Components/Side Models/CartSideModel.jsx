@@ -85,9 +85,9 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
             <hr className="w-12 border-2 rounded-full md:hidden absolute top-4 left-[43%] border-gray-200"/>
             <div className="space-x-12 flex">
               <div className="flex relative">
-                <div className="absolute top-0 -right-3 text-black">
+                {cartItems.length > 0 && (<div className="absolute top-0 -right-3 text-black">
                   {cartItems.length}
-                </div>
+                </div>)}
                 <button
                   className={`text-[20px] md:text-[25px] ${
                     isCartClicked
