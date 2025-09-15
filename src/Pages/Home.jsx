@@ -19,15 +19,12 @@ import CartPopup from "../Components/popup/CartPopup";
 const HeroSection = () => {
     const videoRef = useRef(null);
     const [playCount, setPlayCount] = useState(0);
-   
-
     const handleVideoEnd = () => {
         setPlayCount(currentCount => currentCount + 1);
     };
 
     useEffect(() => {
         const videoElement = videoRef.current;
-        
         // Replay the video if it has ended but not yet reached the play limit of 3.
         if (videoElement && playCount > 0 && playCount < 3) {
             videoElement.currentTime = 0; // Rewind the video to the start
@@ -272,10 +269,11 @@ const Home = () => {
                 </section>
             </main>
             {ShowCartPopup && <CartPopup onClose={() => setShowCartPopup(false)} />}
-            
             <Footer />
         </div>
     );
 };
 
+
 export default Home;
+

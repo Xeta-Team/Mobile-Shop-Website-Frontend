@@ -6,6 +6,8 @@ import InputField from '../Components/Input/InputField.jsx';
 import Toast from '../Components/Toast/Toast.jsx';
 import { useNavigate } from 'react-router';
 
+///// ***** Need to varify the email user provide when normal registration *****
+
 // SVG Icon for Google
 const GoogleIcon = () => (
     <svg className="w-5 h-5" viewBox="0 0 48 48">
