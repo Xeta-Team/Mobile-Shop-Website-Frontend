@@ -8,6 +8,7 @@ import HomeCarousel from "../Components/Carousels/HomeCarousel";
 import SliderCard from "../Components/Carousels/SliderCards";
 import TopNavigationBar from "../Components/TopNavigationBar";
 import shopLogoWhite from '../assest/wlogo.png'; // Assuming this is the white logo
+import CartPopup from "../Components/popup/CartPopup";
 
 // --- NEW COMPONENTS DEFINED WITHIN Home.jsx ---
 
@@ -18,7 +19,6 @@ import shopLogoWhite from '../assest/wlogo.png'; // Assuming this is the white l
 const HeroSection = () => {
     const videoRef = useRef(null);
     const [playCount, setPlayCount] = useState(0);
-
     const handleVideoEnd = () => {
         setPlayCount(currentCount => currentCount + 1);
     };
@@ -176,6 +176,7 @@ const Footer = () => {
 const Home = () => {
     const [cardInfo, setCardInfo] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+  const [ShowCartPopup, setShowCartPopup] = useState(false)
     const sectionsRef = useRef([]);
 
     useEffect(() => {
@@ -248,7 +249,7 @@ const Home = () => {
                 </section>
                 
                 <section ref={(el) => (sectionsRef.current[1] = el)}>
-                    <HomeCarousel slides={cardInfo} title="Pre-Owned iPhones" isLoading={isLoading}/>
+                    {!isLoading && <HomeCarousel setShowCartPopup={setShowCartPopup}  slides={cardInfo} isLoading={isLoading} title="Pre-Owned iPhones"/>}
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[2] = el)} className="category-container">
@@ -267,11 +268,12 @@ const Home = () => {
                     <HomeCarousel slides={cardInfo} title="Best Sellers" isLoading={isLoading}/>
                 </section>
             </main>
-            
+            {ShowCartPopup && <CartPopup onClose={() => setShowCartPopup(false)} />}
             <Footer />
         </div>
     );
 };
+
 
 export default Home;
 

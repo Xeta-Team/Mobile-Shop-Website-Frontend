@@ -1,7 +1,8 @@
 import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router";
+import CartPopup from "../popup/CartPopup";
 
-const HoverTranslateCard = ({card,index}) => {
+const HoverTranslateCard = ({card,index, setShowCartPopup}) => {
   const containerRef = useRef()
   const [activeIndex, setActiveIndex] = useState(0)
   const navigate = useNavigate()
@@ -22,7 +23,9 @@ const HoverTranslateCard = ({card,index}) => {
   
     return(
       <div key={index} className="w-[290px] h-[450px] mt-5 bg-white overflow-visible rounded-2xl group relative">
-        <button className="w-10 h-10 hidden md:flex justify-center items-center rounded-full bg-black hover:cursor-pointer text-white absolute z-10 -left-5 -top-2 opacity-0 group-hover:opacity-100">
+        <button 
+          onClick={() => setShowCartPopup(true)}
+          className="w-10 h-10 hidden md:flex justify-center items-center rounded-full bg-black hover:cursor-pointer text-white absolute z-10 -left-5 -top-2 opacity-0 group-hover:opacity-100">
           <img 
           src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABVUlEQVR4nO2UMUsDQRCFU6TzMJrWk4ABD/9ECP4VtfIXWER/S8qEQBqJIAhibCy0sLCJYpFWRRPU8guDL3AOq3exCBZ5sHDMe/P2ZnZ2C4UF/jWAMrAPHAND4FNrqJhx5b8YF4EDYEw2xtIW85rHwFXK4BTYARJgSStRzLgpLCfOMq8AD0q4B2o5fqgGDJRjuZWfhBFwJ+EFsJLi1oEOMNLqWhUpvgScK9c8otAGTQlu0gK+zJ8DvX8xzv2g5Rqa3rwu4gOoOq4jzqZmTWfUU6zttFV5GOppoq/gYaCykbjYVWV4C+gb4vqhDRozbvAa0B+FNpi26B3YcAldcT21x8xPFGs57aYu4vcWuUO+tllPxRMdqMeTq2oZuA0ecmBMbeRKriVt67lWy5mvApe/jmngog1yXrRt4DHzomU8FbvAlqqM9L0HnM30VMzlsZvLc73AXDEBG+8c+C3rAPAAAAAASUVORK5CYII=" 
           alt="visible--v1"/>
@@ -88,7 +91,9 @@ const HoverTranslateCard = ({card,index}) => {
           ))}
           </div>
         </div>
+        
       </div>
+      
     )
 }
 

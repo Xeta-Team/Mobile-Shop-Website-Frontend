@@ -353,4 +353,3 @@ function ConfirmationModal({ productName, onConfirm, onCancel }) {
     </div>
   );
 }
-

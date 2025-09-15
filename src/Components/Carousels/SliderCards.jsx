@@ -35,13 +35,20 @@ function SliderCard({isloading}) {
     className: "center",
     variableWidth:true,
     infinite: false,
-    slidesToShow: 3,
+    slidesToShow: 5,
     speed: 500,
     nextArrow: <NextArrow />,  // ✅ Custom Next Arrow
     prevArrow: <PrevArrow />,  // ✅ Custom Prev Arrow
   };
 
   const cardsData = [
+    {
+      id: 1,
+      title: "16 Pro black - gold",
+        subtitle: "Now or Never",
+        imageUrl: "https://www.apple.com/in/iphone-16-pro/images/overview/product-stories/design/display__f5509jfp9nyq_xlarge_2x.jpg",
+        link: "#"
+    },
     {
       id: 1,
       title: "16 Pro black - gold",
