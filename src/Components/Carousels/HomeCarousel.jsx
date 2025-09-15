@@ -32,7 +32,6 @@ const HomeCarousel = ({ slides, title, isLoading }) => {
     emblaApi.on("select", onSelect)
     onSelect()
   }, [emblaApi])
-  console.log(isLoading);
   
 
   return (

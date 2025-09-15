@@ -7,6 +7,7 @@ import HomeCarousel from './Components/Carousels/HomeCarousel';
 import TopNavigationBar from './Components/TopNavigationBar';
 import Footer from './Components/Footer';
 import { PuffLoader } from "react-spinners";
+import { toast } from 'react-toastify';
 
 export default function ProductOverView() {
   const { productId } = useParams()
@@ -31,7 +32,7 @@ export default function ProductOverView() {
       setProductPrice(productRes.data.variants[0].price)
       setIsLoading(false)
     }catch(error){
-      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong")
     }
   }
 
@@ -42,10 +43,9 @@ export default function ProductOverView() {
       setCardInfo(productRes.data.firstFiveDevices)
       setIsLoading(false)
     }catch(error){
-      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong")
     }
   }
-  console.log(productDetails);
   
   
   return (<>
