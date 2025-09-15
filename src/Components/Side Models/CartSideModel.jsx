@@ -61,7 +61,7 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
   return (
     <>
       <div
-        className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:rounded-t-[0px] md:h-[100vh] md:top-0 md:right-0 bg-white md:w-2/6 md:rounded-l-[50px] fixed z-20
+        className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:rounded-t-[0px] md:h-[100vh] md:top-0 md:right-0 bg-white md:w-3/8 md:rounded-l-[50px] fixed z-20
             ${
               disableTransition ? "transition-none" : "transition-transform duration-1000 ease-out"
             }
