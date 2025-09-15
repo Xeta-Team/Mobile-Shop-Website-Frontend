@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import HoverTranslateCard from "../Cards/HoverTranslateCard";
 
-const HomeCarousel = ({ slides, title }) => {
+const HomeCarousel = ({ slides, title, setShowCartPopup }) => {
   
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
@@ -17,6 +17,7 @@ const HomeCarousel = ({ slides, title }) => {
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
+  const [isVisible, setIsVisible] = useState(null)
 
 
   useEffect(() => {
@@ -71,7 +72,7 @@ const HomeCarousel = ({ slides, title }) => {
         <div className="flex m-auto w-full h-full gap-4 md:gap-0">
           {slides.map((card, index) => (
             <div key={index} className="flex-[0_0_70%] md:flex-[0_0_20%] md:ml-[25px]">
-              <HoverTranslateCard card={card} index={index} />
+              <HoverTranslateCard card={card} index={index} setShowCartPopup={setShowCartPopup}/>
             </div>
           ))}
         </div>
