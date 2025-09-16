@@ -5,8 +5,14 @@ import AdminDashboard from './Pages/Admin/AdminDashboard';
 import UserRegistration from './Pages/UserReistration';
 import UserDashboard from './Pages/User/UserDashboard';
 import ProductOverView from './ProductOverView';
+import IphonePage from './Pages/ProductPages/Iphone';
+import MacPage from './Pages/ProductPages/MacBook';
 import LoginPage from './Pages/Login';
 import { ToastContainer } from 'react-toastify';
+import IpadPage from './Pages/ProductPages/Ipad';
+import WatchPage from './Pages/ProductPages/Iwatch';
+import AirpodPage from './Pages/ProductPages/Airpod';
+
 
 const App = () => {
   return (
@@ -22,6 +28,11 @@ const App = () => {
           <Route path="/register" element={<UserRegistration />}/>
           <Route path='/product/:productId' element={<ProductOverView/>}/>
           <Route path="/user/*" element={<UserDashboard />}/>
+          <Route path="/iphone" element={<IphonePage/>} />
+          <Route path="/mac" element={<MacPage/>} />
+          <Route path='/ipad' element={<IpadPage/>}/>
+          <Route path='/watch' element={<WatchPage/>}/>
+          <Route path='/airpod' element={<AirpodPage/>}/>
 
         </Routes>
       </main>
@@ -37,6 +48,7 @@ const App = () => {
       draggable
       pauseOnHover
       theme="light"
+
 />
     </>
   )

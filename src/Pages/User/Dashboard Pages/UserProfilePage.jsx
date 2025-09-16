@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { User, Mail, Phone, MapPin, Edit3, Save, Camera, Loader, AlertCircle } from 'lucide-react';
 import Toast from '../../../Components/Toast/Toast.jsx';
 import InputField from '../../../Components/Input/InputField.jsx';
+<<<<<<< HEAD
 import apiClient from '../../../../../Mobile-Shop-Website-Backend/controllers/axiosConfig.js';
+=======
+import apiClient from '../../../../../Mobile-Shop-Website-Backend-main/controllers/axiosConfig.js';
+import { useSearchParams } from 'react-router';
+>>>>>>> 42641148fa77b0febd117d4244741be89ebeddcc
 
 export default function UserProfilePage() {
     const [isEditing, setIsEditing] = useState(false);
@@ -11,6 +16,7 @@ export default function UserProfilePage() {
     const [user, setUser] = useState(null);
     const [editableUser, setEditableUser] = useState(null);
     const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
+    const [searchParams] = useSearchParams();
 
     const showToast = (message, type = 'info') => {
         setToast({ show: true, message, type });
@@ -18,6 +24,12 @@ export default function UserProfilePage() {
     };
 
     useEffect(() => {
+        const token = searchParams.get('token')
+        
+        if(token){
+            localStorage.setItem('token', token)
+        }
+
         const fetchUserProfile = async () => {
             try {
                 const { data } = await apiClient.get('/users/profile');
@@ -43,6 +55,7 @@ export default function UserProfilePage() {
 
         fetchUserProfile();
     }, []);
+    
     
 
     const handleInputChange = (e) => {
@@ -76,6 +89,7 @@ export default function UserProfilePage() {
             setIsSubmitting(false);
         }
     };
+    
 
     const handleCancelEdit = () => {
         setEditableUser(user);

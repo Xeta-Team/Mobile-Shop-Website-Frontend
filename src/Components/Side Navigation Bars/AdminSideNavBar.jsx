@@ -17,7 +17,7 @@ const AdminSideNavBar = () => {
     return(<>
         <aside id="sidebar-multi-level-sidebar" className="w-full h-full">
             <div className="h-[70px] w-[60%] m-auto">
-                <img src={Logo} className=""/>
+                <a href="/"><img src={Logo} className=""/></a>
             </div>
 
             <div className="h-full px-1 py-7 overflow-y-auto dark:bg-gray-800">
