@@ -12,7 +12,7 @@ import { ToastContainer } from 'react-toastify';
 import IpadPage from './Pages/ProductPages/Ipad';
 import WatchPage from './Pages/ProductPages/Iwatch';
 import AirpodPage from './Pages/ProductPages/Airpod';
-
+import Checkout from './Pages/Order/Checkout';
 
 const App = () => {
   return (
@@ -33,6 +33,7 @@ const App = () => {
           <Route path='/ipad' element={<IpadPage/>}/>
           <Route path='/watch' element={<WatchPage/>}/>
           <Route path='/airpod' element={<AirpodPage/>}/>
+          <Route path="/checkout" element={<Checkout />} />
 
         </Routes>
       </main>
