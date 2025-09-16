@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import apiClient from '../../../../Mobile-Shop-Website-Backend-main/controllers/axiosConfig'
+import apiClient from '../../api/axiosConfig'
 import { toast } from 'react-toastify';
 
 // Simple Input Component for reusability
