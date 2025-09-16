@@ -10,34 +10,26 @@ const UserProfile = () => <div className='p-8'><h1 className='text-2xl font-bold
 const UserWishlist = () => <div className='p-8'><h1 className='text-2xl font-bold'>My Wishlist</h1></div>;
 
 export default function UserDashboard() {
-    // const [searchParams] = useSearchParams();
-    // const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const token = localStorage.getItem('token');
-    //     const storedToken = localStorage.getItem('authToken');
-    //     if (token || storedToken) {
-    //         console.log("Token received, saving to localStorage.");
-    //         localStorage.setItem('authToken', token);
-    //         navigate('/user', { replace: true });
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const storedToken = localStorage.getItem('authToken');
 
-    //     }else  {
-    //         console.log("No token found, redirecting to login.");
-    //          navigate('/login');
-    //      }
+        if (token || storedToken) {
+            localStorage.setItem('authToken', token);
+            navigate('/user', { replace: true });
+
+        }else  {
+            console.log("No token found, redirecting to login.");
+             navigate('/login');
+         }
         
-    // }, [searchParams, navigate]);
-
-    // useEffect(() => {
-    //     const storedToken = localStorage.getItem('authToken');
-    //     if (!storedToken) {
-    //         console.log("No token found, redirecting to login.");
-    //         navigate('/login');
-    //     }
-    // }, [navigate]);
+    }, [searchParams, navigate]);
 
     return (
-        <div className="w-full h-screen flex">
+        <div className="w-full h-screen flex overflow-hidden">
             <div className="w-[280px] font-sans">
                 <UserSideNavBar />
             </div>

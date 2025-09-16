@@ -57,7 +57,7 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
     }
     
     return(<>
-        <div className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:h-[100vh] md:top-0 md:right-0 bg-white md:w-3/7 md:rounded-t-[0px] md:rounded-l-[50px] fixed z-20
+        <div className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:h-[100vh] md:top-0 md:right-0 bg-white md:w-3/8 md:rounded-t-[0px] md:rounded-l-[50px] fixed z-20
             ${
               disableTransition ? "transition-none" : "transition-transform duration-1000 ease-out"
             }
@@ -76,7 +76,7 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
             <div className="flex flex-col h-full">
                 <div className="relative border-b-1 border-gray-200 px-[20px] pt-[32px] pb-[24px] md:p-10 flex justify-between">
                     <hr className="w-12 border-2 rounded-full md:hidden absolute top-4 left-[43%] border-gray-200"/>
-                    <h1 className="text-[24px] md:text-[30px] text-black font-bold font-inter-sans">Search</h1>
+                    <h1 className="text-[20px] md:text-[25px] text-black font-bold font-inter-sans">Search</h1>
                     <button className="rounded-full bg-black w-[48px] h-[48px] hidden md:flex justify-center items-center hover:cursor-pointer
                         transition-transform duration-300 ease-in-out hover:rotate-90
                     "

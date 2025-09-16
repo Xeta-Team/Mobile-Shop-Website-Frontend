@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
-import { addToCart } from "../../../Actions/CartActions.js";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { CartContext } from "../../../Actions/CartContext.jsx";
 
 const ProductDetails = ({productId, mainImage, productPrice, variants, setProductPrice, selectedColor, setSelectedColor, selectedStorage, setSelectedStorage, productName}) => {
   const [isOutOfStock, setIsOutOfStock] = useState(false)
@@ -8,6 +8,7 @@ const ProductDetails = ({productId, mainImage, productPrice, variants, setProduc
     minimumFractionDigits: 2, 
     maximumFractionDigits: 2 
   });
+  const { addToCart } = useContext(CartContext)
   
   const checkAvailability = () => {
     const item = variants.find((v) => v.colorName == selectedColor && v.storage == selectedStorage)

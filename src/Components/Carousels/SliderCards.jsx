@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { PuffLoader } from "react-spinners";
 
 const NextArrow = ({ onClick }) => {
   return (
@@ -29,18 +30,25 @@ const PrevArrow = ({ onClick }) => {
   );
 };
 
-function SliderCard() {
+function SliderCard({isloading}) {
   const settings = {
     className: "center",
     variableWidth:true,
     infinite: false,
-    slidesToShow: 3,
+    slidesToShow: 5,
     speed: 500,
     nextArrow: <NextArrow />,  // ✅ Custom Next Arrow
     prevArrow: <PrevArrow />,  // ✅ Custom Prev Arrow
   };
 
   const cardsData = [
+    {
+      id: 1,
+      title: "16 Pro black - gold",
+        subtitle: "Now or Never",
+        imageUrl: "https://www.apple.com/in/iphone-16-pro/images/overview/product-stories/design/display__f5509jfp9nyq_xlarge_2x.jpg",
+        link: "#"
+    },
     {
       id: 1,
       title: "16 Pro black - gold",
@@ -80,7 +88,7 @@ function SliderCard() {
 
   return (
     <div className="slider-container relative w-auto mx-auto my-5 ">
-      <Slider {...settings}>
+      {!isloading ? (<Slider {...settings}>
         {cardsData.map((card) => (
           <div key={card.id} className="flex justify-center h-[380px]">
             <ReusableCard
@@ -91,7 +99,7 @@ function SliderCard() {
             />
           </div>
         ))}
-      </Slider>
+      </Slider>): <PuffLoader size={80} className="m-auto"/>}
     </div>
   );
 }
