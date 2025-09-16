@@ -60,9 +60,11 @@ export default function LoginPage() {
         try {
             const apiUrl = 'http://localhost:3001/api/users/login';
             const response = await axios.post(apiUrl, formData);
-
+            
             // Store token and user data in local storage
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('userId', response.data.user.id);
+            
             
             showToast('Login successful! Redirecting...', 'success');
 
@@ -92,6 +94,7 @@ export default function LoginPage() {
 
             // Store token and user
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('userId', response.data.user.id);
 
             showToast('Google login successful!', 'success');
 
