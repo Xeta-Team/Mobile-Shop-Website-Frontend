@@ -1,5 +1,9 @@
+import { useNavigate } from "react-router"
+
 const NavigrationBarActionBtns = ({setIsSideModelShow, setIsCartSideModelShow}) => {
+    const navigate = useNavigate()
     return(<>
+
         <div className="flex items-center md:order-2 space-x-3 md:space-x-6 rtl:space-x-reverse">
             <button className="hover:cursor-pointer"
                 onClick={() => {setIsSideModelShow(true)}}
@@ -25,7 +29,10 @@ const NavigrationBarActionBtns = ({setIsSideModelShow, setIsCartSideModelShow}) 
                     </g>
                 </svg>
             </button>
-            <button className="hover:cursor-pointer hidden md:flex">
+            <button className="hover:cursor-pointer hidden md:flex"
+            onClick={() => {navigate("/user")}}
+            
+            >
                 <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="30px"
