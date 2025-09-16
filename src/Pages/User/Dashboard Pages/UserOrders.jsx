@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Route, Routes, Link, useLocation } from "react-router-dom";
+import { useEffect } from 'react';
+import { toast } from 'react-toastify';
+import apiClient from '../../../api/axiosConfig';
+import { PuffLoader } from "react-spinners";
 
 // --- Helper Components & Icons ---
 const ShoppingBagIcon = () => (
@@ -8,46 +11,46 @@ const ShoppingBagIcon = () => (
 
 
 // --- Mock Data ---
-const mockOrders = [
-    {
-        id: '#345-098',
-        date: '2024-07-22',
-        status: 'Delivered',
-        total: 129.98,
-        items: [
-            { id: 1, name: 'Classic Leather Watch', quantity: 1, price: 89.99, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=Watch' },
-            { id: 2, name: 'Minimalist Wallet', quantity: 1, price: 39.99, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=Wallet' },
-        ],
-    },
-    {
-        id: '#345-099',
-        date: '2024-07-20',
-        status: 'Shipped',
-        total: 75.50,
-        items: [
-            { id: 3, name: 'Wireless Bluetooth Earbuds', quantity: 1, price: 75.50, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=Earbuds' },
-        ],
-    },
-    {
-        id: '#345-100',
-        date: '2024-07-18',
-        status: 'Processing',
-        total: 214.00,
-        items: [
-            { id: 4, name: 'Running Shoes', quantity: 1, price: 120.00, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=Shoes' },
-            { id: 5, name: 'Smart Water Bottle', quantity: 1, price: 94.00, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=Bottle' },
-        ],
-    },
-    {
-        id: '#345-097',
-        date: '2024-07-15',
-        status: 'Cancelled',
-        total: 49.99,
-        items: [
-            { id: 6, name: 'Graphic T-Shirt', quantity: 1, price: 49.99, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=T-Shirt' },
-        ],
-    },
-];
+// const mockOrders = [
+//     {
+//         id: '#345-098',
+//         date: '2024-07-22',
+//         status: 'Delivered',
+//         total: 129.98,
+//         items: [
+//             { id: 1, name: 'Classic Leather Watch', quantity: 1, price: 89.99, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=Watch' },
+//             { id: 2, name: 'Minimalist Wallet', quantity: 1, price: 39.99, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=Wallet' },
+//         ],
+//     },
+//     {
+//         id: '#345-099',
+//         date: '2024-07-20',
+//         status: 'Shipped',
+//         total: 75.50,
+//         items: [
+//             { id: 3, name: 'Wireless Bluetooth Earbuds', quantity: 1, price: 75.50, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=Earbuds' },
+//         ],
+//     },
+//     {
+//         id: '#345-100',
+//         date: '2024-07-18',
+//         status: 'Processing',
+//         total: 214.00,
+//         items: [
+//             { id: 4, name: 'Running Shoes', quantity: 1, price: 120.00, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=Shoes' },
+//             { id: 5, name: 'Smart Water Bottle', quantity: 1, price: 94.00, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=Bottle' },
+//         ],
+//     },
+//     {
+//         id: '#345-097',
+//         date: '2024-07-15',
+//         status: 'Cancelled',
+//         total: 49.99,
+//         items: [
+//             { id: 6, name: 'Graphic T-Shirt', quantity: 1, price: 49.99, image: 'https://placehold.co/100x100/e2e8f0/4a5568?text=T-Shirt' },
+//         ],
+//     },
+// ];
 
 // --- Status Badge Component ---
 const StatusBadge = ({ status }) => {
@@ -64,13 +67,27 @@ const StatusBadge = ({ status }) => {
 
 // --- NEW UserOrders Component ---
 const UserOrders = () => {
-    const [orders, setOrders] = useState(mockOrders);
+    const [orders, setOrders] = useState();
+    const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState('All');
-    const filters = ['All', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+    const filters = ['All', 'Pending', 'Shipped', 'Delivered', 'Cancelled'];
+
+    useEffect(() => {
+        const fetchOrders = async() => {
+            try{
+                const getOrdersRes = await apiClient.get('/orders')
+                setOrders(getOrdersRes.data.orders)
+                setLoading(false)
+            }catch(error){
+                toast.error(error)
+            }
+        }
+        fetchOrders()
+    }, [])
 
     const filteredOrders = activeFilter === 'All'
         ? orders
-        : orders.filter(order => order.status === activeFilter);
+        : orders.filter(order => order.orderStatus === activeFilter);
 
     // Empty state component for when there are no orders
     const NoOrders = () => (
@@ -87,7 +104,9 @@ const UserOrders = () => {
     );
 
     return (
-        <div className="p-4 sm:p-6 md:p-8 font-sans bg-gray-50">
+        <>
+        {!loading ? (
+            <div className="p-4 sm:p-6 md:p-8 font-sans bg-gray-50">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-6 md:flex md:items-center md:justify-between">
@@ -118,22 +137,22 @@ const UserOrders = () => {
                                 <div className="bg-gray-50 p-4 sm:p-6 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center">
                                     <div className="mb-4 sm:mb-0">
                                         <p className="text-sm text-gray-500">Order ID</p>
-                                        <p className="font-bold text-gray-800">{order.id}</p>
+                                        <p className="font-bold text-gray-800">{order._id}</p>
                                     </div>
                                     <div className="mb-4 sm:mb-0 sm:text-center">
                                         <p className="text-sm text-gray-500">Date Placed</p>
-                                        <p className="font-semibold text-gray-700">{order.date}</p>
+                                        <p className="font-semibold text-gray-700">{order.createdAt}</p>
                                     </div>
                                     <div className="sm:text-right">
                                          <p className="text-sm text-gray-500 mb-1">Status</p>
-                                         <StatusBadge status={order.status} />
+                                         <StatusBadge status={order.orderStatus} />
                                     </div>
                                 </div>
 
                                 {/* Order Items */}
                                 <div className="p-4 sm:p-6 space-y-4">
-                                    {order.items.map(item => (
-                                        <div key={item.id} className="flex items-center space-x-4">
+                                    {order.orderItems.map((item, indx) => (
+                                        <div key={indx} className="flex items-center space-x-4">
                                             <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-md flex-shrink-0 bg-gray-200" />
                                             <div className="flex-grow">
                                                 <p className="font-semibold text-gray-800">{item.name}</p>
@@ -148,7 +167,7 @@ const UserOrders = () => {
                                 <div className="bg-gray-50 p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
                                      <div className="text-lg">
                                         <span className="font-semibold text-gray-600">Order Total: </span>
-                                        <span className="font-bold text-gray-800">${order.total.toFixed(2)}</span>
+                                        <span className="font-bold text-gray-800">${order.totalPrice.toFixed(2)}</span>
                                      </div>
                                      <div className="flex items-center space-x-3">
                                         <button className="text-sm text-gray-600 font-semibold hover:text-gray-900 transition">View Details</button>
@@ -165,6 +184,10 @@ const UserOrders = () => {
                 )}
             </div>
         </div>
+        ) : (<div className='flex justify-center items-center min-h-[500px]'>
+            <PuffLoader size={80} className="m-auto"/>
+        </div>)}
+        </>
     );
 };
 
