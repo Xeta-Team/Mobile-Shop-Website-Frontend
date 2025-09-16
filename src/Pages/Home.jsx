@@ -4,6 +4,7 @@ import SliderCard from "../Components/Carousels/SliderCards"
 import TopNavigationBar from "../Components/TopNavigationBar"
 import axios from "axios"
 import { useState } from "react"
+import ScrollVideo from "../Components/ScrollTrigger"
 
 const Home = () => {
   const [cardInfo, setCardInfo] = useState([])
@@ -24,6 +25,7 @@ const Home = () => {
   }
     return(<>
         <TopNavigationBar/>
+        
         <div className="p-8 min-h-screen overflow-visible">
             <SliderCard/>
             {!isLoading && <HomeCarousel slides={cardInfo}/>}
