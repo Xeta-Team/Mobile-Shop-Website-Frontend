@@ -13,8 +13,8 @@ const UserSideNavBar = () => {
 
     return (
         <aside id="sidebar-user" className="w-full h-full border-r">
-            <div className="h-[70px] w-[60%] m-auto flex items-center justify-center">
-                <img src={Logo} alt="Mobile 4N Shop Logo" />
+            <div className="h-[70px] w-[60%] m-auto flex items-center justify-center pt-10">
+                <img src={Logo} onClick={() => {navigate('/')}} alt="Mobile 4N Shop Logo" className="cursor-pointer"/>
             </div>
             <div className="h-full px-1 py-7 overflow-y-auto">
                 <ul className="space-y-2">
