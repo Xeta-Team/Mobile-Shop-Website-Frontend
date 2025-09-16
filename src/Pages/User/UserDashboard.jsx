@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import { Route, Routes, useSearchParams, useNavigate } from "react-router-dom";
 import UserSideNavBar from '../../Components/Side Navigation Bars/UserSideNavBar';
 import UserProfilePage from './Dashboard Pages/UserProfilePage';
+import UserOrders from './Dashboard Pages/UserOrders';
 
 // Placeholder components for the user's sections
 const UserProfile = () => <div className='p-8'><h1 className='text-2xl font-bold'>My Profile</h1></div>;
-const UserOrders = () => <div className='p-8'><h1 className='text-2xl font-bold'>My Orders</h1></div>;
+// const UserOrders = () => <div className='p-8'><h1 className='text-2xl font-bold'>My Orders</h1></div>;
 const UserWishlist = () => <div className='p-8'><h1 className='text-2xl font-bold'>My Wishlist</h1></div>;
 
 export default function UserDashboard() {
