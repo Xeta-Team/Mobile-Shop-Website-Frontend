@@ -49,7 +49,7 @@ const TopNavigationBar = () => {
                 <NavigrationBarActionBtns setIsSideModelShow={setIsSideModelShow} setIsCartSideModelShow={setIsCartSideModelShow}/>
 
                 <div
-                className="flex items-center justify-between hidden w-full md:flex md:flex-col md:w-auto md:order-1 md:text-[17px]"
+                className="flex items-center justify-between w-full md:flex md:flex-col md:w-auto md:order-1 md:text-[17px]"
                 id="navbar-user"
                 >
                     <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 text-white rounded-lg md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0">
