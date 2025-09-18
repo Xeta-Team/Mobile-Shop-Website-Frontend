@@ -307,7 +307,7 @@ export default function AddProduct() {
             mainImage: imageUrls[mainImageIndex] || imageUrls[0] || ''
         };
 
-        const apiUrl = 'http://localhost:3001/api/products/addProduct';
+        const apiUrl = 'http://localhost:4001/api/products/addProduct';
 
         try {
             await axios.post(apiUrl, finalProductData);

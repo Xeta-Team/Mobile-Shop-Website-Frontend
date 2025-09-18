@@ -1,40 +1,14 @@
-<<<<<<< HEAD
-import { useEffect } from "react"
+
+import React, { useEffect, useState, useRef } from "react"
+import axios from "axios"
+import { gsap } from "gsap"
+import { Phone, Tablet, Laptop, Watch, Headphones, Apple, Gamepad2, Tv, ShoppingCart, Twitter, Facebook, Instagram, ArrowRight } from 'lucide-react'
+
 import HomeCarousel from "../Components/Carousels/HomeCarousel"
 import SliderCard from "../Components/Carousels/SliderCards"
-import TopNavigationBar from "../Components/TopNavigationBar"
-import axios from "axios"
-import { useState } from "react"
-import ScrollVideo from "../Components/ScrollTrigger"
-=======
-import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
-import { gsap } from "gsap";
-import { Phone, Tablet, Laptop, Watch, Headphones, Apple, Gamepad2, Tv, ShoppingCart, Twitter, Facebook, Instagram, ArrowRight } from 'lucide-react';
->>>>>>> 42641148fa77b0febd117d4244741be89ebeddcc
-
-// Existing component imports from your project
-import HomeCarousel from "../Components/Carousels/HomeCarousel";
-import SliderCard from "../Components/Carousels/SliderCards";
-import TopNavigationBar from "../Components/TopNavigationBar";
 import shopLogoWhite from '../assest/wlogo.png'; // Assuming this is the white logo
-
-// --- NEW COMPONENTS DEFINED WITHIN Home.jsx ---
-
-<<<<<<< HEAD
-      setCardInfo(productRes.data.firstFiveDevices)
-      setIsLoading(false)
-    }catch(error){
-      console.log(error);
-    }
-  }
-    return(<>
-        <TopNavigationBar/>
-        
-        <div className="p-8 min-h-screen overflow-visible">
-            <SliderCard/>
-            {!isLoading && <HomeCarousel slides={cardInfo}/>}
-=======
+import TopNavigationBar from "../Components/TopNavigationBar"
+// import ScrollVideo from "../Components/ScrollTrigger"\
 /**
  * HeroSection Component
  * @description Creates the main hero banner with a background video and animated text.
@@ -123,7 +97,6 @@ const FeaturedCategories = () => {
                     </div>
                 ))}
             </div>
->>>>>>> 42641148fa77b0febd117d4244741be89ebeddcc
         </div>
     );
 };
@@ -206,7 +179,7 @@ const Home = () => {
     useEffect(() => {
         const fetchSliderData = async () => {
             try {
-                const productRes = await axios.get('http://localhost:3001/api/products/latestPhones');
+                const productRes = await axios.get('http://localhost:4001/api/products/latestPhones');
                 setCardInfo(productRes.data.firstFiveDevices);
             } catch (error) {
                 console.error("Error fetching slider data:", error);

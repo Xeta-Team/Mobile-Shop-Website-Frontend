@@ -36,7 +36,7 @@ export default function ProductListPage() {
 
     const fetchProducts = async () => {
             try {
-                const apiUrl = 'http://localhost:3001/api/products';
+                const apiUrl = 'http://localhost:4001/api/products';
                 const response = await axios.get(apiUrl);
                 setProducts(response.data);
                 setFilteredProducts(response.data);
