@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { User, Mail, Phone, MapPin, Edit3, Save, Camera, Loader, AlertCircle } from 'lucide-react';
 import Toast from '../../../Components/Toast/Toast.jsx';
 import InputField from '../../../Components/Input/InputField.jsx';
-<<<<<<< HEAD
 import apiClient from '../../../../../Mobile-Shop-Website-Backend/controllers/axiosConfig.js';
-=======
-import apiClient from '../../../../../Mobile-Shop-Website-Backend-main/controllers/axiosConfig.js';
 import { useSearchParams } from 'react-router';
->>>>>>> 42641148fa77b0febd117d4244741be89ebeddcc
+
 
 export default function UserProfilePage() {
     const [isEditing, setIsEditing] = useState(false);

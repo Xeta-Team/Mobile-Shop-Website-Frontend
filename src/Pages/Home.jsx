@@ -1,19 +1,8 @@
-<<<<<<< HEAD
-import { useEffect } from "react"
-import HomeCarousel from "../Components/Carousels/HomeCarousel"
-import SliderCard from "../Components/Carousels/SliderCards"
-import TopNavigationBar from "../Components/TopNavigationBar"
-import axios from "axios"
-import { useState } from "react"
-import ScrollVideo from "../Components/ScrollTrigger"
-=======
+
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { gsap } from "gsap";
 import { Phone, Tablet, Laptop, Watch, Headphones, Apple, Gamepad2, Tv, ShoppingCart, Twitter, Facebook, Instagram, ArrowRight } from 'lucide-react';
->>>>>>> 42641148fa77b0febd117d4244741be89ebeddcc
-
-// Existing component imports from your project
 import HomeCarousel from "../Components/Carousels/HomeCarousel";
 import SliderCard from "../Components/Carousels/SliderCards";
 import TopNavigationBar from "../Components/TopNavigationBar";
@@ -21,20 +10,6 @@ import shopLogoWhite from '../assest/wlogo.png'; // Assuming this is the white l
 
 // --- NEW COMPONENTS DEFINED WITHIN Home.jsx ---
 
-<<<<<<< HEAD
-      setCardInfo(productRes.data.firstFiveDevices)
-      setIsLoading(false)
-    }catch(error){
-      console.log(error);
-    }
-  }
-    return(<>
-        <TopNavigationBar/>
-        
-        <div className="p-8 min-h-screen overflow-visible">
-            <SliderCard/>
-            {!isLoading && <HomeCarousel slides={cardInfo}/>}
-=======
 /**
  * HeroSection Component
  * @description Creates the main hero banner with a background video and animated text.
@@ -123,7 +98,6 @@ const FeaturedCategories = () => {
                     </div>
                 ))}
             </div>
->>>>>>> 42641148fa77b0febd117d4244741be89ebeddcc
         </div>
     );
 };
