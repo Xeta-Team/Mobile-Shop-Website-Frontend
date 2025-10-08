@@ -6,6 +6,7 @@ import axios from "axios";
 import { gsap } from "gsap";
 import { Twitter, Facebook, Instagram, ArrowRight } from 'lucide-react';
 import shopLogoWhite from '../assest/wlogo.png'; // Assuming this is the white logo
+import CartPopup from "../Components/popup/CartPopup";
 
 // --- NEW COMPONENTS DEFINED WITHIN Home.jsx ---
 
@@ -16,7 +17,6 @@ import shopLogoWhite from '../assest/wlogo.png'; // Assuming this is the white l
 const HeroSection = () => {
     const videoRef = useRef(null);
     const [playCount, setPlayCount] = useState(0);
-
     const handleVideoEnd = () => {
         setPlayCount(currentCount => currentCount + 1);
     };
@@ -174,6 +174,7 @@ const Footer = () => {
 const Home = () => {
     const [cardInfo, setCardInfo] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+  const [ShowCartPopup, setShowCartPopup] = useState(false)
     const sectionsRef = useRef([]);
 
     useEffect(() => {
@@ -242,11 +243,11 @@ const Home = () => {
 
             <main className="py-16 px-4 md:px-8 space-y-20 md:space-y-24 overflow-hidden">
                 <section ref={(el) => (sectionsRef.current[0] = el)}>
-                    <SliderCard />
+                    <SliderCard isloading={isLoading}/>
                 </section>
                 
                 <section ref={(el) => (sectionsRef.current[1] = el)}>
-                    {!isLoading && <HomeCarousel slides={cardInfo} title="Pre-Owned iPhones"/>}
+                    {!isLoading && <HomeCarousel setShowCartPopup={setShowCartPopup}  slides={cardInfo} isLoading={isLoading} title="Pre-Owned iPhones"/>}
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[2] = el)} className="category-container">
@@ -254,7 +255,7 @@ const Home = () => {
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[3] = el)}>
-                    {!isLoading && <HomeCarousel slides={cardInfo} title="New Arrivals"/>}
+                    <HomeCarousel setShowCartPopup={setShowCartPopup} slides={cardInfo} title="New Arrivals" isLoading={isLoading}/>
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[4] = el)}>
@@ -262,14 +263,15 @@ const Home = () => {
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[5] = el)}>
-                    {!isLoading && <HomeCarousel slides={cardInfo} title="Best Sellers"/>}
+                    <HomeCarousel slides={cardInfo} title="Best Sellers" isLoading={isLoading}/>
                 </section>
             </main>
-            
+            {ShowCartPopup && <CartPopup onClose={() => setShowCartPopup(false)} />}
             <Footer />
         </div>
     );
 };
+
 
 export default Home;
 

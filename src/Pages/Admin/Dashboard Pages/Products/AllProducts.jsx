@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Search, MoreVertical, Edit, Trash2, AlertTriangle, X, Sparkles, Loader, Inbox } from 'lucide-react';
 import ProductRow from '../../../../Components/Table/ProductRow';
-import apiClient from '../../../../../../Mobile Shop Website Backend/controllers/axiosConfig';
+import apiClient from '../../../../api/axiosConfig';
 import Toast from '../../../../Components/Toast/Toast';
 import { toast } from 'react-toastify';
 
@@ -353,4 +353,3 @@ function ConfirmationModal({ productName, onConfirm, onCancel }) {
     </div>
   );
 }
-

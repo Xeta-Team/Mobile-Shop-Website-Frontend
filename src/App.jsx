@@ -12,16 +12,13 @@ import { ToastContainer } from 'react-toastify';
 import IpadPage from './Pages/ProductPages/Ipad';
 import WatchPage from './Pages/ProductPages/Iwatch';
 import AirpodPage from './Pages/ProductPages/Airpod';
-
+import Checkout from './Pages/Order/Checkout';
 
 const App = () => {
   return (
     <>
-    <div className="flex flex-col h-screen">
-
-      <main className="flex-1 overflow-y-auto">
+      <main className="overflow-y-auto">
         <Routes>
-
           <Route path="/" element={<Home />} />
           <Route path="/admin/*" element={<AdminDashboard/>}/>
           <Route path="/login" element={<LoginPage/>}/>
@@ -33,10 +30,10 @@ const App = () => {
           <Route path='/ipad' element={<IpadPage/>}/>
           <Route path='/watch' element={<WatchPage/>}/>
           <Route path='/airpod' element={<AirpodPage/>}/>
+          <Route path="/checkout" element={<Checkout />} />
 
         </Routes>
       </main>
-    </div>
           <ToastContainer
       position="top-right"
       autoClose={5000}

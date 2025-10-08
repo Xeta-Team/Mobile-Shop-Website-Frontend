@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import HoverTranslateCard from "../Cards/HoverTranslateCard";
+import { PuffLoader } from "react-spinners";
 
-const HomeCarousel = ({ slides, title }) => {
-  
+const HomeCarousel = ({ slides, title, setShowCartPopup, isLoading }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     dragFree: false,
@@ -17,6 +17,7 @@ const HomeCarousel = ({ slides, title }) => {
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
+  const [isVisible, setIsVisible] = useState(null)
 
 
   useEffect(() => {
@@ -31,9 +32,11 @@ const HomeCarousel = ({ slides, title }) => {
     emblaApi.on("select", onSelect)
     onSelect()
   }, [emblaApi])
+  
 
   return (
-    <div className="relative mx-1">
+    <>
+    {!isLoading ? (<div className="relative mx-1">
       <div className="flex gap-2 justify-between mx-1 md:mx-8">
           {title ? <h1 className="text-5xl font-sans font-bold">{title}</h1> : 
           (<div className="bg-black rounded-full">
@@ -71,12 +74,13 @@ const HomeCarousel = ({ slides, title }) => {
         <div className="flex m-auto w-full h-full gap-4 md:gap-0">
           {slides.map((card, index) => (
             <div key={index} className="flex-[0_0_70%] md:flex-[0_0_20%] md:ml-[25px]">
-              <HoverTranslateCard card={card} index={index} />
+              <HoverTranslateCard card={card} index={index} setShowCartPopup={setShowCartPopup}/>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </div>) : (<PuffLoader size={80} className="m-auto"/>)}
+    </>
   )
 }
 

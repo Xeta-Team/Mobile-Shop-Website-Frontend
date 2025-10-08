@@ -6,20 +6,26 @@ import axios from 'axios';
 import HomeCarousel from './Components/Carousels/HomeCarousel';
 import TopNavigationBar from './Components/TopNavigationBar';
 import Footer from './Components/Footer';
+import { PuffLoader } from "react-spinners";
+import { toast } from 'react-toastify';
+import { useContext } from 'react';
+import { RecentReviewedContext } from './Actions/RecentReviewedContext';
 
 export default function ProductOverView() {
   const { productId } = useParams()
-  const [productDetails, setProductDetails] = useState({})
+  const [productDetails, setProductDetails] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedStorage, setSelectedStorage] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [productPrice,setProductPrice] = useState(null)
   const [cardInfo, setCardInfo] = useState([])
+  const {addRecentItems} = useContext(RecentReviewedContext)
   
   useEffect(() => {
+    addRecentItems(productId)
     fetchProductData()
     fetchSliderdata()
-  }, [])
+  }, [productId])
 
   const fetchProductData = async() => {
     try{
@@ -30,7 +36,7 @@ export default function ProductOverView() {
       setProductPrice(productRes.data.variants[0].price)
       setIsLoading(false)
     }catch(error){
-      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong")
     }
   }
 
@@ -41,41 +47,48 @@ export default function ProductOverView() {
       setCardInfo(productRes.data.firstFiveDevices)
       setIsLoading(false)
     }catch(error){
-      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong")
     }
   }
-
+  
+  
   return (<>
-  {!isLoading && (
-    <>
-    <TopNavigationBar/>
-    <div className="bg-white text-black min-h-screen font-sans">
-      <div className="container mx-auto px-4 mb-4">
-        <main className="py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-            <ImageGallery images={productDetails.images} mainImage={productDetails.mainImage} alt={productDetails.productName}/>
-            <ProductDetails
-              productId={productId}
-              mainImage={productDetails.mainImage}
-              productName={productDetails.productName} 
-              productPrice={productPrice}
-              setProductPrice={setProductPrice}
-              variants={productDetails.variants}
-              selectedColor={selectedColor}
-              setSelectedColor={setSelectedColor}
-              selectedStorage={selectedStorage}
-              setSelectedStorage={setSelectedStorage}
-            />
-          </div>
-        </main>
+   <TopNavigationBar />
+    {productDetails ? (
+      <div className="bg-white text-black min-h-screen font-sans">
+        <div className="container mx-auto px-4 mb-4">
+          <main className="py-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+              <ImageGallery
+                images={productDetails.images || []}
+                mainImage={productDetails.mainImage}
+                alt={productDetails.productName}
+              />
+              <ProductDetails
+                productId={productId}
+                mainImage={productDetails.mainImage}
+                productName={productDetails.productName}
+                productPrice={productPrice}
+                setProductPrice={setProductPrice}
+                variants={productDetails.variants}
+                selectedColor={selectedColor}
+                setSelectedColor={setSelectedColor}
+                selectedStorage={selectedStorage}
+                setSelectedStorage={setSelectedStorage}
+              />
+            </div>
+          </main>
+        </div>
+        <div className="px-4">
+          <HomeCarousel slides={cardInfo} title="You may also like" />
+        </div>
+        <Footer />
       </div>
-      <div className='px-4'>
-        <HomeCarousel slides={cardInfo} title={"You may also like"}/>
+    ) : (
+      <div className='flex items-center justify-center min-h-[500px]'>
+        <PuffLoader size={80} />
       </div>
-    </div>
-    <Footer/>
-    </>
-  )}
+    )}
   </>
   );
 }
