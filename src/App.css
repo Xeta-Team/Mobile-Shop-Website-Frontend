@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Public+Sans:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+@import "tailwindcss";
+
+@theme{
+    --font-inter-sans: "Inter", sans-serif;
+}
+
+@layer utilities {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+  }
+}
+
+.hover-underline {
+  @apply relative inline-block 
+         before:absolute before:bottom-0 before:right-0
+         before:h-[1px] before:w-full before:bg-black
+         before:origin-right before:scale-x-0 before:transition-transform before:duration-300
+         hover:before:scale-x-100
+         hover:before:origin-left;
+}
+
+.remove-hover-underline{
+  @apply relative inline-block before:content-[''] before:block
+        before:absolute before:bottom-0 before:left-0
+        before:h-[1px] before:w-full before:bg-black
+        before:origin-left before:scale-x-100
+        before:transition-transform before:duration-300
+        hover:before:scale-x-0
+        hover:before:origin-right
+}
+
+.slick-slide {
+  display: flex !important;
+  margin: 0 10px 0 10px;
+}
