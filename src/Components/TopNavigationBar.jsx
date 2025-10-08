@@ -41,7 +41,7 @@ const TopNavigationBar = () => {
                 >
                     <img
                         src={shopLogoWhite}
-                        className="h-[60px] max-w-[320px] m-auto"
+                        className="h-[80px] w-[270px] m-auto"
                         alt="Flowbite Logo"
                     />
                 </a>
@@ -49,7 +49,7 @@ const TopNavigationBar = () => {
                 <NavigrationBarActionBtns setIsSideModelShow={setIsSideModelShow} setIsCartSideModelShow={setIsCartSideModelShow}/>
 
                 <div
-                className="flex items-center justify-between w-full md:flex md:flex-col md:w-auto md:order-1 md:text-[17px]"
+                className="items-center justify-between hidden w-full md:flex md:flex-col md:w-auto md:order-1 md:text-[17px]"
                 id="navbar-user"
                 >
                     <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 text-white rounded-lg md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0">
@@ -59,10 +59,11 @@ const TopNavigationBar = () => {
                         <NavigrationBarBtn name={"MacBook"} rowNum={"1"} to={"/mac"} />
                         <NavigrationBarBtn name={"Watch"} rowNum={"1"} to={"/watch"} />
                         <NavigrationBarBtn name={"AirPods"} rowNum={"1"} to={"/airpod"} />
-                         <NavigrationBarBtn name={"Accessories"}/>
+                        <NavigrationBarBtn name={"Accessories"} rowNum={"1"} to={"/accessories"} />
+                        <NavigrationBarBtn name={"Mobile Phone"} rowNum={"1"} to={"/mobile-phones"} />
                     </ul>
                     <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 text-white rounded-lg md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0">                       
-                        <NavigrationBarBtn name={"Per-Owned Devices"} setIsDropDownShow={setIsDropDownShow} rowNum={2} dropdownItems={["iPhones"]}/>
+                        <NavigrationBarBtn name={"Per-Owned Devices"}  rowNum={2} to={"/pre-owned-devices"}/>
                     </ul>
                 </div>
             </div>

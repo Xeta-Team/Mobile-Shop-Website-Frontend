@@ -43,11 +43,16 @@ const AirpodList = () => {
 
     useEffect(() => {
         const fetchAirpods = async () => {
+            setIsLoading(true);
             try {
-                const response = await axios.get('http://localhost:3001/api/products');
-                // Filter for products in the 'Headphones' category
-                const airpodProducts = response.data.filter(p => p.productCategory === 'Headphones');
-                setAirpods(airpodProducts);
+                const { data } = await axios.get('http://localhost:3001/api/products');
+                
+                // 1. Access data.products
+                // 2. Filter by category === 'Headphone'
+                if (data && data.products) {
+                    const airpodProducts = data.products.filter(p => p.category === 'Headphone');
+                    setAirpods(airpodProducts);
+                }
             } catch (error) {
                 console.error("Failed to fetch airpods:", error);
             } finally {
@@ -57,6 +62,9 @@ const AirpodList = () => {
 
         fetchAirpods();
     }, []);
+
+    
+
 
     if (isLoading) {
         return (

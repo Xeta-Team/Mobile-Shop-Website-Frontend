@@ -1,107 +1,74 @@
-import React from "react";
+// File: Mobile-Shop-Website-Frontend/src/Components/Carousels/SliderCards.jsx
+
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Slider from "react-slick";
-import ReusableCard from "../Cards/HoverCard";
+import HoverTranslateCard from "../Cards/HoverTranslateCard"; // We will use the upgraded card here
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { PuffLoader } from "react-spinners";
+const SliderCards = () => {
+    const [products, setProducts] = useState([]);
 
-const NextArrow = ({ onClick }) => {
-  return (
-    <button
-      className="absolute top-1/2 right-4 z-10 transform -translate-y-1/2 bg-black/60 hover:bg-black text-white p-3 rounded-full shadow-lg"
-      onClick={onClick}
-    >
-      <FaChevronRight size={20} />
-    </button>
-  );
-};
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                // This is the performance fix: fetch only 8 products
+                const { data } = await axios.get('http://localhost:3001/api/products?limit=8');
+                setProducts(data.products);
+            } catch (error) {
+                console.error("Failed to fetch featured products:", error);
+            }
+        };
+        fetchProducts();
+    }, []);
 
-// Custom Prev Arrow
-const PrevArrow = ({ onClick }) => {
-  return (
-    <button
-      className="absolute top-1/2 left-4 z-10 transform -translate-y-1/2 bg-black/60 hover:bg-black text-white p-3 rounded-full shadow-lg"
-      onClick={onClick}
-    >
-      <FaChevronLeft size={20} />
-    </button>
-  );
-};
+    const settings = {
+        dots: true,
+        infinite: products.length > 4, // Loop only if there are enough cards
+        speed: 500,
+        slidesToShow: 6,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 2,
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                }
+            }
+        ]
+    };
 
-function SliderCard({isloading}) {
-  const settings = {
-    className: "center",
-    variableWidth:true,
-    infinite: false,
-    slidesToShow: 5,
-    speed: 500,
-    nextArrow: <NextArrow />,  // ✅ Custom Next Arrow
-    prevArrow: <PrevArrow />,  // ✅ Custom Prev Arrow
-  };
-
-  const cardsData = [
-    {
-      id: 1,
-      title: "16 Pro black - gold",
-        subtitle: "Now or Never",
-        imageUrl: "https://www.apple.com/in/iphone-16-pro/images/overview/product-stories/design/display__f5509jfp9nyq_xlarge_2x.jpg",
-        link: "#"
-    },
-    {
-      id: 1,
-      title: "16 Pro black - gold",
-        subtitle: "Now or Never",
-        imageUrl: "https://www.apple.com/in/iphone-16-pro/images/overview/product-stories/design/display__f5509jfp9nyq_xlarge_2x.jpg",
-        link: "#"
-    },
-    {
-      id: 2,
-      title: "16 Pro black - gold",
-        subtitle: "Now or Never",
-        imageUrl: "https://www.apple.com/in/iphone-16-pro/images/overview/product-stories/design/display__f5509jfp9nyq_xlarge_2x.jpg",
-        link: "#"
-    },
-     {
-      id: 3,
-      title: "16 Pro black - gold",
-        subtitle: "Now or Never",
-        imageUrl: "https://www.apple.com/in/iphone-16-pro/images/overview/product-stories/design/display__f5509jfp9nyq_xlarge_2x.jpg",
-        link: "#"
-    },
-     {
-      id: 4,
-      title: "16 Pro black - gold",
-        subtitle: "Now or Never",
-        imageUrl: "https://www.apple.com/in/iphone-16-pro/images/overview/product-stories/design/display__f5509jfp9nyq_xlarge_2x.jpg",
-        link: "#"
-    },
-     {
-      id: 5,
-      title: "16 Pro black - gold",
-        subtitle: "Now or Never",
-        imageUrl: "https://www.apple.com/in/iphone-16-pro/images/overview/product-stories/design/display__f5509jfp9nyq_xlarge_2x.jpg",
-        link: "#"
+    if (products.length === 0) {
+        return <div>Loading featured products...</div>; // Or a skeleton loader
     }
-  ];
 
-  return (
-    <div className="slider-container relative w-auto mx-auto my-5 ">
-      {!isloading ? (<Slider {...settings}>
-        {cardsData.map((card) => (
-          <div key={card.id} className="flex justify-center h-[380px]">
-            <ReusableCard
-              imageUrl={card.imageUrl}
-              title={card.title}
-              subtitle={card.subtitle}
-              link={card.link}
-            />
-          </div>
-        ))}
-      </Slider>): <PuffLoader size={80} className="m-auto"/>}
-    </div>
-  );
-}
+    return (
+        <div className="slider-container px-4">
+            <Slider {...settings}>
+                {products.map((product) => (
+                    <div key={product._id} className="px-2">
+                        {/* Using the upgraded HoverTranslateCard */}
+                        <HoverTranslateCard card={product} />
+                    </div>
+                ))}
+            </Slider>
+        </div>
+    );
+};
 
-export default SliderCard;
+export default SliderCards;

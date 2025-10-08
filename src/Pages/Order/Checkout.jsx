@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import apiClient from '../../api/axiosConfig'
+import apiClient from '../../api/axiosConfig';
 import { toast } from 'react-toastify';
 
 // Simple Input Component for reusability
@@ -57,9 +57,6 @@ const Checkout = () => {
 
   const [orderNotes, setOrderNotes] = useState('');
   
-  
-  // A mock user ID. In a real app, you'd get this from your auth context/state.
-  const MOCK_USER_ID = localStorage.getItem.userId; // c
   useEffect(() => {
     // Load cart items from local storage
     const items = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -90,11 +87,12 @@ const Checkout = () => {
           return;
       }
 
+      // **FIXED**: The orderItems payload now correctly maps the data.
+      // Make sure your cart item object in localStorage has 'productId', 'name', 'quantity', 'price', and 'image'.
       const orderData = {
-          userId: MOCK_USER_ID,
           orderItems: cartItems.map(item => ({
-              productId: item.id, // Assuming item has a product ID
-              name: item.title,
+              productId: item.productId, // <-- CRITICAL: This must be the parent product's MongoDB _id
+              name: item.name,
               quantity: item.quantity,
               price: item.price,
               image: item.image
@@ -106,18 +104,16 @@ const Checkout = () => {
           orderNotes
       };
       
-      
       try {
-        // NOTE: Replace '/api' with your actual backend URL if it's different
         const response = await apiClient.post('/orders/', orderData);
         
         if(response.status === 201) {
             localStorage.removeItem('cartItems'); // Clear cart on successful order
-            toast.success(response?.data?.message)
+            toast.success(response?.data?.message || "Order placed successfully!");
             navigate('/user/orders');
         }
       } catch (err) {
-          setError(err.response?.data?.message || 'An unexpected error occurred. Please try again.');
+          setError(err.response?.data?.details || err.response?.data?.error || 'An unexpected error occurred. Please try again.');
       } finally {
           setIsLoading(false);
       }
@@ -134,7 +130,7 @@ const Checkout = () => {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Billing Details Column */}
           <div className="bg-gray-800/50 p-8 rounded-lg shadow-lg backdrop-blur-sm border border-gray-700">
-            <h2 className="text-2xl font-semibold mb-6 border-b border-gray-700 pb-3">Billing details</h2>
+             <h2 className="text-2xl font-semibold mb-6 border-b border-gray-700 pb-3">Billing details</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                 <InputField id="firstName" label="First name" placeholder="John" required value={billingAddress.firstName} onChange={handleBillingChange} />
                 <InputField id="lastName" label="Last name" placeholder="Doe" value={billingAddress.lastName} onChange={handleBillingChange} />
@@ -179,21 +175,21 @@ const Checkout = () => {
             <div className="bg-gray-800/50 p-8 rounded-lg shadow-lg backdrop-blur-sm border border-gray-700">
                 <h2 className="text-2xl font-semibold mb-6 border-b border-gray-700 pb-3">Your order</h2>
                 <div className="space-y-4 mb-6">
-                    {cartItems.length > 0 ? cartItems.map(item => (
-                        <div key={item.product} className="flex justify-between items-center text-gray-300">
+                    {cartItems.length > 0 ? cartItems.map((item, index) => (
+                        <div key={item.sku || index} className="flex justify-between items-center text-gray-300">
                             <span>{item.name} &times; {item.quantity}</span>
-                            <span>${(item.price * item.quantity).toFixed(2)}</span>
+                            <span>LKR {(item.price * item.quantity).toLocaleString()}</span>
                         </div>
                     )) : <p className="text-gray-400">Your cart is empty.</p>}
                 </div>
                 <div className="border-t border-gray-700 pt-4 space-y-3">
                     <div className="flex justify-between font-medium">
                         <span>Subtotal</span>
-                        <span>${totalPrice.toFixed(2)}</span>
+                        <span>LKR {totalPrice.toLocaleString()}</span>
                     </div>
                      <div className="flex justify-between font-bold text-xl">
                         <span>Total</span>
-                        <span>${totalPrice.toFixed(2)}</span>
+                        <span>LKR {totalPrice.toLocaleString()}</span>
                     </div>
                 </div>
                 

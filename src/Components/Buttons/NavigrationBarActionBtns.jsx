@@ -1,11 +1,7 @@
-import { useContext } from "react"
 import { useNavigate } from "react-router"
-import { CartContext } from "../../Actions/CartContext"
 
 const NavigrationBarActionBtns = ({setIsSideModelShow, setIsCartSideModelShow}) => {
     const navigate = useNavigate()
-    const { cart } = useContext(CartContext)
-    
     return(<>
 
         <div className="flex items-center md:order-2 space-x-3 md:space-x-6 rtl:space-x-reverse">
@@ -53,10 +49,9 @@ const NavigrationBarActionBtns = ({setIsSideModelShow, setIsCartSideModelShow}) 
                 </svg>
 
             </button>
-            <button className="hover:cursor-pointer relative"
+            <button className="hover:cursor-pointer"
                 onClick={() => {setIsCartSideModelShow(true)}}
             >
-                {cart.length > 0 && (<div className="absolute text-black -right-1 -top-2 bg-white rounded-full w-5 h-5 flex justify-center items-center text-sm font-semibold">{cart.length}</div>)}
                 <svg
                 fill="#ffffff"
                 width="45px"

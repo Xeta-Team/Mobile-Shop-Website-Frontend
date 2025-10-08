@@ -1,26 +1,98 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import axios from 'axios';
-import { UserPlus, Lock, Mail, User, Loader, Info, Check, AlertTriangle, Eye, EyeOff } from 'lucide-react';
-import SocialButton from '../Components/Buttons/SocialButton';
-import InputField from '../Components/Input/InputField.jsx';
-import Toast from '../Components/Toast/Toast.jsx';
-import { useNavigate } from 'react-router';
+import { UserPlus, Lock, Mail, User, Loader } from 'lucide-react';
+import { useNavigate, Link } from 'react-router'; // Added Link for navigation
 
-///// ***** Need to varify the email user provide when normal registration *****
+// --- Inlined Components ---
 
-// SVG Icon for Google
-const GoogleIcon = () => (
-    <svg className="w-5 h-5" viewBox="0 0 48 48">
-        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
-        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
-        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
-        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.574l6.19,5.238C39.904,36.218,44,30.651,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
-    </svg>
+// A basic InputField component.
+const InputField = ({ id, label, type, value, onChange, error, icon, style, placeholder }) => (
+    <div className="relative animate-input-fade-in" style={style}>
+        <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
+            {label}
+        </label>
+        <div className="relative">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                {icon}
+            </span>
+            <input
+                id={id}
+                name={id}
+                type={type}
+                value={value}
+                onChange={onChange}
+                placeholder={placeholder}
+                className={`w-full pl-10 pr-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-black ${error ? 'border-red-500' : 'border-gray-300'}`}
+            />
+        </div>
+        {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+    </div>
 );
 
+// A basic Toast component.
+const Toast = ({ notification }) => {
+    if (!notification.show) return null;
+
+    const baseStyle = "fixed top-5 right-5 w-full max-w-sm p-4 rounded-lg shadow-lg text-white flex items-center z-50 transition-transform duration-300 transform";
+    const typeStyles = {
+        success: "bg-green-500",
+        error: "bg-red-500",
+        info: "bg-blue-500"
+    };
+
+    return (
+        <div className={`${baseStyle} ${typeStyles[notification.type] || typeStyles.info} ${notification.show ? 'translate-x-0' : 'translate-x-full'}`}>
+            <p className="flex-grow">{notification.message}</p>
+        </div>
+    );
+};
+
+// PasswordStrengthMeter component definition
+const PasswordStrengthMeter = ({ strength }) => {
+    // strength is expected to be a number from 0 to 5
+    const getWidth = () => `${(strength / 5) * 100}%`;
+    
+    let color = 'bg-gray-200';
+    let label = '';
+
+    if (strength === 1) {
+        color = 'bg-red-500';
+        label = 'Very Weak';
+    } else if (strength === 2) {
+        color = 'bg-orange-500';
+        label = 'Weak';
+    } else if (strength === 3) {
+        color = 'bg-yellow-500';
+        label = 'Moderate';
+    } else if (strength === 4) {
+        color = 'bg-blue-500';
+        label = 'Strong';
+    } else if (strength === 5) {
+        color = 'bg-green-500';
+        label = 'Very Strong';
+    }
+
+    return (
+        <div className="mt-2">
+            <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                <div 
+                    className={`h-full transition-all duration-300 ${color}`} 
+                    style={{ width: getWidth() }}
+                ></div>
+            </div>
+            {strength > 0 && (
+                <p className={`text-xs mt-1 font-medium ${color.replace('bg', 'text')}`}>
+                    Strength: {label}
+                </p>
+            )}
+        </div>
+    );
+};
+
+
+// --- Main Registration Page Component ---
 
 export default function RegistrationPage() {
-    // FIX: Updated state to match the database model
     const [formData, setFormData] = useState({
         username: '',
         firstName: '',
@@ -35,6 +107,12 @@ export default function RegistrationPage() {
     const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
     const [passwordStrength, setPasswordStrength] = useState(0);
     const navigate = useNavigate();
+    const googleButtonRef = useRef(null);
+    
+    
+    const GOOGLE_CLIENT_ID = "517039507690-8v2ehel95r5gosvnen8u9mfq66knklni.apps.googleusercontent.com";
+    const IS_CLIENT_ID_VALID = GOOGLE_CLIENT_ID !== "YOUR_GOOGLE_CLIENT_ID";
+    const GMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
     const showToast = (message, type = 'info') => {
         setToast({ show: true, message, type });
@@ -43,20 +121,79 @@ export default function RegistrationPage() {
         }, 3000);
     };
 
-    const handleInputChange = (e) => {
-        const { id, value } = e.target;
-        setFormData(prev => ({ ...prev, [id]: value }));
-        if (errors[id]) {
-            setErrors(prev => ({ ...prev, [id]: null }));
-        }
-        if (id === 'password') {
-            checkPasswordStrength(value);
+    // Google Sign-In SDK Initialization
+    useEffect(() => {
+        if (!IS_CLIENT_ID_VALID) return;
+
+        // Function to handle the successful credential response
+        const handleCredentialResponse = async (response) => {
+            if (response.credential) {
+                await handleGoogleSuccess(response.credential);
+            }
+        };
+
+        // Load the Google Platform Library
+        const script = document.createElement('script');
+        script.src = "https://accounts.google.com/gsi/client";
+        script.onload = () => {
+            if (window.google) {
+                // Initialize the Google Identity Service
+                window.google.accounts.id.initialize({
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: handleCredentialResponse,
+                });
+
+                // Render the Google Sign-in button
+                window.google.accounts.id.renderButton(
+                    googleButtonRef.current,
+                    { 
+                        theme: "outline", 
+                        size: "large", 
+                        type: "standard", 
+                        text: "signup_with" 
+                    }
+                );
+            }
+        };
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+
+    const handleGoogleSuccess = async (googleToken) => {
+        setIsSubmitting(true);
+        try {
+            const apiUrl = 'http://localhost:3001/api/users/google-login';
+            
+            // NOTE: In a real application, you would send the token to your backend for verification and authentication.
+            const response = await axios.post(apiUrl, { googleToken });
+            
+            const { token } = response.data;
+            if (token) {
+                // IMPORTANT: Use Firestore for persistence instead of localStorage in a real Canvas app environment.
+                localStorage.setItem('token', token); 
+                showToast(response.data.message || 'Login successful!', 'success');
+                navigate('/'); 
+            } else {
+                 showToast('Login successful, but no token received.', 'error');
+            }
+
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || "Google login failed. Please try again.";
+            showToast(errorMessage, 'error');
+            console.error("Google Login Error:", error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
+
     const checkPasswordStrength = (password) => {
         let score = 0;
-        if (password.length >= 8) score++;
+        if (password.length >= 8) score++
         if (/[a-z]/.test(password)) score++;
         if (/[A-Z]/.test(password)) score++;
         if (/[0-9]/.test(password)) score++;
@@ -64,17 +201,93 @@ export default function RegistrationPage() {
         setPasswordStrength(score);
     };
 
-    // FIX: Updated validation for the new fields
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        
+        // Update form data state
+        setFormData(prev => ({ ...prev, [id]: value }));
+
+        let newErrors = { ...errors };
+
+        // 1. Clear error immediately for any field the user is typing in, unless it's the email field (which needs re-validation)
+        if (id !== 'email' && newErrors[id]) {
+            newErrors[id] = null;
+        }
+
+        // 2. Real-time Email Validation (Updated for @gmail.com)
+        if (id === 'email') {
+            if (!value.trim()) {
+                newErrors.email = "Email is required.";
+            } else if (!GMAIL_REGEX.test(value)) {
+                newErrors.email = "Email address must be a valid @gmail.com account.";
+            } else {
+                
+                newErrors.email = null;
+            }
+        }
+        
+   
+        if (id === 'password') {
+            checkPasswordStrength(value);
+             if (value.length < 8 && value.length > 0) {
+                 newErrors.password = "Password must be at least 8 characters.";
+            } else if (value.length === 0) {
+                newErrors.password = "Password is required.";
+            } else {
+                newErrors.password = null;
+            }
+        }
+
+        const currentPassword = (id === 'password') ? value : formData.password;
+        const currentConfirmPassword = (id === 'confirmPassword') ? value : formData.confirmPassword;
+        
+        if (id === 'password' || id === 'confirmPassword') {
+            if (currentPassword !== currentConfirmPassword && (currentPassword.length > 0 || currentConfirmPassword.length > 0)) {
+                newErrors.confirmPassword = "Passwords do not match.";
+            } else if (newErrors.confirmPassword && currentPassword === currentConfirmPassword) {
+                newErrors.confirmPassword = null;
+            }
+        }
+        
+        if (id === 'username' && !value.trim()) newErrors.username = "Username is required.";
+        if (id === 'firstName' && !value.trim()) newErrors.firstName = "First name is required.";
+        if (id === 'lastName' && !value.trim()) newErrors.lastName = "Last name is required.";
+        
+        setErrors(newErrors);
+    };
+
+    // This checks if any form field is empty or has an associated error message
+    const isFormInvalid = useMemo(() => {
+        const requiredFields = ['username', 'firstName', 'lastName', 'email', 'password', 'confirmPassword'];
+        
+        // Check if any required field is empty
+        const isAnyFieldEmpty = requiredFields.some(field => !formData[field].trim());
+
+        // Check if there are any errors (where error value is not null)
+        const hasActiveErrors = Object.values(errors).some(error => error !== null);
+
+        // Additionally, explicitly check email format and password match if fields are non-empty but errors haven't been triggered yet
+        const isEmailInvalid = formData.email.trim() && !GMAIL_REGEX.test(formData.email);
+        const isPasswordMismatch = formData.password.length > 0 && formData.password !== formData.confirmPassword;
+        const isPasswordTooShort = formData.password.length > 0 && formData.password.length < 8;
+
+        return isAnyFieldEmpty || hasActiveErrors || isEmailInvalid || isPasswordMismatch || isPasswordTooShort;
+    }, [formData, errors]);
+
     const validateForm = () => {
+        // This function is for final submission validation (redundant with isFormInvalid, but good practice)
         const newErrors = {};
         if (!formData.username.trim()) newErrors.username = "Username is required.";
         if (!formData.firstName.trim()) newErrors.firstName = "First name is required.";
         if (!formData.lastName.trim()) newErrors.lastName = "Last name is required.";
+        
+        // Ensure final check still includes email validation (Updated for @gmail.com)
         if (!formData.email.trim()) {
             newErrors.email = "Email is required.";
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = "Email address is invalid.";
+        } else if (!GMAIL_REGEX.test(formData.email)) {
+            newErrors.email = "Email address must be a valid @gmail.com account.";
         }
+
         if (!formData.password) {
             newErrors.password = "Password is required.";
         } else if (formData.password.length < 8) {
@@ -87,26 +300,10 @@ export default function RegistrationPage() {
         return Object.keys(newErrors).length === 0;
     };
     
-    const handleGoogleLogin = () => {
-    // It must match the one in my Auth-Router.js file.
-    const redirectUri = 'http://localhost:3001/api/auth/google/callback'; //
-
-    // This is your Google Client ID. We will set this up in the next step.
-    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
-    // These are the permissions you request from the user.
-    const scope = 'profile email';
-
-    // This constructs the URL that sends the user to Google for authentication.
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
-    
-    
-    // This command actually sends the user to the Google login page.
-    window.location.href = authUrl;
-    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        // Use the final validation check before submission
         if (!validateForm()) {
             showToast('Please correct the errors in the form.', 'error');
             return;
@@ -114,17 +311,27 @@ export default function RegistrationPage() {
 
         setIsSubmitting(true);
         try {
-            // The payload now includes all the necessary fields that match the backend model
             const { confirmPassword, ...payload } = formData;
             const apiUrl = 'http://localhost:3001/api/users/register'; 
+            
+            // NOTE: To prevent registration with fake but valid-looking emails (like 123@gmail.com), 
+            // the backend must send an email verification link upon successful registration. 
+            // The account remains inactive until the link is clicked.
             const response = await axios.post(apiUrl, payload);
-            showToast(response.data.message || 'Registration successful!', 'success');
+            
+            // Success message changed to reflect the required verification step
+            showToast('Registration successful! Please check your email to verify your account.', 'success');
+            
             setFormData({ username: '', firstName: '', lastName: '', email: '', password: '', confirmPassword: '' });
             setPasswordStrength(0);
-            navigate('/login');
+            
+            // Navigate to login page, but the user won't be able to log in until verified by the server.
+            navigate('/login'); 
+
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
             showToast(errorMessage, 'error');
+            console.error("Registration Error:", error);
         } finally {
             setIsSubmitting(false);
         }
@@ -149,7 +356,7 @@ export default function RegistrationPage() {
                             value={formData.username}
                             onChange={handleInputChange}
                             error={errors.username}
-                            icon={<User />}
+                            icon={<User size={20}/>}
                             style={{ animationDelay: '0.1s' }}
                         />
                         <div className="grid grid-cols-2 gap-4">
@@ -160,7 +367,7 @@ export default function RegistrationPage() {
                                 value={formData.firstName}
                                 onChange={handleInputChange}
                                 error={errors.firstName}
-                                icon={<User />}
+                                icon={<User size={20}/>}
                                 style={{ animationDelay: '0.15s' }}
                             />
                             <InputField
@@ -170,7 +377,7 @@ export default function RegistrationPage() {
                                 value={formData.lastName}
                                 onChange={handleInputChange}
                                 error={errors.lastName}
-                                icon={<User />}
+                                icon={<User size={20}/>}
                                 style={{ animationDelay: '0.2s' }}
                             />
                         </div>
@@ -178,11 +385,11 @@ export default function RegistrationPage() {
                             id="email"
                             label="Email Address"
                             type="email"
-                            placeholder="you@example.com"
+                            placeholder="you@gmail.com"
                             value={formData.email}
                             onChange={handleInputChange}
                             error={errors.email}
-                            icon={<Mail />}
+                            icon={<Mail size={20}/>}
                             style={{ animationDelay: '0.3s' }}
                         />
                         <div className="animate-input-fade-in" style={{ animationDelay: '0.4s' }}>
@@ -194,7 +401,7 @@ export default function RegistrationPage() {
                                 value={formData.password}
                                 onChange={handleInputChange}
                                 error={errors.password}
-                                icon={<Lock />}
+                                icon={<Lock size={20}/>}
                             />
                             <PasswordStrengthMeter strength={passwordStrength} />
                         </div>
@@ -206,13 +413,14 @@ export default function RegistrationPage() {
                             value={formData.confirmPassword}
                             onChange={handleInputChange}
                             error={errors.confirmPassword}
-                            icon={<Lock />}
-                            style={{ animationDelay: '0.5s' }}
+                            icon={<Lock size={20}/>}
+                            style={{ animationDelay: '0.5s' }   }
                         />
 
                         <button
                             type="submit"
-                            disabled={isSubmitting}
+                            // Button is disabled if submitting, or if the form is generally invalid
+                            disabled={isSubmitting || isFormInvalid}
                             className="w-full px-6 py-3.5 rounded-lg text-sm font-semibold bg-black text-white hover:bg-gray-800 flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black animate-input-fade-in"
                             style={{ animationDelay: '0.6s' }}
                         >
@@ -226,33 +434,36 @@ export default function RegistrationPage() {
                         <div className="relative flex justify-center text-sm"><span className="bg-white px-2 text-gray-500">Or continue with</span></div>
                     </div>
 
-                    <div className="animate-input-fade-in" style={{ animationDelay: '0.8s' }}>
-                        <SocialButton provider="Google" onClick={handleGoogleLogin} icon={<GoogleIcon />}/>
+                    <div className="animate-input-fade-in flex justify-center" style={{ animationDelay: '0.8s' }}>
+                        {IS_CLIENT_ID_VALID ? (
+                            <div ref={googleButtonRef} className="w-full flex justify-center">
+                                {/* Google Sign-in button will be rendered here by the SDK */}
+                            </div>
+                        ) : (
+                            <div className="text-red-500 text-center text-sm p-4 border border-red-300 rounded-lg w-full">
+                                Please replace **"YOUR_GOOGLE_CLIENT_ID"** with your actual Google Client ID in the code to enable Google Login.
+                            </div>
+                        )}
                     </div>
+                    
+                    {/* NEW: Privacy Policy Disclaimer */}
+                    <p className="text-center text-xs text-gray-500 mt-6 animate-input-fade-in" style={{ animationDelay: '0.9s' }}>
+                        Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our&nbsp;
+                        <Link to="/privacy-policy" className="font-semibold text-black hover:text-gray-700 transition-colors duration-200 underline">
+                            privacy policy
+                        </Link>
+                        .
+                    </p>
+
+                    {/* NEW: Log in Link */}
+                    <p className="text-center text-sm text-gray-600 mt-4 animate-input-fade-in" style={{ animationDelay: '1.0s' }}>
+                        Already have an account?&nbsp;
+                        <Link to="/login" className="font-bold text-black hover:text-gray-700 transition-colors duration-200">
+                            Log in
+                        </Link>
+                    </p>
                 </div>
             </div>
         </div>
     );
 }
-
-function PasswordStrengthMeter({ strength }) {
-    const strengthLevels = [
-        { label: 'Weak', color: 'bg-red-500' }, { label: 'Weak', color: 'bg-red-500' },
-        { label: 'Fair', color: 'bg-orange-500' }, { label: 'Good', color: 'bg-yellow-500' },
-        { label: 'Strong', color: 'bg-green-500' }, { label: 'Very Strong', color: 'bg-green-500' },
-    ];
-    return (
-        <div className="mt-2 flex items-center gap-2">
-            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                <div
-                    className={`h-2 rounded-full transition-all duration-300 ${strength > 0 ? strengthLevels[strength].color : ''}`}
-                    style={{ width: `${(strength / 5) * 100}%` }}
-                />
-            </div>
-            <span className="text-xs font-semibold text-gray-600 w-24 text-right">
-                {strength > 0 ? strengthLevels[strength].label : ''}
-            </span>
-        </div>
-    );
-}
-

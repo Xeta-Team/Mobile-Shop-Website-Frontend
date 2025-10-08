@@ -38,10 +38,16 @@ const WatchList = () => {
 
     useEffect(() => {
         const fetchWatches = async () => {
+            setIsLoading(true);
             try {
-                const response = await axios.get('http://localhost:3001/api/products');
-                const watchProducts = response.data.filter(p => p.productCategory === 'Watch');
-                setWatches(watchProducts);
+                const { data } = await axios.get('http://localhost:3001/api/products');
+                
+                // 1. Access data.products
+                // 2. Filter by category === 'iWatch'
+                if (data && data.products) {
+                    const watchProducts = data.products.filter(p => p.category === 'iWatch');
+                    setWatches(watchProducts);
+                }
             } catch (error) {
                 console.error("Failed to fetch watches:", error);
             } finally {

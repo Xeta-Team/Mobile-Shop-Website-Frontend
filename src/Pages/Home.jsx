@@ -1,15 +1,21 @@
-import HomeCarousel from "../Components/Carousels/HomeCarousel"
-import SliderCard from "../Components/Carousels/SliderCards"
-import TopNavigationBar from "../Components/TopNavigationBar"
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { gsap } from "gsap";
-import { Twitter, Facebook, Instagram, ArrowRight } from 'lucide-react';
-import shopLogoWhite from '../assest/wlogo.png'; // Assuming this is the white logo
-import CartPopup from "../Components/popup/CartPopup";
+import {  Twitter, Facebook, Instagram, ArrowRight, ShieldCheck, Truck, MessageSquare  } from 'lucide-react';
+import HomeCarousel from "../Components/Carousels/HomeCarousel";
+import SliderCard from "../Components/Carousels/SliderCards";
+import TopNavigationBar from "../Components/TopNavigationBar";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css"
+import Footer from "../Components/Footer";
 
-// --- NEW COMPONENTS DEFINED WITHIN Home.jsx ---
-
+const GlobalStyles = () => (
+    <style>{`
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css');
+        .slick-prev:before, .slick-next:before { color: black !important; }
+    `}</style>
+);
 /**
  * HeroSection Component
  * @description Creates the main hero banner with a background video and animated text.
@@ -65,10 +71,10 @@ const HeroSection = () => {
  */
 const FeaturedCategories = () => {
     const categories = [
-        { name: "Phones", image: "https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-        { name: "Tablets", image: "https://images.pexels.com/photos/1334597/pexels-photo-1334597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+        { name: "iPhones", image: "https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",  to:"/mobile-phones"},
+        { name: "Tablets", image: "https://images.pexels.com/photos/1334597/pexels-photo-1334597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", to:"/ipad" },
         { name: "Laptops", image: "https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
-        { name: "Watches", image: "https://images.pexels.com/photos/277390/pexels-photo-277390.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" },
+        { name: "Watches", image: "https://images.pexels.com/photos/277390/pexels-photo-277390.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", tp:"/iwatch" },
     ];
 
     return (
@@ -78,6 +84,7 @@ const FeaturedCategories = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                 {categories.map((cat, index) => (
                     <div
+    
                         key={index}
                         className="category-card group relative rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden aspect-[4/5]"
                     >
@@ -120,51 +127,6 @@ const SpecialDealsSection = () => {
     )
 }
 
-/**
- * Footer Component
- * @description The footer for the website.
- */
-const Footer = () => {
-    return (
-        <footer className="bg-black text-white pt-16 pb-8 px-8 md:px-16">
-            <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div className="md:col-span-1">
-                    <img src={shopLogoWhite} alt="CellExpress" className="h-12 mb-4" />
-                    <p className="text-gray-400 text-sm">Your one-stop shop for the latest mobile devices and accessories.</p>
-                </div>
-                <div>
-                    <h3 className="font-semibold mb-4 tracking-wider">Shop</h3>
-                    <ul className="space-y-2 text-sm text-gray-300">
-                        <li><a href="#" className="hover:text-white">iPhones</a></li>
-                        <li><a href="#" className="hover:text-white">iPads</a></li>
-                        <li><a href="#" className="hover:text-white">MacBooks</a></li>
-                        <li><a href="#" className="hover:text-white">Accessories</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 className="font-semibold mb-4 tracking-wider">Company</h3>
-                    <ul className="space-y-2 text-sm text-gray-300">
-                        <li><a href="#" className="hover:text-white">About Us</a></li>
-                        <li><a href="#" className="hover:text-white">Contact</a></li>
-                        <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
-                        <li><a href="#" className="hover:text-white">Terms of Service</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 className="font-semibold mb-4 tracking-wider">Follow Us</h3>
-                    <div className="flex space-x-4">
-                        <a href="#" className="text-gray-400 hover:text-white"><Twitter /></a>
-                        <a href="#" className="text-gray-400 hover:text-white"><Facebook /></a>
-                        <a href="#" className="hover:text-white"><Instagram /></a>
-                    </div>
-                </div>
-            </div>
-            <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-                <p>&copy; {new Date().getFullYear()} CellExpress. All Rights Reserved.</p>
-            </div>
-        </footer>
-    );
-};
 
 
 /**
@@ -174,22 +136,23 @@ const Footer = () => {
 const Home = () => {
     const [cardInfo, setCardInfo] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-  const [ShowCartPopup, setShowCartPopup] = useState(false)
     const sectionsRef = useRef([]);
 
-    useEffect(() => {
-        const fetchSliderData = async () => {
-            try {
-                const productRes = await axios.get('http://localhost:3001/api/products/latestPhones');
-                setCardInfo(productRes.data.firstFiveDevices);
-            } catch (error) {
-                console.error("Error fetching slider data:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchSliderData();
-    }, []);
+useEffect(() => {
+    const fetchSliderData = async () => {
+        try {
+            // 1. Correct the API endpoint
+            const { data } = await axios.get('http://localhost:3001/api/products/latestPhones');
+            // 2. Use the 'data' variable and access its 'firstFiveDevices' property
+            setCardInfo(data.firstFiveDevices);
+        } catch (error) {
+            console.error("Error fetching slider data:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    fetchSliderData();
+}, []);
 
     useEffect(() => {
         if (isLoading) return;
@@ -235,19 +198,39 @@ const Home = () => {
             });
         };
     }, [isLoading]);
+    const WhyChooseUs = () => {
+    const features = [ { icon: <ShieldCheck size={40} className="text-blue-500" />, title: "Quality Guaranteed", description: "All our devices undergo rigorous testing to ensure they meet the highest standards." }, { icon: <Truck size={40} className="text-blue-500" />, title: "Fast & Free Shipping", description: "Get your new device delivered to your doorstep quickly and securely, at no extra cost." }, { icon: <MessageSquare size={40} className="text-blue-500" />, title: "24/7 Customer Support", description: "Our dedicated support team is here to help you with any questions, anytime." } ];
+    return (
+        <div className="text-center bg-white p-8 md:p-12 rounded-2xl shadow-sm">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Shop With Us?</h2>
+            <p className="text-gray-600 mb-12 max-w-2xl mx-auto">We are committed to providing you with the best products and services.</p>
+            <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+                {features.map((feature, index) => (
+                    <div key={index} className="flex flex-col items-center p-6 rounded-lg transition-all duration-300 hover:bg-gray-100">
+                        <div className="mb-4 bg-blue-100 p-4 rounded-full">{feature.icon}</div>
+                        <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                        <p className="text-gray-500 text-sm">{feature.description}</p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
 
     return (
         <div className="bg-gray-50 text-black antialiased">
+
+            <GlobalStyles />
             <TopNavigationBar />
             <HeroSection />
 
             <main className="py-16 px-4 md:px-8 space-y-20 md:space-y-24 overflow-hidden">
                 <section ref={(el) => (sectionsRef.current[0] = el)}>
-                    <SliderCard isloading={isLoading}/>
+                    <SliderCard />
                 </section>
                 
                 <section ref={(el) => (sectionsRef.current[1] = el)}>
-                    {!isLoading && <HomeCarousel setShowCartPopup={setShowCartPopup}  slides={cardInfo} isLoading={isLoading} title="Pre-Owned iPhones"/>}
+                    {!isLoading && <HomeCarousel slides={cardInfo} title="Pre-Owned iPhones"/>}
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[2] = el)} className="category-container">
@@ -255,23 +238,25 @@ const Home = () => {
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[3] = el)}>
-                    <HomeCarousel setShowCartPopup={setShowCartPopup} slides={cardInfo} title="New Arrivals" isLoading={isLoading}/>
+                    {!isLoading && <HomeCarousel slides={cardInfo} title="New Arrivals"/>}
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[4] = el)}>
                     <SpecialDealsSection />
                 </section>
+                <section>
+                    <WhyChooseUs />
+                </section>
 
                 <section ref={(el) => (sectionsRef.current[5] = el)}>
-                    <HomeCarousel slides={cardInfo} title="Best Sellers" isLoading={isLoading}/>
+                    {!isLoading && <HomeCarousel slides={cardInfo} title="Best Sellers"/>}
                 </section>
             </main>
-            {ShowCartPopup && <CartPopup onClose={() => setShowCartPopup(false)} />}
+            
             <Footer />
         </div>
     );
 };
-
 
 export default Home;
 

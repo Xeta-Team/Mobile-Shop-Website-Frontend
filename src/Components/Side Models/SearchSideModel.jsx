@@ -1,8 +1,9 @@
 import {useState,useRef, useEffect} from "react"
+import image1 from "../../assest/image1.png"
+import image2 from "../../assest/image2.png"
+import image3 from "../../assest/image3.png"
 import { Link } from "react-router"
 import { handleTouchEnd, handleTouchMove, handleTouchStart } from "./Side Model Fuctions/TouchHanddle"
-import apiClient from "../../api/axiosConfig"
-import { toast } from 'react-toastify'
 
 const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
     const [findProduct, setFindProduct] = useState([])
@@ -11,8 +12,6 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
     const currentYRef = useRef(0);
     const [translateY, setTranslateY] = useState(0);
     const [disableTransition, setDisableTransition] = useState(false);
-    const [allProdcuts, setAllProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
     
     useEffect(() => {
     let timeout;
@@ -27,20 +26,25 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
     return () => window.removeEventListener("resize", handleResize);
     }, []);
     
-    useEffect(() => {
-        fetchProducts()
-    },[])
-
-    const fetchProducts = async() => {
-        try{
-            const productsRes = await apiClient.get('/products/');
-            setAllProducts(productsRes.data)
-            setLoading(false)
-        }catch(error){
-            toast.error('Something went wrong!')
-        }
-        
-    }
+    const products = [{
+            imageUrls: [image1, image2, image3],
+            title: "Per Owned Iphone 16 Pro Max",
+            name:"Iphone 11 pro",
+            price: 240000,
+            colors: ["black", "white"]
+          },  {
+            imageUrls: [image1, image2, image3],
+            title: "Per Owned Iphone 16 Pro Max",
+            name:"Iphone 12 pro",
+            price: 240000,
+            colors: ["black", "white"]
+          },  {
+            imageUrls: [image1, image2, image3],
+            title: "Per Owned Iphone 16 Pro Max",
+            name:"Iphone 13 pro",
+            price: 240000,
+            colors: ["black", "white"]
+          }]
 
     const handdleInput = (event) => {
         const input = event.target.value.toLowerCase()
@@ -48,13 +52,12 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
         if(input == ""){
             setFindProduct([])
         }else{
-            setFindProduct(allProdcuts.filter(product => product.productName.toLowerCase().includes(input)))
+            setFindProduct(products.filter(product => product.name.toLowerCase().includes(input)))
         }  
     }
     
     return(<>
-        {!loading && (
-            <div className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:h-[100vh] md:top-0 md:right-0 bg-white md:w-3/8 md:rounded-t-[0px] md:rounded-l-[50px] fixed z-20
+        <div className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:h-[100vh] md:top-0 md:right-0 bg-white md:w-3/7 md:rounded-t-[0px] md:rounded-l-[50px] fixed z-20
             ${
               disableTransition ? "transition-none" : "transition-transform duration-1000 ease-out"
             }
@@ -73,7 +76,7 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
             <div className="flex flex-col h-full">
                 <div className="relative border-b-1 border-gray-200 px-[20px] pt-[32px] pb-[24px] md:p-10 flex justify-between">
                     <hr className="w-12 border-2 rounded-full md:hidden absolute top-4 left-[43%] border-gray-200"/>
-                    <h1 className="text-[20px] md:text-[25px] text-black font-bold font-inter-sans">Search</h1>
+                    <h1 className="text-[24px] md:text-[30px] text-black font-bold font-inter-sans">Search</h1>
                     <button className="rounded-full bg-black w-[48px] h-[48px] hidden md:flex justify-center items-center hover:cursor-pointer
                         transition-transform duration-300 ease-in-out hover:rotate-90
                     "
@@ -98,7 +101,7 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
                                 <p className="font-inter-sans text-[12px] tracking-[1.5px] text-gray-400 border-b-1 border-gray-200 pb-1">SUGGESTIONS</p>
                                 <ul className="pt-2 space-y-1 text-[15px] md:text-[16px] font-medium font-inter-sans">
                                     {findProduct.map((product, index) => (
-                                        <li key={index}><Link to={`/product/${product._id}`} onClick={() => {setIsSideModelShow(false)}} className="hover-underline">{product.productName}</Link></li>
+                                        <li key={index}><Link className="hover-underline">{product.name}</Link></li>
                                     ))}
                                 </ul>
                             </div>
@@ -107,13 +110,11 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
                                 {findProduct.map((product, index) => (
                                         <div key={index} className="text-black flex flex-row gap-6 space-y-2 mt-3">
                                             <div className="w-[80px] h-[80px] md:w-[96px] md:h-[96px] overflow-hidden rounded-lg hover:cursor-pointer">
-                                                <img src={product.mainImage} className="w-full h-full object-contains transition-transform duration-200 ease-in-out hover:scale-105"/>
+                                                <img src={product.imageUrls[0]} className="w-full h-full object-contains transition-transform duration-200 ease-in-out hover:scale-105"/>
                                             </div>
                                             <div className="space-y-2 font-inter-sans">
-                                                <Link 
-                                                to={`/product/${product._id}`} onClick={() => {setIsSideModelShow(false)}}
-                                                className="font-medium hover-underline text-[15px] md:text-[16px]">{product.productName}</Link>
-                                                <p className="text-[14px]" style={{color: "#171717"}}><span className="text-[11.2px]">From </span>Rs {product.productPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                                <Link className="font-medium hover-underline text-[15px] md:text-[16px]">{product.title}</Link>
+                                                <p className="text-[14px]" style={{color: "#171717"}}><span className="text-[11.2px]">From </span>Rs {product.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -129,7 +130,6 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
                 </div>
             </div>
         </div>
-        )}
     </>)
 }
 

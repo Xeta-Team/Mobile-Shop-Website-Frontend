@@ -45,11 +45,17 @@ const IpadList = () => {
 
     useEffect(() => {
         const fetchIpads = async () => {
+            setIsLoading(true);
             try {
-                const response = await axios.get('http://localhost:3001/api/products');
-                // Filter for products in the 'Tablet/Laptop' category
-                const ipadProducts = response.data.filter(p => p.productCategory === 'Tablet');
-                setIpads(ipadProducts);
+                // Fetch the data object from the API
+                const { data } = await axios.get('http://localhost:3001/api/products');
+
+                // 1. Access the nested 'products' array from data
+                // 2. Filter by the correct field name 'category'
+                if (data && data.products) {
+                    const ipadProducts = data.products.filter(p => p.category === 'iPad');
+                    setIpads(ipadProducts);
+                }
             } catch (error) {
                 console.error("Failed to fetch iPads:", error);
             } finally {

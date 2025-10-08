@@ -1,10 +1,7 @@
-import { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router";
-import { CartContext } from "../../../../Actions/CartContext";
-const Cart = ({cartItems, setIsCartSideModelshow,setCartItems,handdleQuantityChange, subTotal, isCartSideModelShow}) => {
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+const Cart = ({cartItems, handdleQuantityChange, subTotal, isCartSideModelShow}) => {
     const [progress, setProgress] = useState(0);
-    const navigate = useNavigate()
-    const { deleteCartItem } = useContext(CartContext)
 
     useEffect(() => {
         if (isCartSideModelShow) {
@@ -28,10 +25,7 @@ const Cart = ({cartItems, setIsCartSideModelshow,setCartItems,handdleQuantityCha
                 Not sure where to start?
                 <span className="block">Try these collections:</span>
             </p>
-            <button onClick={() => {
-                setIsCartSideModelshow(false)
-                navigate('/')
-            }} className="flex justify-between w-full bg-gray-50 hover:bg-gray-100 hover:cursor-pointer p-3 rounded-full group">
+            <button className="flex justify-between w-full bg-gray-50 hover:bg-gray-100 hover:cursor-pointer p-3 rounded-full group">
                 <p style={{ color: "#171717" }}>Continue shopping</p>
                 <div className="transition-transform -translate-x-1 duration-300 group-hover:translate-x-0">
                 <svg
@@ -86,7 +80,7 @@ const Cart = ({cartItems, setIsCartSideModelshow,setCartItems,handdleQuantityCha
                         />
                         </div>
                         <div className="flex-1">
-                        <Link to={`/product/${item.id}`} onClick={() => {setIsCartSideModelshow(false)}} className="text-[13px] md:text-[15px] font-medium hover-underline">
+                        <Link className="text-[14px] md:text-[16px] font-medium hover-underline">
                             {item.title}
                         </Link>
                         {item.colors && (
@@ -125,7 +119,6 @@ const Cart = ({cartItems, setIsCartSideModelshow,setCartItems,handdleQuantityCha
                         <button
                             className="text-[12px] hover:cursor-pointer"
                             style={{ color: "#171717" }}
-                            onClick={() => {deleteCartItem(item.id, setCartItems)}}
                         >
                             <span className="remove-hover-underline">Remove</span>
                         </button>
@@ -138,11 +131,11 @@ const Cart = ({cartItems, setIsCartSideModelshow,setCartItems,handdleQuantityCha
             <div className="border-t-1 border-gray-200 font-inter-sans space-y-7 py-5 px-[20px] md:py-8 bottom-0 sticky bg-gray-50 md:pt-[24px] md:px-[48px]">
                 <div className="flex justify-between md:gap-10">
                     <div>
-                        <p className="text-[#171717] text-[12px] md:text-[15px] md:w-56">
+                        <p className="text-[#171717] text-[14px] md:text-[16px] md:w-56">
                             Taxes included and shipping calculated at checkout.
                         </p>
                     </div>
-                    <div className="text-[16px] md:text-[20px] font-bold text-[#171717]">
+                    <div className="text-[18px] md:text-[22px] font-bold text-[#171717]">
                         <span className="block text-[14px] md:text-[16px] font-medium">Subtotal</span> Rs {subTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} LKR
                     </div>
                     </div>
