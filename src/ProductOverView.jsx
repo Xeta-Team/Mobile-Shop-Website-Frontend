@@ -8,6 +8,8 @@ import TopNavigationBar from './Components/TopNavigationBar';
 import Footer from './Components/Footer';
 import { PuffLoader } from "react-spinners";
 import { toast } from 'react-toastify';
+import { useContext } from 'react';
+import { RecentReviewedContext } from './Actions/RecentReviewedContext';
 
 export default function ProductOverView() {
   const { productId } = useParams()
@@ -17,8 +19,10 @@ export default function ProductOverView() {
   const [selectedColor, setSelectedColor] = useState("");
   const [productPrice,setProductPrice] = useState(null)
   const [cardInfo, setCardInfo] = useState([])
+  const {addRecentItems} = useContext(RecentReviewedContext)
   
   useEffect(() => {
+    addRecentItems(productId)
     fetchProductData()
     fetchSliderdata()
   }, [productId])

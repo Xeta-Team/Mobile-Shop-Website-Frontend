@@ -257,7 +257,7 @@ const Home = () => {
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[3] = el)}>
-                    <HomeCarousel slides={cardInfo} title="New Arrivals" isLoading={isLoading}/>
+                    <HomeCarousel setShowCartPopup={setShowCartPopup} slides={cardInfo} title="New Arrivals" isLoading={isLoading}/>
                 </section>
 
                 <section ref={(el) => (sectionsRef.current[4] = el)}>
