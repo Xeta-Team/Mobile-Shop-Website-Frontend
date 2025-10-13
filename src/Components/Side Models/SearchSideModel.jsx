@@ -1,9 +1,8 @@
 import {useState,useRef, useEffect} from "react"
-import image1 from "../../assest/image1.png"
-import image2 from "../../assest/image2.png"
-import image3 from "../../assest/image3.png"
 import { Link } from "react-router"
 import { handleTouchEnd, handleTouchMove, handleTouchStart } from "./Side Model Fuctions/TouchHanddle"
+import apiClient from "../../api/axiosConfig"
+import { toast } from 'react-toastify';
 
 const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
     const [findProduct, setFindProduct] = useState([])
@@ -12,6 +11,7 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
     const currentYRef = useRef(0);
     const [translateY, setTranslateY] = useState(0);
     const [disableTransition, setDisableTransition] = useState(false);
+    const [products, setAllProducts] = useState([])
     
     useEffect(() => {
     let timeout;
@@ -25,27 +25,19 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
     }, []);
-    
-    const products = [{
-            imageUrls: [image1, image2, image3],
-            title: "Per Owned Iphone 16 Pro Max",
-            name:"Iphone 11 pro",
-            price: 240000,
-            colors: ["black", "white"]
-          },  {
-            imageUrls: [image1, image2, image3],
-            title: "Per Owned Iphone 16 Pro Max",
-            name:"Iphone 12 pro",
-            price: 240000,
-            colors: ["black", "white"]
-          },  {
-            imageUrls: [image1, image2, image3],
-            title: "Per Owned Iphone 16 Pro Max",
-            name:"Iphone 13 pro",
-            price: 240000,
-            colors: ["black", "white"]
-          }]
 
+    useEffect(() => {
+        const getAllProductDetails = async() => {
+            try{
+                const productsRes = await apiClient.get('/products/searchbar/products')
+                setAllProducts(productsRes.data)  
+            }catch(error){
+                toast.error('Something went wrong! Please try again..!')
+            }
+        }
+        getAllProductDetails()
+    },[])
+    
     const handdleInput = (event) => {
         const input = event.target.value.toLowerCase()
         setSearchText(input)
@@ -55,6 +47,7 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
             setFindProduct(products.filter(product => product.name.toLowerCase().includes(input)))
         }  
     }
+    console.log(findProduct);
     
     return(<>
         <div className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:h-[100vh] md:top-0 md:right-0 bg-white md:w-3/7 md:rounded-t-[0px] md:rounded-l-[50px] fixed z-20
@@ -101,7 +94,7 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
                                 <p className="font-inter-sans text-[12px] tracking-[1.5px] text-gray-400 border-b-1 border-gray-200 pb-1">SUGGESTIONS</p>
                                 <ul className="pt-2 space-y-1 text-[15px] md:text-[16px] font-medium font-inter-sans">
                                     {findProduct.map((product, index) => (
-                                        <li key={index}><Link className="hover-underline">{product.name}</Link></li>
+                                        <li key={index}><Link to={`/product/${product._id}`} className="hover-underline">{product.name}</Link></li>
                                     ))}
                                 </ul>
                             </div>
@@ -110,11 +103,13 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
                                 {findProduct.map((product, index) => (
                                         <div key={index} className="text-black flex flex-row gap-6 space-y-2 mt-3">
                                             <div className="w-[80px] h-[80px] md:w-[96px] md:h-[96px] overflow-hidden rounded-lg hover:cursor-pointer">
-                                                <img src={product.imageUrls[0]} className="w-full h-full object-contains transition-transform duration-200 ease-in-out hover:scale-105"/>
+                                                <img src={product.base_image} className="w-full h-full object-contains transition-transform duration-200 ease-in-out hover:scale-105"/>
                                             </div>
                                             <div className="space-y-2 font-inter-sans">
-                                                <Link className="font-medium hover-underline text-[15px] md:text-[16px]">{product.title}</Link>
-                                                <p className="text-[14px]" style={{color: "#171717"}}><span className="text-[11.2px]">From </span>Rs {product.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                                <Link to={`/product/${product._id}`} className="font-medium hover-underline text-[15px] md:text-[16px]">{product.name}</Link>
+                                                {product.variants.map((v,idx) => (
+                                                    <p key={idx} className="text-[14px]" style={{color: "#171717"}}><span className="text-[11.2px]">From </span>Rs {v.price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                                ))}
                                             </div>
                                         </div>
                                     ))}
