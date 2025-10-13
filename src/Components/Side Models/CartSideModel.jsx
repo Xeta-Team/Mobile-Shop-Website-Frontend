@@ -120,7 +120,7 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
                 setIsCartSideModelshow(false);
               }}
             >
-             {/* ... SVG Icon ... */}
+             <svg width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <defs> </defs> <g id="cancel"> <path class="cls-1" d="M28,29a1,1,0,0,1-.71-.29l-24-24A1,1,0,0,1,4.71,3.29l24,24a1,1,0,0,1,0,1.42A1,1,0,0,1,28,29Z"></path> <path class="cls-1" d="M4,29a1,1,0,0,1-.71-.29,1,1,0,0,1,0-1.42l24-24a1,1,0,1,1,1.42,1.42l-24,24A1,1,0,0,1,4,29Z"></path> </g> </g></svg>
             </button>
           </div>
           <div className="pt-[20px] md:pt-[32px] overflow-y-auto">
