@@ -42,7 +42,9 @@ const ProductDetails = ({ product, onVariantChange }) => {
     const itemToAdd = {
         productId: product._id, // Correctly included
         sku: selectedVariant.sku,
-        name: `${product.name} - ${selectedVariant.colorName} - ${selectedVariant.storage}`,
+        color: selectedVariant.colorName,
+        storage: selectedVariant.storage,
+        name: `${product.name}`,
         price: selectedVariant.price,
         image: selectedVariant.image_url || product.base_image,
         quantity: quantity,

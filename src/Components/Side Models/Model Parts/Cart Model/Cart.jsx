@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { deleteCartItems } from "../../../../Actions/CartActions";
 const Cart = ({cartItems, handdleQuantityChange, subTotal, isCartSideModelShow}) => {
     const [progress, setProgress] = useState(0);
 
@@ -14,6 +15,7 @@ const Cart = ({cartItems, handdleQuantityChange, subTotal, isCartSideModelShow})
             setProgress(0);
         }
     }, [isCartSideModelShow])
+    
     return(<>
     <div className="text-black">
         {cartItems.length === 0 ? (
@@ -25,7 +27,7 @@ const Cart = ({cartItems, handdleQuantityChange, subTotal, isCartSideModelShow})
                 Not sure where to start?
                 <span className="block">Try these collections:</span>
             </p>
-            <button className="flex justify-between w-full bg-gray-50 hover:bg-gray-100 hover:cursor-pointer p-3 rounded-full group">
+            <Link to={'/'} className="flex justify-between w-full bg-gray-50 hover:bg-gray-100 hover:cursor-pointer p-3 rounded-full group">
                 <p style={{ color: "#171717" }}>Continue shopping</p>
                 <div className="transition-transform -translate-x-1 duration-300 group-hover:translate-x-0">
                 <svg
@@ -53,7 +55,7 @@ const Cart = ({cartItems, handdleQuantityChange, subTotal, isCartSideModelShow})
                     </g>
                 </svg>
                 </div>
-            </button>
+            </Link>
             </div>
         ) : (
             <div className="h-full flex flex-col">
@@ -81,14 +83,14 @@ const Cart = ({cartItems, handdleQuantityChange, subTotal, isCartSideModelShow})
                         </div>
                         <div className="flex-1">
                         <Link className="text-[14px] md:text-[16px] font-medium hover-underline">
-                            {item.title}
+                            {item.name}
                         </Link>
-                        {item.colors && (
+                        {item.color && (
                             <p
                             className="text-[12px] mt-1"
                             style={{ color: "#17171799" }}
                             >
-                            {item.colors}
+                            {item.color}
                             </p>
                         )}
                         {item.storage && (
@@ -120,7 +122,9 @@ const Cart = ({cartItems, handdleQuantityChange, subTotal, isCartSideModelShow})
                             className="text-[12px] hover:cursor-pointer"
                             style={{ color: "#171717" }}
                         >
-                            <span className="remove-hover-underline">Remove</span>
+                            <span className="remove-hover-underline"
+                                onClick={() => {deleteCartItems(item.sku)}}
+                            >Remove</span>
                         </button>
                         </div>
                     </div>
