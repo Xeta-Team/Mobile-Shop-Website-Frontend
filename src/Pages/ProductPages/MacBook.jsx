@@ -4,16 +4,10 @@ import { Loader, Twitter, Facebook, Instagram } from 'lucide-react';
 import TopNavigationBar from '../../Components/TopNavigationBar.jsx';
 import HoverTranslateCard from '../../Components/Cards/HoverTranslateCard.jsx';
 import axios from 'axios';
-import shopLogoWhite from '../../assest/wlogo.png';
 import appleIntelligence from '../../assest/mac.png';
 import Footer from '../../Components/Footer.jsx';
 
 
-// --- Components for the MacBook Page ---
-
-/**
- * Hero section for the MacBook page with a pinned video background.
- */
 const MacbookHero = () => {
     return (
         <section className="sticky top-0 h-screen bg-black text-white text-center flex flex-col justify-start items-center overflow-hidden pt-24">
