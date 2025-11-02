@@ -22,7 +22,7 @@ const GlobalStyles = () => (
  * HeroSection Component
  * @description Creates the main hero banner with a background video and animated text.
  */
-const HeroSection = () => {
+const HeroSection = ({onShopNowClick}) => {
     const videoRef = useRef(null);
     const [playCount, setPlayCount] = useState(0);
 
@@ -58,7 +58,9 @@ const HeroSection = () => {
                 <p className="hero-subtitle mt-4 text-lg md:text-xl max-w-2xl mx-auto text-gray-200">
                     Unbeatable prices on the latest iPhones, iPads, and Macs. Quality guaranteed.
                 </p>
-                <button className="hero-button mt-8 bg-white text-black font-semibold py-3 px-8 rounded-full text-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105">
+                <button 
+                    onClick={onShopNowClick}
+                    className="hero-button mt-8 bg-white text-black font-semibold py-3 px-8 rounded-full text-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105">
                     Shop Now
                 </button>
             </div>
@@ -110,10 +112,7 @@ const FeaturedCategories = () => {
     );
 };
 
-/**
- * SpecialDealsSection Component
- * @description A promotional section with a large background image and call-to-action.
- */
+
 const SpecialDealsSection = () => {
     return (
         <div className="relative rounded-2xl overflow-hidden text-white p-8 md:p-12 flex items-center min-h-[400px] bg-gray-800">
@@ -171,6 +170,12 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(true);
     const sectionsRef = useRef([]);
 
+    const handleShopNowClick = () =>{
+        if(sectionsRef.current[2]){
+            sectionsRef.current[2].scrollIntoView({ behavior: 'smooth'});
+        }
+    };
+
     useEffect(() => {
         // Fetch all homepage data in parallel
         const fetchAllHomeData = async () => {
@@ -224,7 +229,6 @@ const Home = () => {
             { threshold: 0.2 }
         );
 
-        // Set initial "hidden" state and observe each section
         sectionsRef.current.forEach((section) => {
             if (section) {
                 if (section.classList.contains('category-container')) {
@@ -236,7 +240,6 @@ const Home = () => {
             }
         });
 
-        // Cleanup function
         return () => {
             sectionsRef.current.forEach((section) => {
                 if (section) observer.unobserve(section);
@@ -248,7 +251,7 @@ const Home = () => {
         <div className="bg-gray-50 text-black antialiased">
             <GlobalStyles />
             <TopNavigationBar />
-            <HeroSection />
+            <HeroSection onShopNowClick={handleShopNowClick}/>
 
             <main className="py-16 px-4 md:px-8 overflow-hidden">
 

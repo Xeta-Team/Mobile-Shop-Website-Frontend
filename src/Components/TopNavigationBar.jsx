@@ -33,32 +33,34 @@ const TopNavigationBar = () => {
     
     return(<>
         <nav className="bg-black text-white border-gray-200 dark:bg-gray-900 relative h-[120px] bg-fixed">
-            {/* --- All 'md:' prefixes changed to 'lg:' --- */}
             <div className="w-full flex flex-wrap items-center justify-between p-4 ">
-                
-                {/* Hamburger button: Now hidden on lg screens (1024px) and up */}
-                <div className="lg:hidden">
+                {/* Hamburger button: Now hidden on desktop */}
+                <div className="md:hidden">
                     <CollapseBtn setIscollapseShow={setIscollapseShow}/>
                 </div>
                 
                 {/* Logo: Resized for mobile, restored for desktop, and ordered */}
                 <a
                     href="/"
-                    className="flex lg:order-1" // Changed to lg:order-1
+                    className="flex md:order-1"
                 >
                     <img
                         src={shopLogoWhite}
-                        className="h-[60px] w-auto lg:h-[80px]" // Changed to lg:h-[80px]
+                        // Mobile: h-60px, width-auto. Desktop: h-80px
+                        className="h-[60px] w-auto md:h-[80px]" 
                         alt="Flowbite Logo"
                     />
                 </a>
                 
-                {/* --- HTML ORDER FIX: Swapped Nav Links and Action Buttons --- */}
+                {/* Action Buttons: Ordered to be on the far right on desktop */}
+                <div className="md:order-3">
+                    <NavigrationBarActionBtns setIsSideModelShow={setIsSideModelShow} setIsCartSideModelShow={setIsCartSideModelShow}/>
+                </div>
 
                 {/* Nav Links: Now visible on desktop, ordered, and width set to auto */}
                 <div
-                    // All 'md:' prefixes changed to 'lg:'
-                    className="items-center justify-between hidden w-full lg:flex lg:flex-col lg:w-auto lg:order-2 lg:text-[17px]"
+                    // w-full on mobile (but hidden), md:w-auto on desktop
+                    className="items-center justify-between hidden w-full md:flex md:flex-col md:w-auto md:order-2 md:text-[17px]"
                     id="navbar-user"
                 >
                     <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 text-white rounded-lg md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0">
@@ -75,11 +77,6 @@ const TopNavigationBar = () => {
                         <NavigrationBarBtn name={"Per-Owned Devices"}  rowNum={2} to={"/pre-owned-devices"}/>
                     </ul>
                 </div>
-
-                {/* Action Buttons: Ordered to be on the far right on desktop */}
-                <div className="lg:order-3"> {/* Changed to lg:order-3 */}
-                    <NavigrationBarActionBtns setIsSideModelShow={setIsSideModelShow} setIsCartSideModelShow={setIsCartSideModelShow}/>
-                </div>
             </div>
         </nav>
 
@@ -89,7 +86,7 @@ const TopNavigationBar = () => {
 
         <CartSideModel isCartSideModelShow={isCartSideModelShow} setIsCartSideModelshow={setIsCartSideModelShow}/>
         
-        {/* Combined both overlays into one logical component */}
+        {/* FIX: Combined both overlays into one logical component */}
         {isShowOverlay && (
             <Overlay 
                 onClick={() => {

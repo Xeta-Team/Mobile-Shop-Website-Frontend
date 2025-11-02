@@ -50,7 +50,7 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
     console.log(findProduct);
     
     return(<>
-        <div className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:h-[100vh] md:top-0 md:right-0 bg-white md:w-3/7 md:rounded-t-[0px] md:rounded-l-[50px] fixed z-20
+        <div className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:h-[100vh] md:top-0 md:right-0 bg-white md:w-2/6 md:rounded-t-[0px] md:rounded-l-[50px] fixed z-20
             ${
               disableTransition ? "transition-none" : "transition-transform duration-1000 ease-out"
             }
