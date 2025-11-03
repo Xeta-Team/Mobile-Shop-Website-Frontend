@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Loader, Twitter, Facebook, Instagram } from 'lucide-react';
 import TopNavigationBar from '../../Components/TopNavigationBar.jsx';
 import HoverTranslateCard from '../../Components/Cards/HoverTranslateCard.jsx';
@@ -33,9 +32,6 @@ const MacbookHero = () => {
     );
 };
 
-/**
- * A section to list all available MacBooks using the HoverTranslateCard component.
- */
 const MacbookList = () => {
     const [macbooks, setMacbooks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -81,10 +77,6 @@ const MacbookList = () => {
     );
 };
 
-
-/**
- * The main component for the MacBook page.
- */
 const MacbookPage = () => {
     return (
         <div className="bg-white">

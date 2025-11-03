@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import { gsap } from "gsap";
 import { Twitter, Facebook, Instagram, ArrowRight, ShieldCheck, Truck, MessageSquare } from 'lucide-react';
 import HomeCarousel from "../Components/Carousels/HomeCarousel";
-import SliderCard from "../Components/Carousels/SliderCards";
 import TopNavigationBar from "../Components/TopNavigationBar";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css"
@@ -18,10 +18,6 @@ const GlobalStyles = () => (
     `}</style>
 );
 
-/**
- * HeroSection Component
- * @description Creates the main hero banner with a background video and animated text.
- */
 const HeroSection = ({onShopNowClick}) => {
     const videoRef = useRef(null);
     const [playCount, setPlayCount] = useState(0);
@@ -33,7 +29,7 @@ const HeroSection = ({onShopNowClick}) => {
     useEffect(() => {
         const videoElement = videoRef.current;
         if (videoElement && playCount > 0 && playCount < 3) {
-            videoElement.currentTime = 0; // Rewind the video to the start
+            videoElement.currentTime = 0; 
             videoElement.play();
         }
     }, [playCount]);
@@ -68,10 +64,6 @@ const HeroSection = ({onShopNowClick}) => {
     );
 };
 
-/**
- * FeaturedCategories Component
- * @description Displays a grid of animated, *clickable* product category cards.
- */
 const FeaturedCategories = () => {
     const categories = [
         { name: "iPhones", image: "https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", to: "/mobile-phones" },
@@ -98,7 +90,6 @@ const FeaturedCategories = () => {
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                             <div className="relative z-10 flex flex-col items-start justify-end h-full p-6 text-white">
                                 <h3 className="font-bold text-xl md:text-2xl">{cat.name}</h3>
-                                {/* The "forward key" icon you mentioned is here */}
                                 <div className="flex items-center text-sm mt-1 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
                                     <span>Shop Now</span>
                                     <ArrowRight size={16} className="ml-1" />
@@ -112,15 +103,16 @@ const FeaturedCategories = () => {
     );
 };
 
-
-const SpecialDealsSection = () => {
+const SpecialDealsSection = ({ navigate }) => {
     return (
         <div className="relative rounded-2xl overflow-hidden text-white p-8 md:p-12 flex items-center min-h-[400px] bg-gray-800">
             <img src="https://images.pexels.com/photos/341523/pexels-photo-341523.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" className="absolute inset-0 w-full h-full object-cover opacity-30" alt="Deal background" />
             <div className="relative z-10">
                 <h2 className="text-3xl md:text-4xl font-bold">MacBook Pro Deals</h2>
                 <p className="mt-2 max-w-lg">Power meets portability. Get up to 20% off on select MacBook Pro models this week only.</p>
-                <button className="mt-6 bg-white text-black font-semibold py-3 px-6 rounded-full hover:bg-gray-200 transition-all duration-300">
+                <button className="mt-6 bg-white text-black font-semibold py-3 px-6 rounded-full hover:bg-gray-200 transition-all duration-300"
+                    onClick={() => navigate("/mac")}
+                >
                     View Offers
                 </button>
             </div>
@@ -128,10 +120,7 @@ const SpecialDealsSection = () => {
     )
 }
 
-/**
- * WhyChooseUs Component
- * @description Highlights key selling points like guarantees, shipping, and support.
- */
+
 const WhyChooseUs = () => {
     const features = [
         { icon: <ShieldCheck size={40} className="text-blue-500" />, title: "Quality Guaranteed", description: "All our devices undergo rigorous testing to ensure they meet the highest standards." },
@@ -157,18 +146,15 @@ const WhyChooseUs = () => {
 };
 
 
-/**
- * Main Home Component
- * @description Orchestrates the homepage layout, data fetching, and animations.
- */
 const Home = () => {
-    // Separate states for each carousel for a more dynamic page
     const [latestPhones, setLatestPhones] = useState([]);
     const [bestSellers, setBestSellers] = useState([]);
     const [preOwnedIphones, setPreOwnedIphones] = useState([]);
     
     const [isLoading, setIsLoading] = useState(true);
     const sectionsRef = useRef([]);
+
+    const navigate = useNavigate();
 
     const handleShopNowClick = () =>{
         if(sectionsRef.current[2]){
@@ -177,7 +163,6 @@ const Home = () => {
     };
 
     useEffect(() => {
-        // Fetch all homepage data in parallel
         const fetchAllHomeData = async () => {
             try {
                 const [latestRes, bestSellersRes, iphonesRes] = await Promise.all([
@@ -203,13 +188,11 @@ const Home = () => {
     useEffect(() => {
         if (isLoading) return;
 
-        // Animate the hero section
         const tl = gsap.timeline({ defaults: { ease: "power3.out", duration: 1 } });
         tl.fromTo(".hero-title", { opacity: 0, y: 50 }, { opacity: 1, y: 0, delay: 0.2 })
             .fromTo(".hero-subtitle", { opacity: 0, y: 40 }, { opacity: 1, y: 0 }, "-=0.7")
             .fromTo(".hero-button", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1 }, "-=0.8");
 
-        // Set up Intersection Observer for scroll-in animations
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
@@ -259,27 +242,22 @@ const Home = () => {
                     {!isLoading && <HomeCarousel slides={preOwnedIphones} title="Pre-Owned iPhones" />}
                 </section>
 
-                {/* Section 3: Add margin-top */}
                 <section ref={(el) => (sectionsRef.current[2] = el)} className="category-container mt-20 md:mt-24">
                     <FeaturedCategories />
                 </section>
 
-                {/* Section 4: Add margin-top */}
                 <section ref={(el) => (sectionsRef.current[3] = el)} className="mt-20 md:mt-24">
                     {!isLoading && <HomeCarousel slides={latestPhones} title="New Arrivals" />}
                 </section>
 
-                {/* Section 5: Add margin-top */}
                 <section ref={(el) => (sectionsRef.current[4] = el)} className="mt-20 md:mt-24">
-                    <SpecialDealsSection />
+                    <SpecialDealsSection navigate={navigate} />
                 </section>
                 
-                {/* Section 6: Add margin-top */}
                 <section ref={(el) => (sectionsRef.current[5] = el)} className="mt-20 md:mt-24">
                     <WhyChooseUs />
                 </section>
 
-                {/* Section 7: Add margin-top */}
                 <section ref={(el) => (sectionsRef.current[6] = el)} className="mt-20 md:mt-24">
                     {!isLoading && <HomeCarousel slides={bestSellers} title="Best Sellers" />}
                 </section>

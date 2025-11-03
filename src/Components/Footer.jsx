@@ -13,9 +13,9 @@ const Footer = () => {
                     <h3 className="font-semibold mb-4 tracking-wider">Shop</h3>
                     <ul className="space-y-2 text-sm text-gray-300">
                         <li><a href="/iphone" className="hover:text-white">iPhones</a></li>
-                        <li><a href="#" className="hover:text-white">iPads</a></li>
-                        <li><a href="#" className="hover:text-white">MacBooks</a></li>
-                        <li><a href="#" className="hover:text-white">Accessories</a></li>
+                        <li><a href="/ipad" className="hover:text-white">iPads</a></li>
+                        <li><a href="/mac" className="hover:text-white">MacBooks</a></li>
+                        <li><a href="/accessories" className="hover:text-white">Accessories</a></li>
                     </ul>
                 </div>
                 <div>

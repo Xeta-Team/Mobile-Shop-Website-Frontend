@@ -32,7 +32,6 @@ const ProductDetails = ({ product, onVariantChange }) => {
     setQuantity(1);
   }, [selectedVariant]);
 
-  // This function is now correct.
   const handleAddToCart = () => {
     if (!selectedVariant || !product._id) {
         toast.error('Product data is missing. Cannot add to cart.');
@@ -40,7 +39,7 @@ const ProductDetails = ({ product, onVariantChange }) => {
     }
 
     const itemToAdd = {
-        productId: product._id, // Correctly included
+        productId: product._id, 
         sku: selectedVariant.sku,
         color: selectedVariant.colorName,
         storage: selectedVariant.storage,
@@ -54,14 +53,13 @@ const ProductDetails = ({ product, onVariantChange }) => {
     toast.success('Item added to cart!');
   };
 
-  // FINAL FIX: The 'buyNow' function also needs the productId.
   const handleBuyNow = () => {
     if (!selectedVariant || !product._id) {
       toast.error('Please select a valid product variation before proceeding.');
       return;
     }
     const itemToCheckout = {
-        productId: product._id, // <<< FIX APPLIED HERE
+        productId: product._id, 
         sku: selectedVariant.sku,
         name: `${product.name} - ${selectedVariant.colorName} - ${selectedVariant.storage}`,
         price: selectedVariant.price,

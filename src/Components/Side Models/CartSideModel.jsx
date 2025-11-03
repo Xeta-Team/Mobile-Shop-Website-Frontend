@@ -2,11 +2,11 @@ import { useEffect, useState, useRef } from "react";
 import Cart from "./Model Parts/Cart Model/Cart";
 import { handleTouchEnd, handleTouchMove, handleTouchStart } from "./Side Model Fuctions/TouchHanddle";
 import RecentViews from "./Model Parts/Cart Model/RecentViews";
-import { getCartItems } from "../../Actions/CartActions"; // saveCart is not needed here
+import { getCartItems } from "../../Actions/CartActions"; 
 
 const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
   const [isCartClicked, setIsCartClicked] = useState(true);
-  const [cartItems, setCartItems] = useState(getCartItems()); // Initialize state from localStorage
+  const [cartItems, setCartItems] = useState(getCartItems()); 
   const [recentItems, setRecentItems] = useState([])
   const [subTotal, setSubTotal] = useState(0)
   const startYRef = useRef(0)
@@ -14,7 +14,6 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
   const [translateY, setTranslateY] = useState(0)
   const [disableTransition, setDisableTransition] = useState(false);
 
-  // This effect listens for our custom event and updates the cart
   useEffect(() => {
     const handleCartUpdate = () => {
       const updatedCart = getCartItems();
@@ -23,11 +22,10 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
 
     window.addEventListener('cartUpdated', handleCartUpdate);
 
-    // Cleanup listener on component unmount
     return () => {
       window.removeEventListener('cartUpdated', handleCartUpdate);
     };
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []); 
 
   useEffect(() => {
     let timeout;
@@ -44,7 +42,7 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
   
   useEffect(() => {
     calculateTotal();
-  }, [cartItems]); // Recalculate total whenever cartItems state changes
+  }, [cartItems]); 
 
   const calculateTotal = () => {
     const total = cartItems.reduce((sum, item) => {
@@ -54,8 +52,6 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
   }
 
   const handdleQuantityChange = (value, index) => {
-    // This function can be improved, but for now it works locally.
-    // For a fully synced experience, this should also call a function in CartActions.js
     const newCartItems = [...cartItems];
     const newQuantity = Number(value);
     if (newQuantity < 1) {
@@ -64,7 +60,6 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
         newCartItems[index].quantity = newQuantity;
     }
     setCartItems(newCartItems);
-    // Note: To persist quantity changes from within the cart, you'd call saveCart(newCartItems) here.
   }
   
   return (
@@ -110,7 +105,6 @@ const CartSideModel = ({ isCartSideModelShow, setIsCartSideModelshow }) => {
                   Cart
                 </button>
               </div>
-               {/* ... rest of JSX ... */}
             </div>
             <button
               className="rounded-full bg-black w-[48px] h-[48px] hidden md:flex justify-center items-center hover:cursor-pointer

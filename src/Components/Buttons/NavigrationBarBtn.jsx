@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-const NavigrationBarBtn = ({name, rowNum, dropdownItems, setIsDropDownShow  ,to}) => {
+const NavigrationBarBtn = ({name ,to}) => {
     return(<>
     <li className="relative group"
     >

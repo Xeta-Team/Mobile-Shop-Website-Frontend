@@ -30,52 +30,43 @@ const TopNavigationBar = () => {
             document.body.style.overflow = "auto"
         }
     },[isSideModelShow, isCartSideModelShow, iscollapseShow])
+
     
-    return(<>
-        <nav className="bg-black text-white border-gray-200 dark:bg-gray-900 relative h-[120px] bg-fixed">
-            <div className="w-full flex flex-wrap items-center justify-between p-4 ">
-                {/* Hamburger button: Now hidden on desktop */}
-                <div className="md:hidden">
-                    <CollapseBtn setIscollapseShow={setIscollapseShow}/>
-                </div>
+return(<>
+        <nav className={`w-full top-0 z-20 transition-colors duration-300`}>
+            <div className={`bg-black flex items-center justify-between mx-auto px-4 lg:px-8 h-[120px]`}>
+                <CollapseBtn setIscollapseShow={setIscollapseShow}/>
                 
-                {/* Logo: Resized for mobile, restored for desktop, and ordered */}
                 <a
-                    href="/"
-                    className="flex md:order-1"
+                href="/"
+                className="flex"
                 >
                     <img
                         src={shopLogoWhite}
-                        // Mobile: h-60px, width-auto. Desktop: h-80px
-                        className="h-[60px] w-auto md:h-[80px]" 
+                        className="h-[80px] min-w-[270px] m-auto"
                         alt="Flowbite Logo"
                     />
                 </a>
                 
-                {/* Action Buttons: Ordered to be on the far right on desktop */}
-                <div className="md:order-3">
-                    <NavigrationBarActionBtns setIsSideModelShow={setIsSideModelShow} setIsCartSideModelShow={setIsCartSideModelShow}/>
-                </div>
+                <NavigrationBarActionBtns setIsSideModelShow={setIsSideModelShow} setIsCartSideModelShow={setIsCartSideModelShow}/>
 
-                {/* Nav Links: Now visible on desktop, ordered, and width set to auto */}
                 <div
-                    // w-full on mobile (but hidden), md:w-auto on desktop
-                    className="items-center justify-between hidden w-full md:flex md:flex-col md:w-auto md:order-2 md:text-[17px]"
-                    id="navbar-user"
+                className=" justify-center lg:text-[18px]  hidden w-full md:flex md:w-auto"
+                id="navbar-user"
                 >
-                    <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 text-white rounded-lg md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0">
-                        <NavigrationBarBtn name={"Home"} rowNum={"1"} to={"/"} />
-                        <NavigrationBarBtn name={"iPhone"} rowNum={"1"} to={"/iphone"}/>
-                        <NavigrationBarBtn name={"iPad"} rowNum={"1"} to={"/ipad"} />
-                        <NavigrationBarBtn name={"MacBook"} rowNum={"1"} to={"/mac"} />
-                        <NavigrationBarBtn name={"Watch"} rowNum={"1"} to={"/watch"} />
-                        <NavigrationBarBtn name={"AirPods"} rowNum={"1"} to={"/airpod"} />
-                        <NavigrationBarBtn name={"Accessories"} rowNum={"1"} to={"/accessories"} />
-                        <NavigrationBarBtn name={"Mobile Phone"} rowNum={"1"} to={"/mobile-phones"} />
+                    <ul className="flex flex-wrap justify-center font-medium  text-white rounded-lg lg:space-x-2 md:space-x-0 rtl:space-x-reverse md:flex-row max-w-[800px] md:space-y-0">
+                        <NavigrationBarBtn name={"Home"} to={"/"} />
+                        <NavigrationBarBtn name={"iPhone"} to={"/iphone"}/>
+                        <NavigrationBarBtn name={"iPad"} to={"/ipad"} />
+                        <NavigrationBarBtn name={"MacBook"} to={"/mac"} />
+                        <NavigrationBarBtn name={"Watch"} to={"/watch"} />
+                        <NavigrationBarBtn name={"AirPods"} to={"/airpod"} />
+                        <NavigrationBarBtn name={"Accessories"} to={"/accessories"} />
+                        <NavigrationBarBtn name={"Mobile Phone"} to={"/mobile-phones"} />
+                        <NavigrationBarBtn name={"Per-Owned Devices"}  to={"/pre-owned-devices"}/>
+                 
                     </ul>
-                    <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 text-white rounded-lg md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0"> 
-                        <NavigrationBarBtn name={"Per-Owned Devices"}  rowNum={2} to={"/pre-owned-devices"}/>
-                    </ul>
+                    
                 </div>
             </div>
         </nav>
@@ -86,17 +77,15 @@ const TopNavigationBar = () => {
 
         <CartSideModel isCartSideModelShow={isCartSideModelShow} setIsCartSideModelshow={setIsCartSideModelShow}/>
         
-        {/* FIX: Combined both overlays into one logical component */}
         {isShowOverlay && (
-            <Overlay 
-                onClick={() => {
-                    setIsDropDownShow(false);
-                    setIsSideModelShow(false);
-                    setIsCartSideModelShow(false);
-                    setIscollapseShow(false);
-                }} 
-                isVisible={isShowOverlay}
-            />
+            <Overlay onClick={() => {setIsDropDownShow(false)}} isVisible={isDropDownShow} isSideModelShow={isSideModelShow}/>
+        )}
+        {isShowOverlay && (
+            <Overlay onClick={() => {
+                setIsSideModelShow(false)
+                setIsCartSideModelShow(false)
+                setIscollapseShow(false)
+            }} isVisible={isShowOverlay} isSideModelShow={isSideModelShow || isCartSideModelShow || iscollapseShow}/>
         )}
     </>)
 }
