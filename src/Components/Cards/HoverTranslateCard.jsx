@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useMemo, useEffect } from 'react';
 import { addToCart, buyNow } from '../../Actions/CartActions';
 import { createPortal } from 'react-dom';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { EyeIcon, HeartIcon, XMarkIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
@@ -261,7 +261,7 @@ const HoverTranslateCard = ({ card: product }) => {
             <Link to={`/product/${_id}`} className="block w-full">
                 <div className="relative group bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                     <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button onClick={handleQuickViewClick} className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors" aria-label="Quick View"><EyeIcon className="w-5 h-5 text-gray-700" /></button>
+                    <button onClick={handleQuickViewClick} className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors" aria-label="Quick View"><EyeIcon className="w-5 h-5 text-gray-700" /></button>
                         <button onClick={handleWishlistClick} className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors" aria-label="Add to Wishlist">{isInWishlist ? (<HeartIconSolid className="w-5 h-5 text-red-500" />) : (<HeartIcon className="w-5 h-5 text-gray-700" />)}</button>
                     </div>
 

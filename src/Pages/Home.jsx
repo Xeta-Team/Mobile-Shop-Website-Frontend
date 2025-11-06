@@ -157,8 +157,8 @@ const Home = () => {
     const navigate = useNavigate();
 
     const handleShopNowClick = () =>{
-        if(sectionsRef.current[2]){
-            sectionsRef.current[2].scrollIntoView({ behavior: 'smooth'});
+        if(sectionsRef.current[1]){
+            sectionsRef.current[1].scrollIntoView({ behavior: 'smooth'});
         }
     };
 
@@ -236,29 +236,29 @@ const Home = () => {
             <TopNavigationBar />
             <HeroSection onShopNowClick={handleShopNowClick}/>
 
-            <main className="py-16 px-4 md:px-8 overflow-hidden">
+            <main className="py-16 px-4 md:px-8">
 
-                <section ref={(el) => (sectionsRef.current[1] = el)}>
+                <section ref={(el) => (sectionsRef.current[0] = el)}>
                     {!isLoading && <HomeCarousel slides={preOwnedIphones} title="Pre-Owned iPhones" />}
                 </section>
 
-                <section ref={(el) => (sectionsRef.current[2] = el)} className="category-container mt-20 md:mt-24">
+                <section ref={(el) => (sectionsRef.current[1] = el)} className="category-container mt-20 md:mt-24">
                     <FeaturedCategories />
                 </section>
 
-                <section ref={(el) => (sectionsRef.current[3] = el)} className="mt-20 md:mt-24">
+                <section ref={(el) => (sectionsRef.current[2] = el)} className="mt-20 md:mt-24">
                     {!isLoading && <HomeCarousel slides={latestPhones} title="New Arrivals" />}
                 </section>
 
-                <section ref={(el) => (sectionsRef.current[4] = el)} className="mt-20 md:mt-24">
+                <section ref={(el) => (sectionsRef.current[3] = el)} className="mt-20 md:mt-24">
                     <SpecialDealsSection navigate={navigate} />
                 </section>
-                
-                <section ref={(el) => (sectionsRef.current[5] = el)} className="mt-20 md:mt-24">
+
+                <section ref={(el) => (sectionsRef.current[4] = el)} className="mt-20 md:mt-24">
                     <WhyChooseUs />
                 </section>
 
-                <section ref={(el) => (sectionsRef.current[6] = el)} className="mt-20 md:mt-24">
+                <section ref={(el) => (sectionsRef.current[5] = el)} className="mt-20 md:mt-24">
                     {!isLoading && <HomeCarousel slides={bestSellers} title="Best Sellers" />}
                 </section>
             </main>
