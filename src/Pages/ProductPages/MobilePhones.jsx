@@ -17,7 +17,7 @@ const MobilePhonesPage = () => {
         const fetchMobilePhones = async () => {
             setIsLoading(true);
             try {
-                const { data } = await axios.get('http://localhost:3001/api/products');
+                const { data } = await axios.get(`http://localhost:3001/api/products`);
                 
                 if (data && data.products) {
                     // Filter for both 'Mobile Phone' and 'iPhone' categories

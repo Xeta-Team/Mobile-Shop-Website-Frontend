@@ -39,7 +39,7 @@ const Iphone = () => {
       try {
         // This is the performance fix: get only iPhones from the API
         const response = await axios.get(
-          "http://localhost:3001/api/products/category/iphone"
+          `http://localhost:3001/api/products/category/iphone`
         );
         setProducts(response.data);
         setError(null);

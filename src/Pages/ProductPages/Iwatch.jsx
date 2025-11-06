@@ -40,7 +40,7 @@ const WatchList = () => {
         const fetchWatches = async () => {
             setIsLoading(true);
             try {
-                const { data } = await axios.get('http://localhost:3001/api/products');
+                const { data } = await axios.get(`http://localhost:3001/api/products`);
                 
                 // 1. Access data.products
                 // 2. Filter by category === 'iWatch'

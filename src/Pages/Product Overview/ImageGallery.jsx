@@ -5,7 +5,8 @@ const ImageGallery = ({ product, activeImage, setActiveImage }) => {
   const images = product?.images;
   const galleryImages = images && images.length > 0 ? images : ['https://placehold.co/600x400/F8FAFC/000000?text=No+Image'];
 
-  return ( <div className="flex flex-row gap-4">
+  return (
+    <div className="flex flex-row gap-4">
       {/* Vertical Thumbnail Gallery */}
       <div className="flex flex-col gap-3">
         {galleryImages.slice(0, 4).map((image, index) => (

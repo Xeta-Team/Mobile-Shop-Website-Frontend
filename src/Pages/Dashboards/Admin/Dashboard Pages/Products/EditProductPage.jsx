@@ -10,7 +10,7 @@ export default function EditProductPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState(null);
-    const API_BASE_URL = 'http://localhost:3001';
+    const API_BASE_URL = `http://localhost:3001`;
 
     useEffect(() => {
     const fetchProduct = async () => {

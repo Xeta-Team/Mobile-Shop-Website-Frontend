@@ -29,18 +29,20 @@ export const addToCart = (product, quantity) => {
     saveCart(cart);
 }
 
-export const deleteCartItems = (sku) => {
-    console.log(typeof productId);
-    
-    const cart = getCartItems()
-    const newCart = cart.filter((item) => (item.sku !== sku))
-    saveCart(newCart)
-    
-}
-
 // New function for "Buy Now"
 export const buyNow = (product, quantity) => {
     // This action replaces the entire cart with only the specified item.
     const cart = [{ ...product, quantity }];
     saveCart(cart);
+}
+
+export const deleteCartItems = (sku) => {
+    // 1. Get the current cart from storage
+    let cart = getCartItems();
+
+    // 2. Create a new cart array that excludes (filters out) the item with the matching sku
+    const newCart = cart.filter((item) => item.sku !== sku);
+
+    // 3. Save the new (smaller) cart array back to storage
+    saveCart(newCart);
 }

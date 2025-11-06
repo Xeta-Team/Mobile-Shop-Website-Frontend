@@ -49,7 +49,7 @@ const MacbookList = () => {
     useEffect(() => {
         const fetchMacbooks = async () => {
             try {
-                const { data } = await axios.get('http://localhost:3001/api/products');
+                const { data } = await axios.get(`http://localhost:3001/api/products`);
                 // Filter for products in the 'Tablet/Laptop' category
                 if (data && data.products) {
                     const macbookProducts = data.products.filter(p => p.category ===  'Mac');

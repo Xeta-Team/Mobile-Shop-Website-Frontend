@@ -11,7 +11,7 @@ const AdminDashboard = () => {
             <div className="w-[280px] font-sans">
                 <AdminSideNavBar/>
             </div>
-            <div className="w-[calc(100vw-280px)] bg-gray-50 h-full overflow-y-auto">
+            <div className="w-[calc(100vw-280px)] bg-gray-50 h-full">
                 <Routes>
                     <Route path="/dashboard" element={<MainDashboard/>}/>
                     <Route path="/all-products" element={<AllProducts/>}/>

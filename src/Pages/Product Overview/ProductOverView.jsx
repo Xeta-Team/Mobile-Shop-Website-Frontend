@@ -49,7 +49,6 @@ const ProductOverView = () => {
       try {
         setLoading(true);
         setError(null);
-        
         const response = await axios.get(`http://localhost:3001/api/products/${productId}`, {
           signal: controller.signal,
         });

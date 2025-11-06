@@ -20,7 +20,7 @@ export default function ProductListPage() {
     const [error, setError] = useState(null);
     const [openProductIds, setOpenProductIds] = useState(new Set());
 
-    const API_BASE_URL = 'http://localhost:3001';
+    const API_BASE_URL = `http://localhost:3001`;
 
     useEffect(() => {
         fetchProducts();

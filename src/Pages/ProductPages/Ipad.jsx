@@ -48,7 +48,7 @@ const IpadList = () => {
             setIsLoading(true);
             try {
                 // Fetch the data object from the API
-                const { data } = await axios.get('http://localhost:3001/api/products');
+                const { data } = await axios.get(`http://localhost:3001/api/products`);
 
                 // 1. Access the nested 'products' array from data
                 // 2. Filter by the correct field name 'category'

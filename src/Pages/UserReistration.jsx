@@ -166,7 +166,7 @@ export default function RegistrationPage() {
     const handleGoogleSuccess = async (googleToken) => {
         setIsSubmitting(true);
         try {
-            const apiUrl = 'http://localhost:3001/api/users/google-login';
+            const apiUrl = `http://localhost:3001/api/users/google-login`;
             
             // NOTE: In a real application, you would send the token to your backend for verification and authentication.
             const response = await axios.post(apiUrl, { googleToken });
@@ -312,7 +312,7 @@ export default function RegistrationPage() {
         setIsSubmitting(true);
         try {
             const { confirmPassword, ...payload } = formData;
-            const apiUrl = 'http://localhost:3001/api/users/register'; 
+            const apiUrl = `http://localhost:3001/api/users/register`;
             
             // NOTE: To prevent registration with fake but valid-looking emails (like 123@gmail.com), 
             // the backend must send an email verification link upon successful registration. 

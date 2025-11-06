@@ -4,7 +4,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 import { Smartphone, UploadCloud, CheckCircle, Sparkles, Loader, X, Info, Check, AlertTriangle, Plus, Image as ImageIcon } from 'lucide-react';
 
 // --- Configuration ---
-const API_BASE_URL = 'http://localhost:3001'; // Ensure this matches your backend port
+const API_BASE_URL = `http://localhost:3001`; // Ensure this matches your backend port
 
 // --- Supabase Configuration ---
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;

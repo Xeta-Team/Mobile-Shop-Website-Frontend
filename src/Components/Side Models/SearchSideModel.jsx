@@ -30,7 +30,7 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
         const getAllProductDetails = async() => {
             try{
                 const productsRes = await apiClient.get('/products/searchbar/products')
-                setAllProducts(productsRes.data)  
+                setAllProducts(productsRes.data.products)  
             }catch(error){
                 toast.error('Something went wrong! Please try again..!')
             }
@@ -47,7 +47,7 @@ const SearchSideModel = ({isSideModelShow, setIsSideModelShow}) => {
             setFindProduct(products.filter(product => product.name.toLowerCase().includes(input)))
         }  
     }
-    console.log(findProduct);
+    
     
     return(<>
         <div className={`bottom-0 rounded-t-[20px] w-full h-6/7 md:h-[100vh] md:top-0 md:right-0 bg-white md:w-3/7 md:rounded-t-[0px] md:rounded-l-[50px] fixed z-20

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { LogIn, Mail, Lock, Loader, Info, Check, AlertTriangle } from 'lucide-react';
-import InputField from '../Components/Input/InputField.jsx'; // Assuming this path is correct
+import InputField from '../Components/Input/InputField.jsx'; 
 import { GoogleLogin } from "@react-oauth/google";
 import Toast from '../Components/Toast/Toast.jsx'; // Assuming you have a Toast component
 
@@ -58,7 +58,7 @@ export default function LoginPage() {
 
         setIsSubmitting(true);
         try {
-            const apiUrl = 'http://localhost:3001/api/users/login';
+            const apiUrl = `${import.meta.env.BACKEND_URL}/api/users/login`;
             const response = await axios.post(apiUrl, formData);
             
             // Store token and user data in local storage
@@ -89,7 +89,7 @@ export default function LoginPage() {
         try {
             const credential = credentialResponse.credential;
 
-            const apiUrl = 'http://localhost:3001/api/users/google-login';
+            const apiUrl = `http://localhost:3001/api/users/google-login`;
             const response = await axios.post(apiUrl, { googleToken: credential });
 
             // Store token and user
