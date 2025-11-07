@@ -1,0 +1,44 @@
+name: Deploy to VPS
+
+# This runs every time you push to the 'main' branch
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            # Go to the project directory
+            cd /var/www/Cell-Web
+
+            # Pull the latest code
+            git pull origin main
+
+            # Update backend
+            echo "--- Updating Backend ---"
+            cd Mobile-Shop-Website-Backend
+            npm install
+            pm2 restart backend
+
+            # Update frontend
+            echo "--- Updating Frontend ---"
+            cd ../Mobile-Shop-Website-Frontend
+            npm install
+            npm run build
+
+            # Reset file permissions so Nginx can read the new files
+            echo "--- Resetting File Permissions ---"
+            chown -R www-data:www-data /var/www/Cell-Web
+
+            echo "--- Deployment Finished ---"
