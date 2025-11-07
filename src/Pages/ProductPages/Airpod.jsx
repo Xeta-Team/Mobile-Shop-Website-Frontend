@@ -43,13 +43,11 @@ const AirpodHero = () => {
     );
 };
 
-/**
- * A section to list all available AirPods using the HoverTranslateCard component.
- */
+
 const AirpodList = () => {
     const [airpods, setAirpods] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    // Added error state for better UX
+
     const [error, setError] = useState(null); 
 
     useEffect(() => {
@@ -58,17 +56,11 @@ const AirpodList = () => {
             setIsLoading(true);
             setError(null);
             try {
-                //
-                // --- PERFORMANCE FIX ---
-                // Instead of fetching ALL products and filtering,
-                // we fetch only the 'Headphone' category from the API.
-                // This is much faster.
-                //
+                
                 const { data } = await apiClient.get(`/products/category/Headphone`, {
                     signal: controller.signal
                 });
                 
-                // Assuming the API returns an array of products directly
                 setAirpods(data);
 
             } catch (err) {

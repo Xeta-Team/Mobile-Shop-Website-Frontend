@@ -27,8 +27,7 @@ const AccessoriesHero = () => {
 const AccessoriesList = () => {
     const [accessories, setAccessories] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null); // Added for error handling
-
+    const [error, setError] = useState(null); 
     const accessoryCategories = [
         'Power & Charging',
         'Headphone',
@@ -83,7 +82,7 @@ const AccessoriesList = () => {
         return () => {
             controller.abort();
         };
-    }, []); // Empty dependency array is correct here
+    }, []); 
 
     if (isLoading) {
         return (
@@ -113,10 +112,7 @@ const AccessoriesList = () => {
     return (
         <section className="py-20 bg-white">
             <div className="container mx-auto px-4">
-                {/* --- RESPONSIVE TWEAK ---
-                  - Changed to 2 columns on mobile (grid-cols-2)
-                  - Reduced gap on mobile (gap-4)
-                */}
+
                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 justify-items-center">
                     {accessories.map(item => (
                         <HoverTranslateCard key={item._id} card={item} />
@@ -132,7 +128,7 @@ const AccessoriesPage = () => {
     return (
         <div className="bg-white">
             <TopNavigationBar />
-            <main> {/* Added main tag for semantics */}
+            <main> 
                 <AccessoriesHero />
                 <AccessoriesList />
             </main>
