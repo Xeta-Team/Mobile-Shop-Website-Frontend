@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-import { Smartphone, UploadCloud, CheckCircle, Sparkles, Loader, X, Info, Check, AlertTriangle, Plus, Image as ImageIcon } from 'lucide-react';
+import { CheckCircle, Sparkles, Loader, AlertTriangle, Plus, Image as ImageIcon } from 'lucide-react';
 
-// --- Configuration ---
-const API_BASE_URL = `http://localhost:3001`; // Ensure this matches your backend port
 
 // --- Supabase Configuration ---
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -235,7 +233,7 @@ export default function AddProductPage() {
             if (baseImageFile) finalFormData.base_image = await handleImageUpload(baseImageFile);
             if (variantImageFile) finalFormData.image_url = await handleImageUpload(variantImageFile);
 
-             const response = await axios.post(`${API_BASE_URL}/api/products/addProduct`, finalFormData, config);
+             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/products/addProduct`, finalFormData, config);
             
             setMessage(response.data.message);
             setIsSuccess(true);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Loader, AlertTriangle, Save, Plus, Trash2, X } from 'lucide-react';
+import apiClient from '../../../../../api/axiosConfig.js';
 
 export default function EditProductPage() {
     const { id } = useParams();
@@ -9,13 +10,12 @@ export default function EditProductPage() {
     const [product, setProduct] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
-    const [error, setError] = useState(null);
-    const API_BASE_URL = `http://localhost:3001`;
+    const [error, setError] = useState(null);   
 
     useEffect(() => {
     const fetchProduct = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/products/${id}`);
+            const response = await apiClient.get(`/products/${id}`);
             setProduct(response.data);
         } catch (err) {
             setError('Failed to fetch product data.');

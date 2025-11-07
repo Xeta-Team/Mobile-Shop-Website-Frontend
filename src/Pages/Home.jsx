@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
 import { gsap } from "gsap";
 import { Twitter, Facebook, Instagram, ArrowRight, ShieldCheck, Truck, MessageSquare } from 'lucide-react';
 import HomeCarousel from "../Components/Carousels/HomeCarousel";
-import SliderCard from "../Components/Carousels/SliderCards";
 import TopNavigationBar from "../Components/TopNavigationBar";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css"
 import Footer from "../Components/Footer";
+import apiClient from "../api/axiosConfig.js";
 
 const GlobalStyles = () => (
     <style>{`
@@ -179,9 +178,9 @@ const Home = () => {
         const fetchAllHomeData = async () => {
             try {
                 const [latestRes, bestSellersRes, iphonesRes] = await Promise.all([
-                    axios.get(`http://localhost:3001/api/products/latestPhones`),
-                    axios.get(`http://localhost:3001/api/products`), 
-                    axios.get(`http://localhost:3001/api/products/category/iPhone`) 
+                    apiClient.get(`/products/latestPhones`),
+                    apiClient.get(`/products`), 
+                    apiClient.get(`/products/category/iPhone`) 
                 ]);
 
                 setLatestPhones(latestRes.data.firstFiveDevices);

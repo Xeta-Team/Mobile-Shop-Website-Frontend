@@ -5,6 +5,7 @@ import { LogIn, Mail, Lock, Loader, Info, Check, AlertTriangle } from 'lucide-re
 import InputField from '../Components/Input/InputField.jsx'; 
 import { GoogleLogin } from "@react-oauth/google";
 import Toast from '../Components/Toast/Toast.jsx'; // Assuming you have a Toast component
+import apiClient from '../api/axiosConfig.js';
 
 // Reusing the Google Icon from your registration page
 const GoogleIcon = () => (
@@ -58,7 +59,7 @@ export default function LoginPage() {
 
         setIsSubmitting(true);
         try {
-            const apiUrl = `${import.meta.env.BACKEND_URL}/api/users/login`;
+            const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/users/login`;
             const response = await axios.post(apiUrl, formData);
             
             // Store token and user data in local storage
@@ -89,8 +90,8 @@ export default function LoginPage() {
         try {
             const credential = credentialResponse.credential;
 
-            const apiUrl = `http://localhost:3001/api/users/google-login`;
-            const response = await axios.post(apiUrl, { googleToken: credential });
+            const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/users/google-login`;
+            const response = await apiClient.post(apiUrl, { googleToken: credential });
 
             // Store token and user
             localStorage.setItem('token', response.data.token);

@@ -4,6 +4,7 @@ import TopNavigationBar from '../../Components/TopNavigationBar.jsx';
 import HoverTranslateCard from '../../Components/Cards/HoverTranslateCard.jsx';
 import axios from 'axios';
 import Footer from '../../Components/Footer.jsx';
+import apiClient from '../../api/axiosConfig.js';
 
 // --- Hero Component for the Accessories Page ---
 const AccessoriesHero = () => {
@@ -40,7 +41,7 @@ const AccessoriesList = () => {
         const fetchAccessories = async () => {
             setIsLoading(true);
             try {
-                const { data } = await axios.get(`http://localhost:3001/api/products`);
+                const { data } = await apiClient.get(`/products`);
                 
                 if (data && data.products) {
                     const accessoryProducts = data.products.filter(p => accessoryCategories.includes(p.category));

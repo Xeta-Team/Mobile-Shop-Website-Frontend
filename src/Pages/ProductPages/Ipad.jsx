@@ -6,6 +6,7 @@ import HoverTranslateCard from '../../Components/Cards/HoverTranslateCard.jsx';
 import axios from 'axios';
 import appleIntelligence from '../../assest/mac.png';
 import Footer from '../../Components/Footer.jsx';
+import apiClient from '../../api/axiosConfig.js';
 
 
 // --- Components for the iPad Page ---
@@ -48,7 +49,7 @@ const IpadList = () => {
             setIsLoading(true);
             try {
                 // Fetch the data object from the API
-                const { data } = await axios.get(`http://localhost:3001/api/products`);
+                const { data } = await apiClient.get(`/products`);
 
                 // 1. Access the nested 'products' array from data
                 // 2. Filter by the correct field name 'category'

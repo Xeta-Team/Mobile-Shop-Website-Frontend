@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import apiClient from './axiosConfig'
+import apiClient from '../api/axiosConfig.js';
 import { toast } from 'react-toastify';
 
 // Simple Input Component for reusability (updated for B&W theme)

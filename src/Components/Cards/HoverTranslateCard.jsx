@@ -11,7 +11,7 @@ import { toast } from 'react-hot-toast';
 const getApiClient = () => {
     const token = localStorage.getItem('token');
     return axios.create({
-        baseURL: `http://localhost:3001/api`,
+        baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

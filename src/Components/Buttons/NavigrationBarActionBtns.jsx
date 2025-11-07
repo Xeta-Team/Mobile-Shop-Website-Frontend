@@ -1,7 +1,11 @@
 import { useNavigate } from "react-router"
 
-const NavigrationBarActionBtns = ({setIsSideModelShow, setIsCartSideModelShow}) => {
-    const navigate = useNavigate()
+// --- Accept onAccountClick prop ---
+const NavigrationBarActionBtns = ({setIsSideModelShow, setIsCartSideModelShow, onAccountClick}) => {
+    
+    // You can keep useNavigate if other buttons need it in the future
+    const navigate = useNavigate() 
+
     return(<>
 
         <div className="flex items-center md:order-2 space-x-3 md:space-x-6 rtl:space-x-reverse">
@@ -29,9 +33,10 @@ const NavigrationBarActionBtns = ({setIsSideModelShow, setIsCartSideModelShow}) 
                     </g>
                 </svg>
             </button>
+
+            {/* --- Use the onAccountClick prop here --- */}
             <button className="hover:cursor-pointer hidden md:flex"
-            onClick={() => {navigate("/user")}}
-            
+            onClick={onAccountClick} 
             >
                 <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -61,6 +66,7 @@ const NavigrationBarActionBtns = ({setIsSideModelShow, setIsCartSideModelShow}) 
                 stroke="#ffffff"
                 strokeWidth="0.384"
                 >
+                    {/* ... (svg paths) ... */}
                     <g>
                         <path d="M28.462,49.718c-1.202,0-2.322-0.447-3.151-1.26c-1.051-1.028-1.5-2.594-1.172-4.087c0.311-1.416,1.245-2.498,2.563-2.968
                         c1.803-0.643,3.784-0.14,4.983,1.234c0.852,0.977,1.237,2.295,1.057,3.618C32.467,48.262,30.667,49.718,28.462,49.718z

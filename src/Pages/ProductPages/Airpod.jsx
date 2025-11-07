@@ -5,6 +5,7 @@ import TopNavigationBar from '../../Components/TopNavigationBar.jsx';
 import HoverTranslateCard from '../../Components/Cards/HoverTranslateCard.jsx';
 import axios from 'axios';
 import Footer from '../../Components/Footer.jsx';
+import apiClient from '../../api/axiosConfig.js';
 
 // --- Components for the AirPods Page ---
 
@@ -45,7 +46,7 @@ const AirpodList = () => {
         const fetchAirpods = async () => {
             setIsLoading(true);
             try {
-                const { data } = await axios.get(`http://localhost:3001/api/products`);
+                const { data } = await apiClient.get(`/products`);
                 
                 // 1. Access data.products
                 // 2. Filter by category === 'Headphone'

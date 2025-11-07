@@ -1,11 +1,10 @@
-// File: Mobile-Shop-Website-Frontend/src/Components/Carousels/SliderCards.jsx
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Slider from "react-slick";
 import HoverTranslateCard from "../Cards/HoverTranslateCard"; // We will use the upgraded card here
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import apiClient from "../../api/axiosConfig.js";
 
 const SliderCards = () => {
     const [products, setProducts] = useState([]);
@@ -14,7 +13,7 @@ const SliderCards = () => {
         const fetchProducts = async () => {
             try {
                 // This is the performance fix: fetch only 8 products
-                const { data } = await axios.get('http://localhost:3001/api/products?limit=8');
+                const { data } = await apiClient.get('/products?limit=8');
                 setProducts(data.products);
             } catch (error) {
                 console.error("Failed to fetch featured products:", error);

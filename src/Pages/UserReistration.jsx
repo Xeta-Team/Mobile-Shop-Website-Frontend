@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import axios from 'axios';
 import { UserPlus, Lock, Mail, User, Loader } from 'lucide-react';
 import { useNavigate, Link } from 'react-router'; // Added Link for navigation
-
+import apiClient from '../api/axiosConfig';
 // --- Inlined Components ---
 
 // A basic InputField component.
@@ -166,11 +166,11 @@ export default function RegistrationPage() {
     const handleGoogleSuccess = async (googleToken) => {
         setIsSubmitting(true);
         try {
-            const apiUrl = `http://localhost:3001/api/users/google-login`;
+            const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/users/google-login`;
             
             // NOTE: In a real application, you would send the token to your backend for verification and authentication.
-            const response = await axios.post(apiUrl, { googleToken });
-            
+            const response = await apiClient.post(apiUrl, { googleToken });
+
             const { token } = response.data;
             if (token) {
                 // IMPORTANT: Use Firestore for persistence instead of localStorage in a real Canvas app environment.
@@ -312,7 +312,7 @@ export default function RegistrationPage() {
         setIsSubmitting(true);
         try {
             const { confirmPassword, ...payload } = formData;
-            const apiUrl = `http://localhost:3001/api/users/register`;
+            const apiUrl = `/api/users/register`;
             
             // NOTE: To prevent registration with fake but valid-looking emails (like 123@gmail.com), 
             // the backend must send an email verification link upon successful registration. 

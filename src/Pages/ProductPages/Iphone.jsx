@@ -4,6 +4,7 @@ import TopNavigationBar from "../../Components/TopNavigationBar.jsx";
 import HoverTranslateCard from "../../Components/Cards/HoverTranslateCard.jsx";
 import axios from "axios";
 import Footer from "../../Components/Footer.jsx";
+import apiClient from "../../api/axiosConfig.js";
 
 // --- Components for the iPhone Page ---
 
@@ -35,16 +36,17 @@ const Iphone = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   useEffect(() => {
+    const controller = new AbortController();
     const fetchIphones = async () => {
       try {
         // This is the performance fix: get only iPhones from the API
-        const response = await axios.get(
-          `http://localhost:3001/api/products/category/iphone`
-        );
+        const response = await apiClient.get(`/products/category/iphone`);
+        const controller = new AbortController();
+        signal: controller.signal
         setProducts(response.data);
         setError(null);
       } catch (err) {
-        console.error("Error fetching iPhones:", err);
+        console.error("Error fetching iPhones:", errs);
         if (err.response && err.response.status === 404) {
           setError("No iPhone models found.");
         } else {
@@ -55,6 +57,9 @@ const Iphone = () => {
       }
     };
     fetchIphones();
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   return (

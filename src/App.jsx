@@ -20,7 +20,11 @@ import AccessoriesPage from './Pages/ProductPages/Accessories.jsx';
 import MobilePhonesPage from './Pages/ProductPages/MobilePhones.jsx'
 import PreOwnedPage from './Pages/ProductPages/PreOwnedPage.jsx';
 import PrivacyPolicyPage from './Components/PrivacyPolicyPage.jsx';
+import AboutUsPage  from './Pages/AboutUs.jsx';
+import ContactPage from './Pages/Contact.jsx';
+import TermsAndConditionsPage from './Pages/TermsAndConditions.jsx';
 const App = () => {
+
   return (
     <>
     <div className="flex flex-col h-screen">
@@ -43,6 +47,9 @@ const App = () => {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/pre-owned-devices" element={<PreOwnedPage />} />
           <Route path='/privacy-policy' element={<PrivacyPolicyPage />} />
+          <Route path='/about-us' element={<AboutUsPage />} />
+          <Route path='/contact' element={<ContactPage />} />
+          <Route path='/terms-and-conditions' element={<TermsAndConditionsPage />} /> 
 
           {/* Protected Admin Route */}
           <Route element={<ProtectedAdminRoute />}>

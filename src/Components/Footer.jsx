@@ -13,18 +13,18 @@ const Footer = () => {
                     <h3 className="font-semibold mb-4 tracking-wider">Shop</h3>
                     <ul className="space-y-2 text-sm text-gray-300">
                         <li><a href="/iphone" className="hover:text-white">iPhones</a></li>
-                        <li><a href="#" className="hover:text-white">iPads</a></li>
-                        <li><a href="#" className="hover:text-white">MacBooks</a></li>
-                        <li><a href="#" className="hover:text-white">Accessories</a></li>
+                        <li><a href="/ipad" className="hover:text-white">iPads</a></li>
+                        <li><a href="/mac" className="hover:text-white">MacBooks</a></li>
+                        <li><a href="/accessories" className="hover:text-white">Accessories</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3 className="font-semibold mb-4 tracking-wider">Company</h3>
                     <ul className="space-y-2 text-sm text-gray-300">
-                        <li><a href="#" className="hover:text-white">About Us</a></li>
-                        <li><a href="#" className="hover:text-white">Contact</a></li>
-                        <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
-                        <li><a href="#" className="hover:text-white">Terms of Service</a></li>
+                        <li><a href="/about-us" className="hover:text-white">About Us</a></li>
+                        <li><a href="/contact" className="hover:text-white">Contact</a></li>
+                        <li><a href="/privacy-policy" className="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="/terms-and-conditions" className="hover:text-white">Terms of Service</a></li>
                     </ul>
                 </div>
                 <div>

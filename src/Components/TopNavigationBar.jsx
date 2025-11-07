@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom" // <-- Import useNavigate
+import { isLoggedIn, isAdmin } from "../auth.js" // <-- Import auth functions
 import NavigrationBarActionBtns from "./Buttons/NavigrationBarActionBtns"
 import NavigrationBarBtn from "./Buttons/NavigrationBarBtn"
 import Overlay from "./Overlay"
@@ -15,6 +17,26 @@ const TopNavigationBar = () => {
     const [isDropDownShow, setIsDropDownShow] = useState(false)
     const [isShowOverlay, setIsShowOverlay] = useState(false)
 
+    const navigate = useNavigate(); // <-- Initialize navigate
+
+    // --- This handler decides where to navigate ---
+    const handleAccountClick = () => {
+        if (!isLoggedIn()) {
+            // Not logged in, go to login page
+            navigate("/login");
+        } else {
+            // Logged in, check role
+            if (isAdmin()) {
+                // Is admin, go to admin dashboard
+                navigate("/admin");
+            } else {
+                // Is regular user, go to user dashboard
+                navigate("/user");
+            }
+        }
+    };
+    // --- End of new handler ---
+
     useEffect(() => {
         if(isDropDownShow || isSideModelShow || isCartSideModelShow || iscollapseShow){
             setIsShowOverlay(true)
@@ -30,6 +52,7 @@ const TopNavigationBar = () => {
             document.body.style.overflow = "auto"
         }
     },[isSideModelShow, isCartSideModelShow, iscollapseShow])
+    
     return(<>
         <nav className="bg-black text-white border-gray-200 dark:bg-gray-900 relative h-[120px] bg-fixed">
             <div className="w-full flex flex-wrap items-center justify-between p-4 ">
@@ -46,7 +69,12 @@ const TopNavigationBar = () => {
                     />
                 </a>
                 
-                <NavigrationBarActionBtns setIsSideModelShow={setIsSideModelShow} setIsCartSideModelShow={setIsCartSideModelShow}/>
+                {/* --- Pass the handler as a prop --- */}
+                <NavigrationBarActionBtns 
+                    setIsSideModelShow={setIsSideModelShow} 
+                    setIsCartSideModelShow={setIsCartSideModelShow}
+                    onAccountClick={handleAccountClick} 
+                />
 
                 <div
                 className="items-center justify-between hidden w-full md:flex md:flex-col md:w-auto md:order-1 md:text-[17px]"

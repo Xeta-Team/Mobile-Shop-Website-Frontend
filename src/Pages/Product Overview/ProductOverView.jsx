@@ -3,13 +3,12 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { Toaster } from 'react-hot-toast';
-
-// Import child components as defined in your original file structure
 import TopNavigationBar from "../../Components/TopNavigationBar";
 import Footer from "../../Components/Footer";
 import ImageGallery from "./ImageGallery";
 import ProductDetails from "./ProductDetails";
 import ProductSkeleton from "./ProductSkeleton";
+import apiClient from "../api/axiosConfig.js";
 
 // --- Reusable Sub-Components ---
 
@@ -49,7 +48,7 @@ const ProductOverView = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await axios.get(`http://localhost:3001/api/products/${productId}`, {
+        const response = await apiClient.get(`/api/products/${productId}`, {
           signal: controller.signal,
         });
         

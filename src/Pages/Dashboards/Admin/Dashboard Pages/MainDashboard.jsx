@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { DollarSign, ShoppingCart, Users, X, Package } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import apiClient from '../../../../../../Mobile-Shop-Website-Backend/controllers/axiosConfig.js';
+import apiClient from '../../../api/axiosConfig.js';
 import { toast } from 'react-toastify'; 
 
 
@@ -77,7 +77,7 @@ export default function MainDashboard() {
             try {
                 // You can create a real analytics endpoint later
                 // const statsRes = await apiClient.get('/analytics/stats');
-                const ordersRes = await apiClient.get('/orders');
+                const ordersRes = await apiClient.get('api/orders');
                 // setStats(statsRes.data);
                 setOrders(ordersRes.data);
             } catch (error) {

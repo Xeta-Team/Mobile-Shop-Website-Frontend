@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment, useMemo } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Search, Trash2, AlertTriangle, Loader, Inbox, ChevronDown, ChevronRight, Package, CheckCircle, Pencil } from 'lucide-react';
+import apiClient from '../../../../../api/axiosConfig.js';
 
 // StatusBadge component remains the same
 function StatusBadge({ count }) {
@@ -20,7 +21,6 @@ export default function ProductListPage() {
     const [error, setError] = useState(null);
     const [openProductIds, setOpenProductIds] = useState(new Set());
 
-    const API_BASE_URL = `http://localhost:3001`;
 
     useEffect(() => {
         fetchProducts();
@@ -56,7 +56,7 @@ export default function ProductListPage() {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/products/`);
+            const response = await apiClient.get(`/products`);
             if (response.data && Array.isArray(response.data.products)) {
                 const validProducts = response.data.products.filter(p => p.name);
                 setProducts(validProducts);

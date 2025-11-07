@@ -6,6 +6,7 @@ import TopNavigationBar from '../../Components/TopNavigationBar.jsx';
 import HoverTranslateCard from '../../Components/Cards/HoverTranslateCard.jsx';
 import Footer from '../../Components/Footer.jsx';
 import BrandFilterSidebar from '../../Components/BrandFilterSidebar.jsx';
+import apiClient from '../../api/axiosConfig.js';
 
 // --- The Main Component for the Pre-Owned Devices Page ---
 const PreOwnedPage = () => {
@@ -17,7 +18,7 @@ const PreOwnedPage = () => {
         const fetchPreOwnedDevices = async () => {
             setIsLoading(true);
             try {
-                const { data } = await axios.get(`http://localhost:3001/api/products`);
+                const { data } = await apiClient.get(`/products`);
                 
                 if (data && data.products) {
                     const usedPhones = [];
