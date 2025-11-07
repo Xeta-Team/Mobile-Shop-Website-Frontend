@@ -11,7 +11,7 @@ const CollapseMenu = ({ iscollapseShow, setIscollapseShow }) => {
   const currentYRef = useRef(0);
   const [translateY, setTranslateY] = useState(0);
 
-  const location = useLocation(); // ✅ To highlight the active menu item
+  const location = useLocation(); 
 
   const menuItems = [
     { name: "Home", path: "/" },

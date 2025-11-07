@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Loader, Twitter, Facebook, Instagram } from 'lucide-react';
+import { Loader, Twitter, Facebook, Instagram } from 'lucide-react'; 
 import TopNavigationBar from '../../Components/TopNavigationBar.jsx';
 import HoverTranslateCard from '../../Components/Cards/HoverTranslateCard.jsx';
 import Footer from '../../Components/Footer.jsx';
@@ -10,16 +9,16 @@ import apiClient from '../../api/axiosConfig.js';
 
 const WatchHero = () => {
     return (
-        <section className="h-screen bg-black text-white text-center flex flex-col justify-center items-center overflow-hidden relative">
+        <section className="h-[70vh] md:h-screen bg-black text-white text-center flex flex-col justify-center items-center overflow-hidden relative">
             <video 
                 src="https://www.apple.com/105/media/us/apple-watch-ultra-3/2025/dabb0ca4-1556-466c-a314-ae3ba2cc088e/anim/hero/large_2x.mp4" 
                 alt="Apple Watch Ultra animation"
-                className="absolute top-0 left-0 w-full h-full object-cover z-0 "
+                className="absolute top-0 left-0 w-full h-full object-cover z-0"
                 autoPlay
                 muted
                 playsInline
             />
-            <div className="relative z-10 flex flex-col items-center justify-center h-full">
+            <div className="relative z-10 flex flex-col items-center justify-center h-full p-4">
                 <div className="flex-grow flex flex-col justify-center items-center">
                     <h2 className="text-2xl md:text-4xl font-semibold tracking-wider">WATCH</h2>
                     <p className="text-red-500 text-lg font-semibold tracking-widest">ULTRA 2</p>
@@ -35,33 +34,55 @@ const WatchHero = () => {
 const WatchList = () => {
     const [watches, setWatches] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null); // Added for error handling
 
     useEffect(() => {
+        const controller = new AbortController(); // For cleanup
         const fetchWatches = async () => {
             setIsLoading(true);
+            setError(null);
             try {
-                const { data } = await apiClient.get(`/products`);
+                // --- PERFORMANCE FIX ---
+                // Fetch only the 'iWatch' category instead of all products.
+                const { data } = await apiClient.get(`/products/category/iWatch`, {
+                    signal: controller.signal
+                });
                 
-                // 1. Access data.products
-                // 2. Filter by category === 'iWatch'
-                if (data && data.products) {
-                    const watchProducts = data.products.filter(p => p.category === 'iWatch');
-                    setWatches(watchProducts);
+                // API now returns the array directly
+                setWatches(data);
+
+            } catch (err) {
+                if (err.name === 'CanceledError') {
+                    console.log("Request aborted");
+                    return;
                 }
-            } catch (error) {
-                console.error("Failed to fetch watches:", error);
+                console.error("Failed to fetch watches:", err);
+                setError("Could not load Apple Watch models. Please try again.");
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchWatches();
+
+        // Cleanup function
+        return () => {
+            controller.abort();
+        };
     }, []);
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center py-20">
+            <div className="flex justify-center items-center py-20 bg-white">
                 <Loader className="w-12 h-12 animate-spin text-black" />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center py-20 bg-white">
+                <p className="text-red-500">{error}</p>
             </div>
         );
     }
@@ -70,7 +91,7 @@ const WatchList = () => {
         <section className="py-20 bg-white">
             <div className="container mx-auto px-4">
                 <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-black">All Watch Models</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 justify-items-center">
                     {watches.map(watch => (
                         <HoverTranslateCard key={watch._id} card={watch} />
                     ))}
@@ -87,14 +108,15 @@ const WatchList = () => {
  */
 const WatchPage = () => {
     return (
-        <div className="bg-black">
+        <div className="bg-white">
             <TopNavigationBar />
-            <WatchHero />
-            <WatchList />
+            <main> 
+                <WatchHero />
+                <WatchList />
+            </main>
             <Footer />
         </div>
     );
 };
 
 export default WatchPage;
-

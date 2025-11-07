@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from 'lucide-react';
 import TopNavigationBar from '../../Components/TopNavigationBar.jsx';
 import HoverTranslateCard from '../../Components/Cards/HoverTranslateCard.jsx';
-import axios from 'axios';
 import Footer from '../../Components/Footer.jsx';
 import apiClient from '../../api/axiosConfig.js';
 
-// --- Hero Component for the Accessories Page ---
+
 const AccessoriesHero = () => {
     return (
         <section 
@@ -14,7 +13,7 @@ const AccessoriesHero = () => {
             style={{ backgroundImage: `url('https://images.pexels.com/photos/393047/pexels-photo-393047.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         >
             <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
-            <div className="relative z-10">
+            <div className="relative z-10 p-4"> {/* Added padding for small screens */}
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tight">Essential Accessories</h1>
                 <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-gray-200">
                     Everything you need to power up, protect, and get the most out of your devices.
@@ -28,8 +27,8 @@ const AccessoriesHero = () => {
 const AccessoriesList = () => {
     const [accessories, setAccessories] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null); // Added for error handling
 
-    // These are the categories that will be displayed on this page
     const accessoryCategories = [
         'Power & Charging',
         'Headphone',
@@ -38,29 +37,66 @@ const AccessoriesList = () => {
     ];
 
     useEffect(() => {
+        const controller = new AbortController(); // For cleanup
+        const signal = controller.signal;
+
         const fetchAccessories = async () => {
             setIsLoading(true);
+            setError(null);
             try {
-                const { data } = await apiClient.get(`/products`);
+                // --- PERFORMANCE FIX ---
+                // Instead of fetching ALL products, we fetch only the
+                // categories we need in parallel. This is much faster.
                 
-                if (data && data.products) {
-                    const accessoryProducts = data.products.filter(p => accessoryCategories.includes(p.category));
-                    setAccessories(accessoryProducts);
+                const fetchPromises = accessoryCategories.map(category =>
+                    apiClient.get(`/products/category/${encodeURIComponent(category)}`, { signal })
+                );
+
+                const results = await Promise.allSettled(fetchPromises);
+
+                const allAccessories = [];
+                results.forEach(result => {
+                    if (result.status === 'fulfilled' && result.value.data) {
+                        allAccessories.push(...result.value.data); // Add products from this category
+                    } else if (result.status === 'rejected') {
+                        console.error("A category fetch failed:", result.reason);
+                    }
+                });
+                
+                setAccessories(allAccessories);
+
+            } catch (err) {
+                if (err.name === 'CanceledError') {
+                    console.log("Request aborted");
+                    return;
                 }
-            } catch (error) {
-                console.error("Failed to fetch accessories:", error);
+                console.error("Failed to fetch accessories:", err);
+                setError("Could not load accessories. Please try again.");
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchAccessories();
-    }, []);
+
+        // Cleanup function
+        return () => {
+            controller.abort();
+        };
+    }, []); // Empty dependency array is correct here
 
     if (isLoading) {
         return (
             <div className="flex justify-center items-center py-20">
                 <Loader className="w-12 h-12 animate-spin text-black" />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center py-20 bg-white">
+                <p className="text-red-500">{error}</p>
             </div>
         );
     }
@@ -77,7 +113,11 @@ const AccessoriesList = () => {
     return (
         <section className="py-20 bg-white">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
+                {/* --- RESPONSIVE TWEAK ---
+                  - Changed to 2 columns on mobile (grid-cols-2)
+                  - Reduced gap on mobile (gap-4)
+                */}
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 justify-items-center">
                     {accessories.map(item => (
                         <HoverTranslateCard key={item._id} card={item} />
                     ))}
@@ -92,8 +132,10 @@ const AccessoriesPage = () => {
     return (
         <div className="bg-white">
             <TopNavigationBar />
-            <AccessoriesHero />
-            <AccessoriesList />
+            <main> {/* Added main tag for semantics */}
+                <AccessoriesHero />
+                <AccessoriesList />
+            </main>
             <Footer />
         </div>
     );

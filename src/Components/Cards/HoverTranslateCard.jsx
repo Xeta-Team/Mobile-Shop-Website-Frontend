@@ -9,6 +9,7 @@ import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { toast } from 'react-hot-toast';
 
 const getApiClient = () => {
+    // ... (This function is unchanged)
     const token = localStorage.getItem('token');
     return axios.create({
         baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,
@@ -20,13 +21,13 @@ const getApiClient = () => {
 };
 
 const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages, navigate }) => {
+    // ... (All modal logic, state, and handlers are unchanged)
     const [quantity, setQuantity] = useState(1);
     const [selectedColor, setSelectedColor] = useState(null);
     const [selectedStorage, setSelectedStorage] = useState(null);
     const [currentPrice, setCurrentPrice] = useState(product.startingPrice);
     const [selectedVariant, setSelectedVariant] = useState(null);
 
-    // --- All modal logic for state, effects, and memos is unchanged ---
     const availableStorages = useMemo(() => {
         if (!selectedColor) return [];
         const storages = new Set();
@@ -65,17 +66,14 @@ const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages
             setSelectedVariant(null);
         }
     }, [isOpen, product.startingPrice]);
-    // --- End of unchanged logic ---
-
 
     const handleAddToCart = () => {
         if (!selectedVariant || !product._id) {
             toast.error('Product data is missing. Cannot add to cart.');
             return;
         }
-    
         const itemToAdd = {
-            productId: product._id, // Correctly included
+            productId: product._id,
             sku: selectedVariant.sku,
             color: selectedVariant.colorName,
             storage: selectedVariant.storage,
@@ -84,10 +82,9 @@ const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages
             image: selectedVariant.image_url || product.base_image,
             quantity: quantity,
         };
-    
         addToCart(itemToAdd, quantity);
         toast.success('Item added to cart!');
-        onClose(); // <-- 2. FIXED: Added onClose()
+        onClose();
       };
     
       const handleBuyNow = () => {
@@ -96,7 +93,7 @@ const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages
           return;
         }
         const itemToCheckout = {
-            productId: product._id, // <<< FIX APPLIED HERE
+            productId: product._id,
             sku: selectedVariant.sku,
             name: `${product.name} - ${selectedVariant.colorName} - ${selectedVariant.storage}`,
             price: selectedVariant.price,
@@ -105,37 +102,59 @@ const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages
             storage: selectedVariant.storage,
         };
         buyNow(itemToCheckout, quantity);
-        onClose(); // <-- 3. FIXED: Added onClose()
+        onClose();
         navigate('/checkout');
       };
+    // --- End of unchanged logic ---
 
     if (!isOpen) return null;
 
-    // --- The rest of the modal JSX is unchanged ---
     return createPortal(
         <AnimatePresence>
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* --- RESPONSIVE TWEAK ---
+              Added max-h-screen overflow-y-auto to the container
+              to allow scrolling on small mobile screens.
+            */}
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 max-h-screen overflow-y-auto">
                 {/* Backdrop */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
                 
                 {/* Modal Content */}
-                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} transition={{ duration: 0.2 }} className="relative w-full max-w-4xl bg-white rounded-lg shadow-xl overflow-hidden">
+                <motion.div 
+                    initial={{ scale: 0.9, opacity: 0 }} 
+                    animate={{ scale: 1, opacity: 1 }} 
+                    exit={{ scale: 0.9, opacity: 0 }} 
+                    transition={{ duration: 0.2 }} 
+                    className="relative w-full max-w-4xl bg-white rounded-lg shadow-xl overflow-hidden my-auto" // Added my-auto for vertical centering
+                >
                     <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 z-10"><XMarkIcon className="h-6 w-6" /></button>
                     
+                    {/* --- RESPONSIVE TWEAK ---
+                      Grid is already responsive: 1 column on mobile, 2 on desktop.
+                    */}
                     <div className="grid grid-cols-1 md:grid-cols-2">
                         {/* Image Panel */}
-                        <div className="bg-gray-100 p-8 flex items-center justify-center">
+                        {/* --- RESPONSIVE TWEAK ---
+                          Reduced padding on mobile (p-4)
+                        */}
+                        <div className="bg-gray-100 p-4 md:p-8 flex items-center justify-center">
                             <img src={product.base_image} alt={product.name} className="max-h-[350px] object-contain" />
                         </div>
                         
                         {/* Details Panel */}
-                        <div className="p-8 flex flex-col">
-                            <h2 className="text-2xl font-bold text-gray-900">{product.name}</h2>
-                            <p className="text-2xl font-semibold text-gray-800 my-2">
+                        {/* --- RESPONSIVE TWEAK ---
+                          Reduced padding on mobile (p-4)
+                        */}
+                        <div className="p-4 md:p-8 flex flex-col">
+                            {/* --- RESPONSIVE TWEAK ---
+                              Reduced text size on mobile
+                            */}
+                            <h2 className="text-xl md:text-2xl font-bold text-gray-900">{product.name}</h2>
+                            <p className="text-xl md:text-2xl font-semibold text-gray-800 my-2">
                                 {`Rs. ${currentPrice ? currentPrice.toLocaleString() : 'N/A'}`}
                             </p>
                             
-                            {/* Color Selector */}
+                            {/* Color Selector (already responsive) */}
                             <div className="mt-4">
                                 <h3 className="text-sm font-medium text-gray-900">
                                     Color: <span className="font-semibold">{selectedColor?.name}</span>
@@ -146,7 +165,6 @@ const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages
                                             key={color.name}
                                             title={color.name}
                                             onClick={() => setSelectedColor(color)}
-                                            // --- THEME CHANGE ---
                                             className={`w-8 h-8 rounded-full border-2 transition-all ${selectedColor?.name === color.name ? 'ring-2 ring-black ring-offset-1' : 'border-gray-200'}`}
                                             style={{ backgroundColor: color.hex }}
                                         />
@@ -154,7 +172,7 @@ const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages
                                 </div>
                             </div>
                             
-                            {/* Storage Selector */}
+                            {/* Storage Selector (already responsive with flex-wrap) */}
                             <div className="mt-4">
                                 <h3 className="text-sm font-medium text-gray-900">
                                     Storage: <span className="font-semibold">{selectedStorage}</span>
@@ -167,7 +185,6 @@ const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages
                                                 key={storage}
                                                 onClick={() => setSelectedStorage(storage)}
                                                 disabled={!isAvailable}
-                                                // --- THEME CHANGE ---
                                                 className={`px-4 py-2 text-sm border rounded-md transition-colors ${
                                                     isAvailable 
                                                         ? (selectedStorage === storage ? 'bg-black text-white border-black' : 'hover:bg-gray-100') 
@@ -182,7 +199,7 @@ const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages
                                 {!selectedColor && <p className="text-xs text-gray-500 mt-1">Please select a color to see available storages.</p>}
                             </div>
                             
-                            {/* Quantity Selector */}
+                            {/* Quantity Selector (already responsive) */}
                             <div className="mt-6 flex items-center">
                                 <label htmlFor="quantity" className="text-sm font-medium text-gray-900 mr-4">Quantity</label>
                                 <div className="flex items-center border rounded-md">
@@ -193,11 +210,14 @@ const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages
                             </div>
                             
                             {/* Action Buttons */}
-                            <div className="mt-auto pt-6 flex space-x-4">
+                            {/* --- RESPONSIVE TWEAK ---
+                              Buttons stack vertically on mobile (flex-col) and
+                              go side-by-side on small screens and up (sm:flex-row).
+                            */}
+                            <div className="mt-auto pt-6 flex flex-col sm:flex-row gap-2 sm:gap-0 sm:space-x-4">
                                 <button 
                                     onClick={handleAddToCart}
                                     disabled={!selectedVariant}
-                                    // --- THEME CHANGE ---
                                     className="flex-1 bg-black text-white font-bold py-3 px-6 rounded-md transition-colors flex items-center justify-center gap-2 hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
                                 >
                                     <ShoppingCartIcon className="w-5 h-5"/> ADD TO CART
@@ -205,10 +225,8 @@ const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages
                                 <button 
                                     onClick={handleBuyNow}
                                     disabled={!selectedVariant}
-                                    // --- THEME & ICON CHANGE ---
                                     className="flex-1 bg-white text-black border border-black font-bold py-3 px-6 rounded-md transition-colors flex items-center justify-center gap-2 hover:bg-gray-100 disabled:bg-gray-200 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed"
                                 >
-                                    {/* BoltIcon removed */}
                                     BUY NOW
                                 </button>
                             </div>
@@ -217,21 +235,18 @@ const QuickViewModal = ({ product, isOpen, onClose, uniqueColors, uniqueStorages
                 </motion.div>
             </div>
         </AnimatePresence>,
-        document.body // Teleport the modal to the body
+        document.body
     );
 };
 
 // --- Main Upgraded Product Card ---
 const HoverTranslateCard = ({ card: product }) => {
-    // --- 5. Get the navigate function from the hook ---
+    // --- All card logic is unchanged ---
     const navigate = useNavigate();
-
-    // --- 4. FIXED: Corrected syntax error on this line ---
     const { _id, name, base_image, variants = [], brand = "Apple" } = product;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isInWishlist, setIsInWishlist] = useState(false); 
 
-    // --- All card logic for memos and handlers is unchanged ---
     const startingPrice = useMemo(() => {
         if (!variants || variants.length === 0) return null;
         return Math.min(...variants.map(v => v.price));
@@ -252,7 +267,7 @@ const HoverTranslateCard = ({ card: product }) => {
         product.variants?.forEach(v => {
             if (v.storage) storages.add(v.storage);
         });
-        return Array.from(storages).sort((a, b) => parseInt(a) - parseInt(b)); // Sort them
+        return Array.from(storages).sort((a, b) => parseInt(a) - parseInt(b));
     }, [product.variants]);
 
     const handleQuickViewClick = (e) => { e.preventDefault(); setIsModalOpen(true); };
@@ -280,36 +295,49 @@ const HoverTranslateCard = ({ card: product }) => {
     return (
         <>
             <Link to={`/product/${_id}`} className="block w-full">
-                {/* --- Card JSX is unchanged --- */}
                 <div className="relative group bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                     {/* Hover Icons */}
-                    <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {/* --- RESPONSIVE TWEAK ---
+                      Icons are now visible by default (opacity-100)
+                      and only become hover-based on medium screens (md:opacity-0).
+                    */}
+                    <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <button onClick={handleQuickViewClick} className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors" aria-label="Quick View"><EyeIcon className="w-5 h-5 text-gray-700" /></button>
                         <button onClick={handleWishlistClick} className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors" aria-label="Add to Wishlist">{isInWishlist ? (<HeartIconSolid className="w-5 h-5 text-red-500" />) : (<HeartIcon className="w-5 h-5 text-gray-700" />)}</button>
                     </div>
                     
                     {/* Image */}
-                    <div className="relative w-full h-64 bg-gray-50 flex items-center justify-center p-4">
+                    {/* --- RESPONSIVE TWEAK ---
+                      Reduced image height on mobile (h-48) for a
+                      smaller card, as requested previously.
+                    */}
+                    <div className="relative w-full h-48 sm:h-64 bg-gray-50 flex items-center justify-center p-4">
                         <img src={base_image} alt={name} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500 ease-in-out" />
                     </div>
                     
                     {/* Card Content */}
                     <div className="p-4 text-center">
-                        <h3 className="font-semibold text-gray-800 text-lg truncate" title={name}>{name}</h3>
+                        {/* --- RESPONSIVE TWEAK ---
+                          Reduced text size on mobile
+                        */}
+                        <h3 className="font-semibold text-gray-800 text-base sm:text-lg truncate" title={name}>{name}</h3>
                         <p className="text-sm text-gray-500 mb-2 capitalize">{brand}</p>
                         <div className="flex justify-center items-center space-x-2 my-3 h-5">
                             {uniqueColors.slice(0, 4).map((color, index) => (
                                 <span key={index} className="w-5 h-5 rounded-full border border-gray-300" style={{ backgroundColor: color.hex }} />
-                            ))}
+))}
                         </div>
-                        <p className="text-lg font-bold text-gray-900">
+                        {/* --- RESPONSIVE TWEAK ---
+                          Reduced text size on mobile
+                        */}
+                        <p className="text-base sm:text-lg font-bold text-gray-900">
                             {startingPrice !== null ? `From Rs. ${startingPrice.toLocaleString()}` : 'View Details'}
                         </p>
                     </div>
                 </div>
             </Link>
             
-            {/* --- 6. Pass 'navigate' as a prop to the modal --- */}
+            {/* Modal portal is unchanged */}
             <QuickViewModal 
                 isOpen={isModalOpen} 
                 onClose={() => setIsModalOpen(false)}
