@@ -136,16 +136,9 @@ const ProductOverView = () => {
 
   // --- Render Logic ---
 
-  if (loading) {
-    return (
-      <>
-        <TopNavigationBar />
-        <PuffLoader />
-        <ProductSkeleton />
-        <Footer />
-      </>
-    );
-  }
+  // if (loading) {
+    
+  // }
 
   if (error) {
     return (
@@ -162,13 +155,20 @@ const ProductOverView = () => {
 
   if (!transformedProduct) {
     return (
-      <>
+      <div className="flex flex-col min-h-screen">
         <TopNavigationBar />
-        <main className="flex-grow container mx-auto px-4 py-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-800">Product Not Found</h2>
-        </main>
+        
+
+        <div className="flex-grow flex justify-center items-center h-[60vh]">
+          <PuffLoader 
+            color="#000000"   
+            size={100}        
+            speedMultiplier={1.5}
+          />
+        </div>
+        
         <Footer />
-      </>
+      </div>
     );
   }
 
