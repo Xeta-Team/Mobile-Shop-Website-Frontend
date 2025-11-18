@@ -1,10 +1,9 @@
 import React from 'react';
 import { Expand } from 'lucide-react';
 
-const ImageGallery = ({ product, activeImage, setActiveImage }) => {
+const ImageGallery = ({ product, activeImage, setActiveImage, galleryImages }) => {
   const images = product?.images;
-  const galleryImages = images && images.length > 0 ? images : ['https://placehold.co/600x400/F8FAFC/000000?text=No+Image'];
-
+  
   return (
     <div className="flex flex-row gap-4">
       {/* Vertical Thumbnail Gallery */}
@@ -15,7 +14,8 @@ const ImageGallery = ({ product, activeImage, setActiveImage }) => {
             className={`w-20 h-20 bg-gray-50 p-1 rounded-md border-2 ${
               image === activeImage ? 'border-black' : 'border-transparent'
             } cursor-pointer hover:border-gray-400 transition flex items-center justify-center`}
-            onClick={() => setActiveImage(image)}
+            onClick={() => 
+             setActiveImage(image)}
           >
             <img
               src={image}

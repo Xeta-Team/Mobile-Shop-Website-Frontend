@@ -192,6 +192,8 @@ export default function AddProductPage() {
                 throw new Error("Received an empty response from the AI.");
             }
         } catch (error) {
+            console.log(error);
+            
             setMessage("Failed to generate description. Please try again.");
             setIsSuccess(false);
         } finally {
@@ -231,6 +233,8 @@ export default function AddProductPage() {
             // No need to change step, user might want to add another variant
 
         } catch (error) {
+            console.log(error);
+            
             const errorMessage = error.message || error.response?.data?.message || 'An error occurred during submission.';
             setMessage(errorMessage);
             setIsSuccess(false);
@@ -334,9 +338,7 @@ export default function AddProductPage() {
                             <motion.div key="step2" {...stepAnimation} className="space-y-6">
                                 <FormSection title="Specific Variant Details">
                                     <InputField id="sku" label="SKU (Unique Identifier)" placeholder="e.g., IPH14PRO-256-BLK-USED" name="sku" value={formData.sku} onChange={handleChange} required />
-                                    {showVariantImage && (
                                         <ImageUploadField id="variant_image" label="Variant Image (optional)" onFileChange={setVariantImageFile} disabled={!isSupabaseConfigured} />
-                                    )}
                                     {showDetailedFields && (
                                         <>
                                             <ColorPickerField name={formData.colorName} hex={formData.colorHex} onNameChange={handleChange} onHexChange={handleChange} />

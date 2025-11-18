@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Loader, AlertTriangle, Save, Plus, Trash2, X } from 'lucide-react';
 import apiClient from '../../../../../api/axiosConfig.js';
+import { toast } from 'react-toastify';
 
 export default function EditProductPage() {
     const { id } = useParams();
@@ -72,9 +73,12 @@ const handleSubmit = async (e) => {
         };
 
         // The 'product' object from state contains all the latest changes
-        await axios.put(`${API_BASE_URL}/api/products/${id}`, product, config);
-        navigate('/admin'); // Navigate back to the product list on success
+        await apiClient.put(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`, product, config);
+        navigate('/admin/all-products'); // Navigate back to the product list on success
+        toast.success('Product Update Successful!')
     } catch (err) {
+        console.log(err);
+        
         setError(err.response?.data?.message || 'Failed to update product.');
     } finally {
         setIsSaving(false);

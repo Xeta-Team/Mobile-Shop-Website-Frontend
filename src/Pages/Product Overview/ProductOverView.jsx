@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { ChevronRight, ChevronLeft } from "lucide-react";
@@ -9,6 +9,7 @@ import ImageGallery from "./ImageGallery";
 import ProductDetails from "./ProductDetails";
 import ProductSkeleton from "./ProductSkeleton";
 import apiClient from "../api/axiosConfig.js";
+import { PuffLoader } from "react-spinners";
 
 // --- Reusable Sub-Components ---
 
@@ -39,6 +40,7 @@ const ProductOverView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeImage, setActiveImage] = useState(null);
+  const [gallaryImages, setGallaryImages] = useState([]);
 
   useEffect(() => {
     // Abort controller for request cleanup
@@ -53,10 +55,33 @@ const ProductOverView = () => {
         });
         
         const fetchedData = response.data;
+        
         setProduct(fetchedData);
         
+        
         // Robust logic to set the initial active image
-        setActiveImage(fetchedData.base_image || fetchedData.variants?.[0]?.image_url || fetchedData.images?.[0] || '');
+        setActiveImage(prev =>
+        prev ||
+        fetchedData.base_image ||
+        fetchedData.variants?.[0]?.image_url ||
+        fetchedData.images?.[0] ||
+        ''
+      );
+
+      // gallery images
+      if(fetchedData.category === 'Airpods'){
+        setGallaryImages([fetchedData.base_image])
+
+        setGallaryImages((prev) => ([
+          ...prev,
+          fetchedData.variants?.map(v => v.image_url)
+        ]))
+      }else{
+        setGallaryImages(
+        fetchedData.variants?.map(v => v.image_url) || []
+      );
+      }
+
 
       } catch (err) {
         // Standard check for aborted requests
@@ -72,7 +97,6 @@ const ProductOverView = () => {
     };
 
     fetchProduct();
-
     // Cleanup function to abort the request if the component unmounts
     return () => {
       controller.abort();
@@ -104,11 +128,11 @@ const ProductOverView = () => {
   }, [product]);
 
   // Updates the main image when a variant with a specific image is selected
-  const handleVariantChange = (variant) => {
+  const handleVariantChange = useCallback((variant) => {
     if (variant && variant.image_url) {
-      setActiveImage(variant.image_url);
-    }
-  };
+        setActiveImage(variant.image_url);
+      }
+  }, []);
 
   // --- Render Logic ---
 
@@ -116,6 +140,7 @@ const ProductOverView = () => {
     return (
       <>
         <TopNavigationBar />
+        <PuffLoader />
         <ProductSkeleton />
         <Footer />
       </>
@@ -161,6 +186,7 @@ const ProductOverView = () => {
             product={transformedProduct}
             activeImage={activeImage}
             setActiveImage={setActiveImage}
+            galleryImages={gallaryImages}
           />
           <ProductDetails
             product={transformedProduct}

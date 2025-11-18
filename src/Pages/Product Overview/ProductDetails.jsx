@@ -9,12 +9,17 @@ const ProductDetails = ({ product, onVariantChange }) => {
   const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || null);
   const [selectedStorage, setSelectedStorage] = useState(product?.storageOptions?.[0] || null);
   const [quantity, setQuantity] = useState(1);
+  
 
   const selectedVariant = useMemo(() => {
-    if (!product?.variants || !selectedColor || !selectedStorage) return null;
-    return product.variants.find(
-      (v) => v.colorName === selectedColor.name && v.storage === selectedStorage
-    );
+    if (!product?.variants || !selectedColor || !selectedStorage){
+      return product.variants[0]
+    }else{
+      return product.variants.find(
+        (v) => v.colorName === selectedColor.name && v.storage === selectedStorage
+      )
+    }
+    return ;
   }, [selectedColor, selectedStorage, product?.variants]);
 
   const stockStatus = useMemo(() => {

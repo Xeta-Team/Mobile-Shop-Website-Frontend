@@ -57,13 +57,15 @@ const AirpodList = () => {
             setError(null);
             try {
                 
-                const { data } = await apiClient.get(`/products/category/Headphone`, {
+                const { data } = await apiClient.get(`/products/category/Airpods`, {
                     signal: controller.signal
                 });
                 
                 setAirpods(data);
 
             } catch (err) {
+                console.log(err);
+                
                 if (err.name === 'CanceledError') {
                     console.log("Request aborted");
                     return;

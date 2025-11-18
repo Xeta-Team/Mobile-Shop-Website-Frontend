@@ -98,7 +98,7 @@ export default function ProductListPage() {
                 }
                 const config = { headers: { Authorization: `Bearer ${token}` } };
                 
-                await axios.delete(`${API_BASE_URL}/api/products/${productId}`, config);
+                await apiClient.delete(`/products/${productId}`, config);
                 fetchProducts();
             } catch (error) {
                 console.error("Failed to delete product:", error);
