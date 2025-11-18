@@ -27,7 +27,7 @@ const Checkout = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [showDifferentShipping, setShowDifferentShipping] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('Credit Card');
+  const [paymentMethod, setPaymentMethod] = useState('Bank Transfer');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -58,6 +58,12 @@ const Checkout = () => {
   const [orderNotes, setOrderNotes] = useState('');
   
   useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      toast.info('Please log in to proceed to checkout.');
+      navigate('/login');
+    }
     // Load cart items from local storage
     const items = JSON.parse(localStorage.getItem('cartItems')) || [];
     setCartItems(items);
@@ -105,14 +111,26 @@ const Checkout = () => {
       };
       
       try {
-        const response = await apiClient.post('/orders/', orderData);
+        const response = await apiClient.post('/api/orders/', orderData);
         
         if(response.status === 201) {
             localStorage.removeItem('cartItems'); // Clear cart on successful order
             toast.success(response?.data?.message || "Order placed successfully!");
-            navigate('/user/orders');
+            
+            if(paymentMethod === 'Bank Transfer'){
+              console.log(response.data.data);
+              
+                navigate('/order-confirmation', {
+                  state: {orderData: response.data.data}
+                });
+            } else {
+                // Handle other payment methods if implemented in the future
+                navigate('/user/orders');
+            }
         }
       } catch (err) {
+        console.log(err);
+        
           setError(err.response?.data?.details || err.response?.data?.error || 'An unexpected error occurred. Please try again.');
       } finally {
           setIsLoading(false);
@@ -197,11 +215,15 @@ const Checkout = () => {
                     <h3 className="text-lg font-medium mb-4">Payment Method</h3>
                     <div className="space-y-3">
                         {['Credit Card', 'PayPal', 'Cash on Delivery'].map(method => (
-                             <label key={method} className="flex items-center p-4 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 transition duration-150">
-                                <input type="radio" name="paymentMethod" value={method} checked={paymentMethod === method} onChange={(e) => setPaymentMethod(e.target.value)} className="h-4 w-4 text-black border-gray-400 focus:ring-black"/>
+                             <label key={method} className="flex items-center p-4 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 transition duration-150 pointer-events-none opacity-50">
+                                <input type="radio" name="paymentMethod" value={method} checked={paymentMethod === method} onChange={(e) => setPaymentMethod(e.target.value)} disabled className="h-4 w-4 text-black border-gray-400 focus:ring-black"/>
                                 <span className="ml-3 text-black">{method}</span>
                             </label>
                         ))}
+                        <label key="Bank Transfer" className="flex items-center p-4 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 transition duration-150">
+                                <input type="radio" name="paymentMethod" value="Bank Transfer" checked={paymentMethod === "Bank Transfer"} onChange={(e) => setPaymentMethod(e.target.value)} className="h-4 w-4 text-black border-gray-400 focus:ring-black"/>
+                                <span className="ml-3 text-black">Bank Transfer</span>
+                            </label>
                     </div>
                 </div>
 

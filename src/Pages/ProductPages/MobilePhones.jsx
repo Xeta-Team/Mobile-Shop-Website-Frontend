@@ -21,8 +21,10 @@ const MobilePhonesPage = () => {
             setIsLoading(true);
             setError(null);
             try {
-                const phonePromise = apiClient.get(`/products/category/Mobile Phone`, { signal });
+                const phonePromise = apiClient.get(`/products/category/Other Phone`, { signal });
                 const iphonePromise = apiClient.get(`/products/category/iPhone`, { signal });
+                
+                
 
                 const results = await Promise.allSettled([phonePromise, iphonePromise]);
 
@@ -32,7 +34,6 @@ const MobilePhonesPage = () => {
                         allPhoneProducts.push(...result.value.data); // Add products
                     }
                 });
-                
                 setAllPhones(allPhoneProducts);
                 
             } catch (err) {

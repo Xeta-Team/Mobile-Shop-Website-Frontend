@@ -23,11 +23,12 @@ import PrivacyPolicyPage from './Components/PrivacyPolicyPage.jsx';
 import AboutUsPage  from './Pages/AboutUs.jsx';
 import ContactPage from './Pages/Contact.jsx';
 import TermsAndConditionsPage from './Pages/TermsAndConditions.jsx';
+import OrderConfirm from './Pages/Order/OrderConfirm.jsx';
 const App = () => {
 
   return (
     <>
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col min-h-screen">
 
       <main className="flex-1">
         
@@ -45,6 +46,7 @@ const App = () => {
           <Route path="/accessories" element={<AccessoriesPage />} />
           <Route path="/mobile-phones" element={<MobilePhonesPage />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-confirmation" element={<OrderConfirm/>} />
           <Route path="/pre-owned-devices" element={<PreOwnedPage />} />
           <Route path='/privacy-policy' element={<PrivacyPolicyPage />} />
           <Route path='/about-us' element={<AboutUsPage />} />

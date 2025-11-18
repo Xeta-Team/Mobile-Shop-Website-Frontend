@@ -1,4 +1,5 @@
 import shopLogoWhite from '../assest/wlogo.png';
+import { Twitter, Facebook, Instagram } from 'lucide-react';
 
 const Footer = () => {
     return (
