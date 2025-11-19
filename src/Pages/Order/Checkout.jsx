@@ -214,7 +214,7 @@ const Checkout = () => {
                 <div className="mt-8">
                     <h3 className="text-lg font-medium mb-4">Payment Method</h3>
                     <div className="space-y-3">
-                        {['Credit Card', 'PayPal', 'Cash on Delivery'].map(method => (
+                        {['Credit Card', 'Cash on Delivery'].map(method => (
                              <label key={method} className="flex items-center p-4 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 transition duration-150 pointer-events-none opacity-50">
                                 <input type="radio" name="paymentMethod" value={method} checked={paymentMethod === method} onChange={(e) => setPaymentMethod(e.target.value)} disabled className="h-4 w-4 text-black border-gray-400 focus:ring-black"/>
                                 <span className="ml-3 text-black">{method}</span>
