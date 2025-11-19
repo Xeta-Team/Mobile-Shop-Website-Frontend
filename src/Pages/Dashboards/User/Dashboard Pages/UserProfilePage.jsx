@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { User, Mail, Phone, MapPin, Edit3, Save, Camera, Loader, AlertCircle } from 'lucide-react';
 import Toast from '../../../../Components/Toast/Toast.jsx';
 import InputField from '../../../../Components/Input/InputField.jsx';
@@ -13,6 +13,8 @@ export default function UserProfilePage() {
     const [editableUser, setEditableUser] = useState(null);
     const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
     const [searchParams] = useSearchParams();
+    const [totalOrders,setTotalOrders] = useState();
+    const [wishlistCount, setWishlistCount] = useState(0);
 
     const showToast = (message, type = 'info') => {
         setToast({ show: true, message, type });
@@ -28,7 +30,10 @@ export default function UserProfilePage() {
 
         const fetchUserProfile = async () => {
             try {
-                const { data } = await apiClient.get('/users/profile');
+                const response = await apiClient.get('/users/profile');
+                const data = response.data.user;
+                setTotalOrders(response.data.totalOrders)
+                setWishlistCount(response.data.wishlistCount)
                 
                 const fullUserData = {
                     ...data,
@@ -48,7 +53,6 @@ export default function UserProfilePage() {
                 setIsLoading(false);
             }
         };
-
         fetchUserProfile();
     }, []);
     
@@ -133,11 +137,11 @@ export default function UserProfilePage() {
                             <p className="text-xs text-gray-400 mt-2">Member since {user.memberSince}</p>
                             <div className="flex justify-around mt-6 pt-6 border-t border-gray-200">
                                 <div className="text-center">
-                                    <p className="text-xl font-bold text-indigo-600">{user.totalOrders}</p>
+                                    <p className="text-xl font-bold text-indigo-600">{totalOrders}</p>
                                     <p className="text-sm text-gray-500">Orders</p>
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-xl font-bold text-indigo-600">{user.wishlistItems}</p>
+                                    <p className="text-xl font-bold text-indigo-600">{wishlistCount}</p>
                                     <p className="text-sm text-gray-500">Wishlist</p>
                                 </div>
                             </div>

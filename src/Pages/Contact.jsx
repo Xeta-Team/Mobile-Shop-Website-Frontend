@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import TopNavigationBar from '../Components/TopNavigationBar';
 import Footer from '../Components/Footer';
 import { Phone, Mail, MapPin, Send, Loader, CheckCircle } from 'lucide-react';
+import apiClient from './api/axiosConfig';
 
 // You can create this file in: front end/src/Pages/Contact.jsx
 export default function ContactPage() {
@@ -13,17 +14,25 @@ export default function ContactPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('sending');
-    console.log('Form data submitted:', formData);
-    // In a real app, you would POST this data to your backend
-    // For this example, we'll just simulate a success
-    setTimeout(() => {
-      setStatus('success');
-      setFormData({ name: '', email: '', message: '' });
-    }, 1500);
-  };
+
+    try {
+        // Use the new backend endpoint!
+        await apiClient.post('/api/contact', formData); 
+        
+        setStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+
+    } catch (error) {
+        console.error('Submission failed:', error);
+        setStatus('error');
+        // You might want to show a more specific error message here
+        // toast.error(error.response.data.message || 'Failed to send message.');
+        setTimeout(() => setStatus('idle'), 3000); // Reset status after a delay
+    }
+};
 
   return (
     <div className="bg-white min-h-screen flex flex-col">

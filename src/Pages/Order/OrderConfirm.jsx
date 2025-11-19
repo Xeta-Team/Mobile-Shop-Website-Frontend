@@ -1,15 +1,18 @@
 import React from 'react';
 import { useLocation } from 'react-router';
+import TopNavigationBar from '../../Components/TopNavigationBar';
+import Footer from '../../Components/Footer';
 
 const OrderConfirm = () => {
     const location = useLocation();
     const data = location.state?.orderData;
     return(<>
+    <TopNavigationBar/>
     <div className="mx-[20%] gap-5 my-4">
         <div className="flex gap-24 justify-center">
             <div className="m-3 text-center text-[14px] text-gray-600">
                 <h1>Order Number</h1>
-                <p className="text-black text-[12px] font-semibold">{data?._id}</p>
+                <p className="text-black text-[12px] font-semibold">{data._id.toString().substring(0, 8)}</p>
             </div>
 
             <div className="m-3 text-center text-[14px] text-gray-600">
@@ -82,7 +85,7 @@ const OrderConfirm = () => {
                                 Shipping:
                             </td>
                             <td className="text-right py-4">
-                                Courier charge may vary
+                                Courier Charge May Vary
                             </td>
                         </tr>
 
@@ -137,6 +140,7 @@ const OrderConfirm = () => {
 
         </div>
     </div>
+    <Footer/>
     </>)
 }
 

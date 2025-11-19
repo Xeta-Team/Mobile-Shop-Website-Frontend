@@ -25,7 +25,7 @@ export default function AboutUsPage() {
           {/* Our Story Section */}
           <div className="mt-16 text-lg text-gray-700 space-y-6">
             <p>
-              Welcome to [Your Shop Name]! We began with a simple idea: to make the world's best technology accessible to everyone in Sri Lanka, paired with service you can trust. What started as a small passion project has grown into a leading destination for premium devices like Apple, Samsung, and more.
+              Welcome to CellExpress! We began with a simple idea: to make the world's best technology accessible to everyone in Sri Lanka, paired with service you can trust. What started as a small passion project has grown into a leading destination for premium devices like Apple, Samsung, and more.
             </p>
             <p>
               Our journey is built on a foundation of authenticity and customer care. We believe that buying a new device should be an exciting and seamless experience, which is why we source 100% genuine products and back them with expert knowledge.

@@ -63,6 +63,7 @@ export default function MainDashboard() {
     // State for data
     const [stats, setStats] = useState({ totalRevenue: 0, totalOrders: 0, totalCustomers: 0 });
     const [orders, setOrders] = useState([]);
+    const [salesData, setSalesData] = useState([]); // New State for Chart
     const [loading, setLoading] = useState(true);
 
     // NEW State for filtering and modals
@@ -71,14 +72,17 @@ export default function MainDashboard() {
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [trackingNumber, setTrackingNumber] = useState('');
-
     useEffect(() => {
         const fetchData = async () => {
             try {
                 // You can create a real analytics endpoint later
                 // const statsRes = await apiClient.get('/analytics/stats');
                 const ordersRes = await apiClient.get('api/orders');
-                // setStats(statsRes.data);
+                const { data } = await apiClient.get('/api/users/dashboard');
+                
+                setStats(data.stats);
+                setOrders(data.orders);
+                setSalesData(data.salesData);
                 setOrders(ordersRes.data);
             } catch (error) {
                 console.error("Failed to fetch dashboard data:", error);
@@ -102,7 +106,7 @@ export default function MainDashboard() {
         if (trackingNum) {
             payload.trackingNumber = trackingNum;
         }
-        const { data: updatedOrder } = await apiClient.put(`/orders/${orderId}/status`, payload);
+        const { data: updatedOrder } = await apiClient.put(`/api/orders/${orderId}/status`, payload);
         setOrders(orders.map(o => (o._id === orderId ? updatedOrder : o)));
     };
 
@@ -168,13 +172,6 @@ export default function MainDashboard() {
     };
 
     if (loading) return <div className="p-8 text-center text-gray-600">Loading Dashboard Data...</div>;
-
-    const salesData = [
-        { name: 'Mon', sales: 4000 }, { name: 'Tue', sales: 3000 },
-        { name: 'Wed', sales: 5000 }, { name: 'Thu', sales: 4500 },
-        { name: 'Fri', sales: 6000 }, { name: 'Sat', sales: 5500 },
-        { name: 'Sun', sales: 7000 },
-    ];
     
     const filterButtons = ['All', 'Pending', 'Shipped', 'Delivered', 'Cancelled'];
 
